@@ -1,0 +1,475 @@
+/* ==========================================================================
+   AI Atlas · Design C (Ascent Path) · Sahati Tech Theme
+   ========================================================================== */
+:root {
+  --ascent-meter-w: 3.5rem;
+}
+.atlas-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Hero section */
+.atlas-hero {
+  border-bottom: 1px solid var(--line-strong);
+  background-image: linear-gradient(var(--bg-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 2.25rem 2.25rem;
+  padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+.atlas-hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: end;
+}
+.atlas-hero h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: .4rem;
+}
+.atlas-hero p {
+  color: var(--ink-2);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  max-width: 38rem;
+}
+.atlas-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.2rem;
+  font-size: .88rem;
+  color: var(--ink-2);
+}
+.atlas-meta-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+.atlas-meta-bar span::before {
+  content: "";
+  display: inline-block;
+  width: .55rem;
+  height: .55rem;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Controls Bar (Filter, Search, Expand All) */
+.atlas-controls {
+  position: sticky;
+  top: var(--hdr);
+  z-index: 40;
+  background: var(--header);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  padding-block: .75rem;
+}
+.atlas-controls .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.atlas-search-box {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .35rem .95rem;
+  flex: 1 1 16rem;
+  max-width: 28rem;
+}
+.atlas-search-box svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--ink-2);
+  flex-shrink: 0;
+}
+.atlas-search-box input {
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: .92rem;
+  color: var(--ink);
+  width: 100%;
+}
+.atlas-search-box input::placeholder {
+  color: var(--ink-2);
+  opacity: .8;
+}
+.atlas-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.atlas-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .4rem .9rem;
+  font-size: .82rem;
+  font-family: var(--f-display);
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.atlas-btn:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+/* Main Ascent Layout */
+.c-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+  gap: 0;
+  position: relative;
+}
+.c-sticky {
+  position: sticky;
+  top: calc(var(--hdr) + 3.8rem);
+  height: calc(100vh - var(--hdr) - 3.8rem);
+  border-inline-end: 1px solid var(--line);
+  background-image: linear-gradient(var(--bg-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 2.25rem 2.25rem;
+  overflow: hidden;
+}
+.c-sticky canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.c-sticky canvas:active {
+  cursor: grabbing;
+}
+.c-meter {
+  position: absolute;
+  top: 1.5rem;
+  inset-inline-start: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  font-family: var(--f-mono);
+  font-size: .75rem;
+  color: var(--ink-2);
+  direction: ltr;
+  z-index: 10;
+  pointer-events: none;
+}
+.c-meter span {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  transition: color .3s, transform .3s;
+}
+.c-meter span::before {
+  content: "";
+  width: 1.2rem;
+  height: 2px;
+  background: var(--line);
+  transition: background .3s, width .3s;
+}
+.c-meter span.on {
+  color: var(--accent);
+  font-weight: 600;
+  transform: translateX(4px);
+}
+.c-meter span.on::before {
+  background: var(--accent);
+  width: 2.2rem;
+}
+.c-hint-drag {
+  position: absolute;
+  bottom: 1.5rem;
+  inset-inline-end: 1.5rem;
+  font-family: var(--f-mono);
+  font-size: .7rem;
+  color: var(--ink-2);
+  pointer-events: none;
+  background: var(--card);
+  padding: .2rem .6rem;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  opacity: .85;
+}
+
+/* Steps content */
+.c-steps {
+  display: flex;
+  flex-direction: column;
+}
+.c-step {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3rem);
+  border-bottom: 1px dashed var(--line);
+}
+.c-step:last-child {
+  border-bottom: 0;
+}
+.c-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  max-width: 44rem;
+  width: 100%;
+  opacity: .32;
+  transform: translateY(8px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.c-step.on .c-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+.c-card .step-head {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.c-card .num {
+  font-family: var(--f-mono);
+  font-size: .8rem;
+  letter-spacing: .14em;
+  color: var(--accent);
+  direction: ltr;
+  text-align: start;
+  font-weight: 600;
+}
+[dir="rtl"] .c-card .num {
+  text-align: right;
+}
+.c-card h2 {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.c-card .lead {
+  color: var(--ink-2);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+/* Packages list */
+.packs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line-strong);
+  margin-top: .5rem;
+}
+.packs details {
+  border-bottom: 1px solid var(--line);
+  transition: background .2s;
+}
+.packs details[open] {
+  background: color-mix(in srgb, var(--card) 60%, transparent);
+}
+.packs summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 4.8rem minmax(0, 1fr) 1.5rem;
+  gap: .8rem;
+  align-items: center;
+  padding: 1rem .5rem;
+  user-select: none;
+}
+.packs summary::-webkit-details-marker { display: none; }
+.packs summary .pkg-num {
+  font-family: var(--f-mono);
+  font-size: .78rem;
+  color: var(--accent);
+  direction: ltr;
+  text-align: start;
+  font-weight: 600;
+}
+[dir="rtl"] .packs summary .pkg-num {
+  text-align: right;
+}
+.packs summary .pkg-name {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+.packs summary .icon-toggle {
+  font-family: var(--f-mono);
+  font-size: 1.2rem;
+  color: var(--accent);
+  text-align: center;
+  line-height: 1;
+  transition: transform .2s;
+}
+.packs details[open] summary .icon-toggle {
+  transform: rotate(45deg);
+}
+
+.packs .pkg-body {
+  padding: .5rem 1rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.packs .pkg-desc {
+  color: var(--ink-2);
+  font-size: .98rem;
+  line-height: 1.8;
+}
+
+/* Terms Clean Grid */
+.term-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+}
+.term-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+.term-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px -6px rgba(0,0,0,.08);
+}
+.term-card.highlight {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--card));
+}
+.term-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.term-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+.term-badge {
+  font-family: var(--f-mono);
+  font-size: .75rem;
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .1rem .6rem;
+}
+.term-desc {
+  font-size: .94rem;
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+.term-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .25rem;
+}
+.term-tag {
+  font-family: var(--f-mono);
+  font-size: .68rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .05rem .55rem;
+  color: var(--ink-2);
+}
+
+/* Superintelligence Ladder */
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: .5rem;
+}
+.ladder-item {
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  padding: 1.1rem;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.ladder-item.active {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.ladder-item .badge {
+  font-family: var(--f-mono);
+  font-size: .8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+.ladder-item h4 {
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.ladder-item p {
+  color: var(--ink-2);
+  font-size: .88rem;
+  line-height: 1.65;
+}
+.ladder-item .status {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: auto;
+  padding-top: .5rem;
+}
+.si-insights {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+.si-insight {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: .75rem;
+  color: var(--ink);
+  font-size: .98rem;
+  line-height: 1.8;
+}
+.si-insight::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  background: var(--accent);
+  margin-top: .65em;
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .atlas-hero .wrap { grid-template-columns: 1fr; }
+  .c-grid { grid-template-columns: 1fr; }
+  .c-sticky {
+    height: 44vh;
+    border-inline-end: 0;
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+    background-color: var(--bg);
+  }
+  .c-step { min-height: 70vh; padding-top: 2rem; }
+  .ladder { grid-template-columns: 1fr; }
+}

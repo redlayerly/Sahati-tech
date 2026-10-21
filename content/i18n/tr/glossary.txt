@@ -1,0 +1,9 @@
+# term | English (optional) | definition
+Oltalama | Phishing | Şifreni, doğrulama kodunu veya kart bilgilerini ele geçirmek için güvenilir bir kaynağı taklit eden mesaj ya da bağlantı.
+İki adımlı doğrulama | 2FA | Şifreden sonraki ikinci katman; örneğin bir kimlik doğrulama uygulamasından gelen kod. Şifren çalınsa bile girişi engeller.
+Sosyal mühendislik | Social Engineering | Cihazı değil insanı kandırmak: aceleye getirerek, korkutarak ya da resmî yetkili gibi davranarak.
+Fidye yazılımı | Ransomware | Dosyalarını şifreleyip açmak için para isteyen kötü amaçlı yazılım. Ayrı tutulan bir yedek, en önemli savunma hattıdır.
+Sızma testi | Penetration Testing | Gerçek bir saldırganı taklit eden izinli bir saldırı; açıklar istismar edilmeden önce bulunup kapatılır.
+Kırmızı takım | Red Team | Kurumun tespit ve müdahale yeteneğini sınamak için hem teknik hem insani yönden tam bir rakip rolü oynayan ekip.
+Sıfır güven | Zero Trust | Ağın içinde bile hiçbir kullanıcıya veya cihaza otomatik olarak güvenilmez; her istek yeniden doğrulanır.
+Derin sahte | Deepfake | Gerçek bir kişiyi taklit ederek söylemediği şeyleri söylüyor ya da yapmadığı şeyleri yapıyor gibi gösteren, yapay zekâ ile üretilmiş ses veya video.

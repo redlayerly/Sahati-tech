@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="{{s:html_lang}}" dir="{{s:dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{page_title}}</title>
+<meta name="description" content="{{description}}">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#EFEBE2">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#222427">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="{{canonical}}">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="{{s:site_name}}" href="{{prefix}}/feed.xml">
+<meta property="og:type" content="{{og_type}}">
+<meta property="og:site_name" content="{{s:site_name}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:title" content="{{og_title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:image" content="{{og_image}}">
+<meta property="og:locale" content="{{s:og_locale}}">
+{{hreflang}}
+<meta name="twitter:card" content="summary_large_image">
+{{head_extra}}
+<script>try{var s=localStorage.getItem('sahati-skin');if(s)document.documentElement.setAttribute('data-skin',s);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{s:fonts}}&display=swap">
+<link rel="stylesheet" href="/assets/site.css?v={{version}}">
+</head>
+<body class="{{body_class}}">
+{{sprite}}
+<a class="sr" href="#main">{{s:skip}}</a>
+<header class="hdr">
+  <div class="wrap">
+    <a class="home" href="{{prefix}}/" aria-label="{{s:home_aria}}">
+      <svg class="mk" viewBox="-60 -60 532 508" aria-hidden="true"><use href="#s-mark"/></svg>
+      <svg class="wm" viewBox="-60 -60 2198 534" aria-hidden="true"><use href="#s-word"/></svg>
+    </a>
+    <nav aria-label="{{s:nav_aria}}">
+      <a href="{{prefix}}/#feed">{{s:nav_posts}}</a><a href="{{prefix}}/atlas/">{{s:nav_atlas}}</a><a href="{{prefix}}/#glossary">{{s:nav_glossary}}</a><a href="{{prefix}}/#about">{{s:nav_about}}</a>
+    </nav>
+    <div class="skins" role="group" aria-label="{{s:skins_aria}}">
+      <button type="button" data-skin="ivory" aria-pressed="false" title="{{s:skin_ivory}}" aria-label="{{s:skin_ivory}}"><span style="background:#EFEBE2"></span></button>
+      <button type="button" data-skin="dark" aria-pressed="false" title="{{s:skin_dark}}" aria-label="{{s:skin_dark}}"><span style="background:#26282B"></span></button>
+      <button type="button" data-skin="purple" aria-pressed="false" title="{{s:skin_purple}}" aria-label="{{s:skin_purple}}"><span style="background:linear-gradient(135deg,#6E50C2,#B9A0F2)"></span></button>
+    </div>
+    <details class="langs">
+      <summary aria-label="{{s:lang_label}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span>{{s:code}}</span></summary>
+      <ul>{{lang_links}}</ul>
+    </details>
+    <a class="sub-btn" href="#newsletter">{{s:subscribe_btn}}</a>
+    <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="drawer" aria-label="{{s:menu}}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+    </button>
+  </div>
+  <div class="drawer" id="drawer" hidden><div class="wrap">
+    <a href="{{prefix}}/#feed">{{s:nav_posts}}</a><a href="{{prefix}}/atlas/">{{s:nav_atlas}}</a><a href="{{prefix}}/#glossary">{{s:nav_glossary}}</a><a href="{{prefix}}/#about">{{s:nav_about}}</a><a href="#newsletter">{{s:subscribe_btn}}</a>
+  </div></div>
+</header>
+
+<main id="main">
+{{content}}
+  <section class="nl" id="newsletter">
+    <div class="wrap">
+      <div><h2>{{s:nl_title}}</h2><p>{{s:nl_text}}</p></div>
+      <form id="nlForm" novalidate{{newsletter_attrs}}>
+        <label class="sr" for="nlEmail">{{s:nl_email_label}}</label>
+        <input id="nlEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+        <button type="submit">{{s:nl_submit}}</button>
+        <small id="nlMsg" role="status"></small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <svg viewBox="-60 -60 2198 534" role="img" aria-label="{{s:site_name}}"><use href="#s-word"/></svg>
+    <nav aria-label="{{s:footer_aria}}"><a href="{{prefix}}/#feed">{{s:nav_posts}}</a><a href="{{prefix}}/atlas/">{{s:nav_atlas}}</a><a href="{{prefix}}/#glossary">{{s:nav_glossary}}</a><a href="{{prefix}}/#about">{{s:nav_about}}</a><a href="{{prefix}}/feed.xml">RSS</a></nav>
+    <span>© {{year}} {{s:site_name}} · <span class="ltr">sahati-tech.com.ly</span></span>
+  </div>
+</footer>
+<script>window.SAHATI_T={{js_strings}};</script>
+<script src="/assets/site.js?v={{version}}" defer></script>
+</body>
+</html>

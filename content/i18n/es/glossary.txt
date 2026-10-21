@@ -1,0 +1,9 @@
+# term | English (optional) | definition
+Phishing | | Un mensaje o enlace que suplanta a una fuente de confianza para obtener tu contraseña, tu código de verificación o los datos de tu tarjeta.
+Verificación en dos pasos | 2FA | Una segunda capa después de la contraseña, como un código de una app de autenticación. Impide el acceso aunque te roben la contraseña.
+Ingeniería social | Social Engineering | Engañar a la persona en lugar de hackear el dispositivo, con urgencia, miedo o haciéndose pasar por una autoridad oficial.
+Ransomware | | Software malicioso que cifra tus archivos y exige dinero para recuperarlos. Una copia de seguridad separada es la defensa más importante.
+Prueba de penetración | Pentesting | Un ataque autorizado que simula a un atacante real para encontrar vulnerabilidades y corregirlas antes de que alguien las aproveche.
+Equipo rojo | Red Team | Un equipo que interpreta por completo el papel del adversario, en lo técnico y en lo humano, para poner a prueba la capacidad de una organización de detectar y responder.
+Confianza cero | Zero Trust | Ninguna confianza automática en ningún usuario ni dispositivo, ni siquiera dentro de la red. Cada solicitud se verifica de nuevo.
+Ultrafalso | Deepfake | Audio o video generado con IA que imita a una persona real diciendo o haciendo algo que nunca dijo ni hizo.

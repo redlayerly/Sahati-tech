@@ -1,0 +1,9 @@
+# term | English (optional) | definition
+Phishing | | Mensahe o link na nagpapanggap na mapagkakatiwalaang source para makuha ang iyong password, verification code, o detalye ng card.
+Two-factor authentication | 2FA | Pangalawang proteksyon pagkatapos ng password, gaya ng code mula sa authenticator app. Hinaharangan nito ang pag-login kahit nanakaw ang password mo.
+Social engineering | | Panlilinlang sa tao sa halip na pag-hack sa device, gamit ang pagmamadali, pananakot, o pagpapanggap na may opisyal na awtoridad.
+Ransomware | | Malware na nag-e-encrypt ng iyong mga file at humihingi ng pera para mabuksan ang mga ito. Ang hiwalay na backup ang pinakamahalagang depensa.
+Penetration testing | Pentest | Awtorisadong atake na ginagaya ang totoong umaatake para mahanap at maayos ang mga butas bago pa ito magamit ng iba.
+Red team | | Team na buong gumaganap bilang kalaban, sa teknikal at sa tao, para subukin ang kakayahan ng isang organisasyon na makatuklas at tumugon.
+Zero trust | | Walang awtomatikong tiwala sa sinumang user o device, kahit nasa loob ng network. Bawat request ay muling bine-verify.
+Deepfake | | Audio o video na gawa ng AI na ginagaya ang isang totoong tao para palabasing may sinabi o ginawa siyang hindi naman niya ginawa.

@@ -1,0 +1,14 @@
+{
+  "url": "https://sahati-tech.com.ly",
+  "title": "سَحاتِك | Sahati Tech",
+  "description": "سَحاتِك: مدونة توعية تقنية بالعربي. الأمن السيبراني بلغة نفهمها، شروح ونصائح وقواعد أمنية.",
+  "newsletter_endpoint": "",
+  "categories": {
+    "acc":  {"ar": "حماية الحسابات", "en": "ACCOUNTS"},
+    "scam": {"ar": "الاحتيال والهندسة الاجتماعية", "en": "SCAMS"},
+    "priv": {"ar": "الخصوصية", "en": "PRIVACY"},
+    "ai":   {"ar": "الذكاء الاصطناعي والأمن", "en": "AI-SEC"},
+    "atk":  {"ar": "عقلية المهاجم", "en": "OFFENSE"},
+    "biz":  {"ar": "أمن المؤسسات الصغيرة", "en": "BUSINESS"}
+  }
+}

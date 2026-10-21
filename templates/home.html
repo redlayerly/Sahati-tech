@@ -1,0 +1,86 @@
+{{sprite_lockup}}
+  <section class="mast" id="top">
+    <div class="wrap">
+      <svg class="lk" viewBox="-60 -60 2756 958" role="img" aria-label="{{s:lockup_aria}}"><use href="#s-lock"/></svg>
+      <div class="txt">
+        <h1>{{s:hero_h1}}</h1>
+        <p>{{s:hero_p}}</p>
+        <div class="counts"><div><b>{{count_posts}}</b><span>POSTS</span></div><div><b>{{count_topics}}</b><span>TOPICS</span></div><div><b>{{count_terms}}</b><span>TERMS</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="filter" aria-label="{{s:filter_aria}}"><div class="wrap">
+    <div class="pills" id="pills">
+      <button type="button" data-k="all" class="on" aria-pressed="true">{{s:pill_all}}</button>
+      <button type="button" data-k="article" aria-pressed="false">{{s:pill_article}}</button>
+      <button type="button" data-k="head" aria-pressed="false">{{s:pill_head}}</button>
+      <button type="button" data-k="tip" aria-pressed="false">{{s:pill_tip}}</button>
+      <button type="button" data-k="quote" aria-pressed="false">{{s:pill_quote}}</button>
+    </div>
+    <span class="shown" id="shown"></span>
+  </div></nav>
+  <section id="feed" aria-label="{{s:nav_posts}}"><div class="wrap">
+    <div class="feed" id="feedList">
+{{feed}}
+    </div>
+    <p class="empty" id="feedEmpty" hidden>{{s:feed_empty}}</p>
+  </div></section>
+
+  <section class="sec ai-hero-sec" id="ai-atlas">
+    <div class="wrap">
+      <div class="ai-box">
+        <div class="ai-box-copy">
+          <span class="eyebrow">{{s:home_ai_eyebrow}}</span>
+          <h2>{{s:home_ai_title}}</h2>
+          <p>{{s:home_ai_text}}</p>
+          <div class="ai-stages-preview">
+            <span>01 الأساسيات</span>
+            <span>02 النماذج اللغوية</span>
+            <span>03 الأداء والأمان</span>
+            <span>04 هندسة الإنتاج</span>
+            <span>05 البحث والحوكمة</span>
+            <span>06 التخصصات</span>
+            <span class="si-badge">SI الذكاء الفائق</span>
+          </div>
+          <a class="ai-btn" href="{{prefix}}/atlas/">{{s:home_ai_btn}}</a>
+        </div>
+        <div class="ai-box-visual" aria-hidden="true">
+          <div class="ai-3d-glyph">
+            <svg viewBox="-60 -60 532 508" aria-hidden="true"><use href="#s-mark"/></svg>
+            <div class="ai-orb ring-1"></div>
+            <div class="ai-orb ring-2"></div>
+            <div class="ai-orb ring-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="glossary">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">CyberLogy glossary</span><h2>{{s:gloss_title}}</h2></div>
+        <p>{{s:gloss_text}}</p>
+      </div>
+      <div class="gloss">
+{{glossary}}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="wrap about">
+      <div class="plate"><svg viewBox="-60 -60 532 508" aria-hidden="true"><use href="#s-mark"/></svg><span class="cap">SAHATI TECH · CYBERLOGY</span></div>
+      <div class="copy">
+        <span class="eyebrow">About</span>
+        <h2>{{s:about_title}}</h2>
+        <p>{{s:about_text}}</p>
+        <ul class="rules">
+          <li><span>RULE 01</span><p>{{s:rule1}}</p></li>
+          <li><span>RULE 02</span><p>{{s:rule2}}</p></li>
+          <li><span>RULE 03</span><p>{{s:rule3}}</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>

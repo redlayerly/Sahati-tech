@@ -1,0 +1,1130 @@
+<div class="atlas-page">
+
+  <!-- Hero Header -->
+  <header class="atlas-hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">{{s:atlas_eyebrow}}</span>
+        <h1>{{s:atlas_h1}}</h1>
+      </div>
+      <div>
+        <p>{{s:atlas_lead}}</p>
+        <div class="atlas-meta-bar">
+          <span>{{s:atlas_meta_1}}</span>
+          <span>{{s:atlas_meta_2}}</span>
+          <span>{{s:atlas_meta_3}}</span>
+          <span>{{s:atlas_meta_4}}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Control & Filter Bar -->
+  <section class="atlas-controls">
+    <div class="wrap">
+      <div class="atlas-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="atlasSearch" placeholder="{{s:atlas_search_placeholder}}" aria-label="{{s:atlas_search_placeholder}}">
+      </div>
+      <div class="atlas-actions">
+        <button type="button" class="atlas-btn" id="expandAllBtn">{{s:atlas_expand_all}}</button>
+        <button type="button" class="atlas-btn" id="collapseAllBtn">{{s:atlas_collapse_all}}</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ascent Path (Design C) -->
+  <section class="c-grid" id="ascentGrid">
+    <aside class="c-sticky" aria-label="3D Ascent View">
+      <canvas id="cCanvas" aria-label="3D Ascent View, drag to rotate"></canvas>
+      <div class="c-meter" id="cMeter" aria-hidden="true"></div>
+      <div class="c-hint-drag">{{s:atlas_drag_hint}}</div>
+    </aside>
+    <div class="c-steps" id="cSteps">
+      <!-- Populated via JavaScript dynamically based on current language -->
+    </div>
+  </section>
+
+</div>
+
+<!-- Include Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(function(){
+window.CURRENT_LANG = "{{s:html_lang}}";
+window.STAGE_LABEL = "{{s:atlas_stage_label}}";
+window.PKG_LABEL = "{{s:atlas_pkg_label}}";
+
+/* ------------------------------------------------------------------
+   Multilingual Stage & Package Dictionaries
+   ------------------------------------------------------------------ */
+var I18N = {
+  stages: {
+    's1': { ar: 'الأساسيات', en: 'Fundamentals', tr: 'Temel Bilgiler', ru: 'Фундаментальные основы', es: 'Fundamentos', fil: 'Mga Batayan', zh: '核心基础' },
+    's2': { ar: 'النماذج اللغوية', en: 'Large Language Models (LLMs)', tr: 'Büyük Dil Modelleri (LLM)', ru: 'Большие языковые модели (LLM)', es: 'Modelos de Lenguaje Grande (LLM)', fil: 'Malalaking Modelo ng Wika (LLM)', zh: '大语言模型 (LLMs)' },
+    's3': { ar: 'الاختبار والمحاذاة والشفافية', en: 'Testing, Alignment & Trust', tr: 'Test, Hizalama ve Güven', ru: 'Тестирование, выравнивание и доверие', es: 'Evaluación, alineación y confianza', fil: 'Pagsusuri, Alignment at Tiwala', zh: '评估、对齐与可信度' },
+    's4': { ar: 'هندسة البرمجيات والإنتاج', en: 'AI Engineering & Production', tr: 'Yapay Zekâ Mühendisliği ve Üretim', ru: 'Инженерия ИИ и продакшн', es: 'Ingeniería de IA y producción', fil: 'AI Engineering at Produksyon', zh: 'AI工程化与生产系统' },
+    's5': { ar: 'البحث والحوكمة', en: 'Frontier Research & Governance', tr: 'İleri Araştırma ve Yönetişim', ru: 'Передовые исследования и управление', es: 'Investigación avanzada y gobernanza', fil: 'Abanteng Pananaliksik at Pamamahala', zh: '前沿研究与治理' },
+    's6': { ar: 'التخصصات المتقدمة', en: 'Advanced Specializations', tr: 'İleri Uzmanlıklar', ru: 'Специализированные направления', es: 'Especializaciones avanzadas', fil: 'Mga Espesyalisasyon', zh: '高阶专业方向' },
+    'si': { ar: 'الذكاء الفائق', en: 'Superintelligence', tr: 'Süper Zekâ', ru: 'Сверхинтеллект', es: 'Superinteligencia', fil: 'Superintelligence', zh: '超级智能' }
+  },
+  pkgs: {
+    '00': { ar: 'الأساسيات الرياضية', en: 'Mathematical Foundations', tr: 'Matematiksel Temeller', ru: 'Математические основы', es: 'Fundamentos matemáticos', fil: 'Matematikal na Batayan', zh: '数学基石' },
+    '01': { ar: 'أساسيات تعلم الآلة', en: 'Machine Learning Foundations', tr: 'Makine Öğrenimi Temelleri', ru: 'Основы машинного обучения', es: 'Fundamentos de aprendizaje automático', fil: 'Mga Batayan ng Machine Learning', zh: '机器学习基础' },
+    '02': { ar: 'التعلم العميق', en: 'Deep Learning', tr: 'Derin Öğrenme', ru: 'Глубокое обучение', es: 'Aprendizaje profundo', fil: 'Deep Learning', zh: '深度学习' },
+    '03': { ar: 'أدوات ومكتبات التدريب', en: 'Frameworks & Tooling', tr: 'Çerçeveler ve Araçlar', ru: 'Фреймворки и инструменты', es: 'Herramientas y bibliotecas de entrenamiento', fil: 'Mga Framework at Tooling', zh: '开发框架与工具链' },
+    '04': { ar: 'هندسة البيانات للذكاء الاصطناعي', en: 'Data Engineering for AI', tr: 'Yapay Zekâ İçin Veri Mühendisliği', ru: 'Инженерия данных для ИИ', es: 'Ingeniería de datos para IA', fil: 'Data Engineering para sa AI', zh: 'AI数据工程' },
+    '05': { ar: 'معمارية Transformer', en: 'Transformer Architecture', tr: 'Transformer Mimarisi', ru: 'Архитектура Transformer', es: 'Arquitectura Transformer', fil: 'Arkitektura ng Transformer', zh: 'Transformer 架构' },
+    '06': { ar: 'النماذج اللغوية الكبيرة', en: 'Large Language Models (LLMs)', tr: 'Büyük Dil Modelleri', ru: 'Большие языковые модели', es: 'Grandes modelos lingüísticos', fil: 'Malalaking Modelo ng Wika', zh: '大语言模型 (LLMs)' },
+    '07': { ar: 'أنظمة RAG المتطورة', en: 'Advanced RAG Systems', tr: 'Gelişmiş RAG Sistemleri', ru: 'Продвинутые RAG-системы', es: 'Sistemas RAG avanzados', fil: 'Mga Abanteng RAG System', zh: '先进 RAG 系统' },
+    '08': { ar: 'الوكلاء الأذكياء والأنظمة الفرعية', en: 'AI Agents & Sub-agents', tr: 'Yapay Zekâ Ajanları ve Alt Ajanlar', ru: 'ИИ-агенты и подагенты', es: 'Agentes de IA y subagentes', fil: 'Mga AI Agent at Sub-agent', zh: 'AI 智能体与子智能体系统' },
+    '09': { ar: 'تحسين الاستدلال والتشغيل', en: 'Inference Optimization', tr: 'Çıkarım Optimizasyonu', ru: 'Оптимизация инференса', es: 'Optimización de inferencia', fil: 'Pag-optimize ng Inference', zh: '推理与部署优化' },
+    '10': { ar: 'الاختبارات المعيارية والقياس', en: 'Benchmarking & Standards', tr: 'Kıyaslama ve Standartlar', ru: 'Бенчмарки и стандарты', es: 'Puntos de referencia y estándares', fil: 'Benchmarking at Pamantayan', zh: '基准测试与评估标准' },
+    '11': { ar: 'تقييم واختبار أنظمة LLM', en: 'Advanced LLM Evaluation', tr: 'İleri LLM Değerlendirmesi', ru: 'Продвинутая оценка LLM', es: 'Evaluación avanzada de LLM', fil: 'Abanteng Pagsusuri ng LLM', zh: '大模型前沿评测体系' },
+    '12': { ar: 'الأمان والمحاذاة', en: 'Safety & Alignment', tr: 'Güvenlik ve Hizalama', ru: 'Безопасность и выравнивание', es: 'Seguridad y alineación', fil: 'Kaligtasan at Alignment', zh: '安全合规与价值观对齐' },
+    '13': { ar: 'قابلية التفسير والثقة', en: 'Interpretability & Trust', tr: 'Yorumlanabilirlik ve Güven', ru: 'Интерпретируемость и доверие', es: 'Interpretabilidad y confianza', fil: 'Interpretability at Tiwala', zh: '可解释性与模型置信度' },
+    '14': { ar: 'هندسة أنظمة الإنتاج', en: 'Production AI Systems & MLOps', tr: 'Üretim Sistemleri ve MLOps', ru: 'Продакшн-системы и MLOps', es: 'Sistemas de producción y MLOps', fil: 'Production AI at MLOps', zh: '生产级系统与 MLOps' },
+    '15': { ar: 'التطبيقات وبناء المنتجات', en: 'Applications & Building Products', tr: 'Uygulamalar ve Ürün Geliştirme', ru: 'Приложения и создание продуктов', es: 'Aplicaciones y desarrollo de productos', fil: 'Mga Aplikasyon at Produkto', zh: '应用落地与产品构建' },
+    '16': { ar: 'الموضوعات الحديثة والمتقدمة', en: 'Frontier & Advanced Topics', tr: 'Öncü ve İleri Konular', ru: 'Передовые и актуальные темы', es: 'Temas avanzados y de frontera', fil: 'Mga Abanteng Paksa', zh: '最前沿研究专题' },
+    '17': { ar: 'مهارات البحث العلمي', en: 'AI Research Skills', tr: 'Yapay Zekâ Araştırma Becerileri', ru: 'Навыки научных исследований', es: 'Habilidades de investigación en IA', fil: 'Kasanayan sa Pananaliksik', zh: '科研与前沿论文方法论' },
+    '18': { ar: 'الأخلاقيات والحوكمة والتنظيم', en: 'Ethics, Governance & Regulation', tr: 'Etik, Yönetişim ve Düzenleme', ru: 'Этика, регулирование и управление', es: 'Ética, gobernanza y regulación', fil: 'Etika, Pamamahala at Regulasyon', zh: '伦理准则、治理与监管' },
+    '19': { ar: 'إدارة منتجات الذكاء الاصطناعي', en: 'AI Product Management & Business', tr: 'Yapay Zekâ Ürün Yönetimi ve İş', ru: 'Управление AI-продуктами и бизнес', es: 'Gestión de productos de IA y negocio', fil: 'AI Product Management at Negosyo', zh: 'AI商业化与产品管理' },
+    '20': { ar: 'الرؤية الحاسوبية', en: 'Computer Vision', tr: 'Bilgisayarlı Görü', ru: 'Компьютерное зрение', es: 'Visión por computadora', fil: 'Computer Vision', zh: '计算机视觉 (CV)' },
+    '21': { ar: 'الذكاء الصوتي', en: 'Speech AI', tr: 'Ses Yapay Zekâsı', ru: 'Речевой искусственный интеллект', es: 'IA de voz y habla', fil: 'Speech AI', zh: '语音智能 (Speech AI)' },
+    '22': { ar: 'التعلم المعزز المتقدم', en: 'Advanced Reinforcement Learning', tr: 'İleri Pekiştirmeli Öğrenme', ru: 'Продвинутое обучение с подкреплением', es: 'Aprendizaje por refuerzo avanzado', fil: 'Abanteng Reinforcement Learning', zh: '前沿强化学习 (Advanced RL)' }
+  }
+};
+
+/* ------------------------------------------------------------------
+   Complete AI Atlas Theoretical Dataset (Arabic & English Descriptions)
+   ------------------------------------------------------------------ */
+var STAGES = [
+  {
+    id: 's1', n: '01', t: 'الأساسيات', en: 'FUNDAMENTALS', ent: 'lattice',
+    d: 'حجر الأساس لكل ما بُني في الذكاء الاصطناعي. لغة الرياضيات التي تُكتب بها الخوارزميات، وقواعد تعلم الآلة، وبنية الشبكات العصبية العميقة، وصولاً إلى أدوات وهندسة البيانات.',
+    d_en: 'The core foundations of artificial intelligence: the mathematical language of neural computation, classical machine learning paradigms, deep neural layers, and modern data engineering pipelines.',
+    pkgs: [
+      {
+        id: '00', t: 'الأساسيات الرياضية', en: 'MATHEMATICAL FOUNDATIONS',
+        desc: 'حجر الأساس لفهم كيفية عمل الخوارزميات من الداخل، وبدونها يستحيل فهم أوراق البحث العلمي أو استيعاب تدريب النماذج.',
+        desc_en: 'The mathematical bedrock for understanding algorithm mechanics, vector calculus, statistical inference, and gradient optimization.',
+        terms: [
+          { ar: 'الجبر الخطي', en: 'Linear Algebra', d: 'دراسة المتجهات والمصفوفات والعمليات الحسابية المطبقة عليها، وهو الأساس المباشر لتخزين البيانات ومعالجتها داخل طبقات الشبكات العصبية.', d_en: 'Study of vectors, matrices, and linear transformations; fundamental to data representation, tensor algebra, and neural activations.', tags: ['Vectors', 'Matrices', 'Tensors'] },
+          { ar: 'حساب التفاضل والتكامل', en: 'Calculus', d: 'دراسة معدلات التغير والمشتقات الجزئية، ويُستخدم بشكل رئيسي في حساب التدرجات لتحديث أوزان النموذج بدقة.', d_en: 'Study of continuous rates of change and partial derivatives, driving backpropagation and gradient descent parameter updates.', tags: ['Derivatives', 'Gradients', 'Chain Rule'] },
+          { ar: 'نظرية الاحتمالات', en: 'Probability', d: 'دراسة توزيعات البيانات وفرص حدوث الأحداث، وتُعد جوهرية في نماذج التوليد وفهم وتكميم عدم اليقين.', d_en: 'Study of random variables and event likelihoods, essential for generative modeling, Bayesian inference, and quantifying predictive uncertainty.', tags: ['Distributions', 'Bayes', 'Uncertainty'] },
+          { ar: 'علم الإحصاء', en: 'Statistics', d: 'تحليل البيانات واستخلاص المؤشرات منها، وفهم المتوسطات والانحراف المعياري والتباين والتوزيعات الإحصائية.', d_en: 'Methods for data analysis, estimating parameters, understanding variance, distributions, and hypothesis testing.', tags: ['Mean', 'Variance', 'Hypothesis Testing'] },
+          { ar: 'خوارزميات التحسين', en: 'Optimization', d: 'إيجاد أفضل الحلول الرياضية الممكنة بأقل معدل خطأ من بين مجموعة واسعة من الخيارات.', d_en: 'Mathematical techniques for discovering optimal model parameters that minimize loss functions under operational constraints.', tags: ['Loss Minimization', 'Convex Optimization'] },
+          { ar: 'النزول التدريجي', en: 'Gradient Descent', d: 'الخوارزمية الرياضية التي تتحرك خطوة بخطوة نحو أدنى نقطة في دالة الخطأ لتحسين أداء النموذج واستقراره.', d_en: 'Iterative optimization algorithm stepping along the negative gradient vector to minimize prediction error and converge on weights.', tags: ['Convergence', 'Step Size'] }
+        ]
+      },
+      {
+        id: '01', t: 'أساسيات تعلم الآلة', en: 'MACHINE LEARNING FOUNDATIONS',
+        desc: 'المنهجية التي تمكّن الحواسيب من استخلاص الأنماط والتعلم الذاتي من البيانات دون الحاجة لبرمجة صريحة لكل خطوة.',
+        desc_en: 'Core concepts enabling machines to discover predictive patterns directly from historical datasets without manual rule programming.',
+        terms: [
+          { ar: 'الذكاء الاصطناعي', en: 'Artificial Intelligence', d: 'المجال الشامل الذي يسعى لمحاكاة القدرات المعرفية والاستنتاج البشري داخل الأنظمة الحاسوبية.', d_en: 'The broad scientific domain focused on engineering computational systems that emulate human reasoning, perception, and problem-solving.' },
+          { ar: 'تعلم الآلة', en: 'Machine Learning', d: 'فرع تطبيقي يتيح للبرمجيات تحسين دقتها تلقائياً عبر مراكمة الخبرة من البيانات المدخلة.', d_en: 'Subfield of AI giving computational models the ability to iteratively improve performance on tasks through data experience.' },
+          { ar: 'التعلم الموجه', en: 'Supervised Learning', d: 'تدريب النموذج على أمثلة تحتوي على المدخلات الحقيقية والمخرجات الصحيحة المعتمدة سلفاً.', d_en: 'Training paradigm where models learn mapping functions from input features to verified target ground-truth labels.' },
+          { ar: 'التعلم غير الموجه', en: 'Unsupervised Learning', d: 'تدريب النموذج على بيانات مجردة دون إجابات مسبقة لاكتشاف التجمعات والعلاقات البينية الخفية.', d_en: 'Discovering hidden structures, clusters, and latent representations within unannotated datasets without predefined labels.' },
+          { ar: 'التعلم المعزز', en: 'Reinforcement Learning', d: 'تعليم النموذج عبر التجربة والخطأ والتفاعل المستمر لنيل مكافآت مقابل القرارات الصائبة.', d_en: 'Goal-directed learning where autonomous agents take actions in an environment to maximize cumulative scalar reward signals.' },
+          { ar: 'مجموعة البيانات', en: 'Dataset', d: 'الحزمة الكاملة من البيانات الرقمية الخام المستخدمة لتعليم واختبار النماذج الخوارزمية.', d_en: 'Curated collection of structured or unstructured data instances utilized to train, validate, and test machine learning models.' },
+          { ar: 'الميزات والمتغيرات', en: 'Features', d: 'الخصائص المحددة المستخلصة من البيانات والتي يعتمد عليها النموذج لبناء توقعاته.', d_en: 'Individual measurable variables and predictive attributes extracted from raw data inputs to inform model decisions.' },
+          { ar: 'التصنيفات والمخرجات', en: 'Labels', d: 'الإجابات المرجعية الصحيحة التي يسعى النموذج للوصول إليها بدقة.', d_en: 'Ground-truth target annotations or classifications that supervised models are trained to accurately forecast.' },
+          { ar: 'مجموعة التدريب', en: 'Training Set', d: 'الحصة الكبرى من البيانات المخصصة لضبط معاملات وأوزان النموذج أثناء البناء.', d_en: 'The primary partition of a dataset directly utilized by the learning algorithm to calibrate and update internal parameters.' },
+          { ar: 'مجموعة التحقق', en: 'Validation Set', d: 'بيانات مستقلة تُستخدم لمراقبة جودة التعلم وضبط المعاملات الفائقة وتفادي الانحراف.', d_en: 'Independent dataset partition used during training iterations to tune hyperparameters and detect early signs of overfitting.' },
+          { ar: 'مجموعة الاختبار', en: 'Test Set', d: 'بيانات محايدة ومحجوبة تماماً لم يرها النموذج، تُستخدم لتقييم كفاءته النهائية بموضوعية.', d_en: 'Unseen evaluation partition completely held out during development to provide an unbiased assessment of final model performance.' },
+          { ar: 'دالة الخسارة', en: 'Loss Function', d: 'معادلة رياضية تقيس الفارق والخطأ بين ما توقعه النموذج والنتيجة الواقعية لحالة واحدة.', d_en: 'Mathematical function measuring the discrepancy between a model prediction and the true ground-truth for an individual sample.' },
+          { ar: 'دالة التكلفة', en: 'Cost Function', d: 'متوسط إجمالي الخسائر المحسوبة على امتداد مجموعة البيانات بأكملها.', d_en: 'Aggregated error metric computing the average loss incurred across an entire batch or dataset.' },
+          { ar: 'معدل التعلم', en: 'Learning Rate', d: 'مقياس يحدد مقدار التغيير الذي يطرأ على الأوزان في كل خطوة تحديث، وتوازنه ضروري للنجاح.', d_en: 'Hyperparameter determining the magnitude of parameter updates along the gradient vector during optimization steps.' },
+          { ar: 'التجهيز الزائد والحفظ', en: 'Overfitting', d: 'حفظ النموذج لأمثلة التدريب بدقة متطرفة تجعله يفشل تماماً عند مواجهة بيانات جديدة.', d_en: 'Failure state where a model memorizes noise and specific training artifacts, impairing its ability to generalize to new inputs.' },
+          { ar: 'التجهيز الناقص', en: 'Underfitting', d: 'بساطة النموذج المفرطة التي تمنعه حتى من استيعاب العلاقات الأساسية في بيانات تدريبه.', d_en: 'Condition where a model is too simplistic to capture the foundational patterns and relationships present in the training data.' },
+          { ar: 'التحيز الخوارزمي', en: 'Bias', d: 'الخطأ الناتج عن تبسيطات وافتراضات مبدئية غير واقعية في خوارزمية التعلم.', d_en: 'Systematic error stemming from overly rigid assumptions in the learning algorithm, frequently causing underfitting.' },
+          { ar: 'التباين والتقلب', en: 'Variance', d: 'حساسية النموذج الشديدة للتقلبات والشوائب العشوائية في بيانات التدريب.', d_en: 'Sensitivity of model predictions to random noise and idiosyncrasies in the training set, frequently causing overfitting.' },
+          { ar: 'تقنيات التنظيم', en: 'Regularization', d: 'تدابير رياضية تفرض قيوداً على تعقيد النموذج لمنع الحفظ الأعمى وتشجيع التعميم.', d_en: 'Mathematical penalties (L1/L2, dropout) introduced during optimization to constrain complexity and prevent memorization.' },
+          { ar: 'التحقق المتقاطع', en: 'Cross Validation', d: 'تدوير تدريب واختبار النموذج على أجزاء مختلفة من البيانات للتأكد من نزاهة النتائج.', d_en: 'Statistical resampling technique iteratively partitioning data into training and validation folds to ensure robust evaluation.' },
+          { ar: 'هندسة الميزات', en: 'Feature Engineering', d: 'تحويل وصياغة البيانات الخام إلى أشكال دلالية أكثر فائدة للخوارزميات.', d_en: 'The art and science of transforming raw variables into informative representations that maximize algorithm efficacy.' },
+          { ar: 'تعميم النموذج', en: 'Model Generalization', d: 'القدرة الحقيقية للنموذج على الحفاظ على دقته العالية أمام مواقف وبيانات لم يعهدها.', d_en: 'The fundamental benchmark of an AI system: maintaining high accuracy and reliability when confronted with novel, unseen data.' }
+        ]
+      },
+      {
+        id: '02', t: 'التعلم العميق', en: 'DEEP LEARNING',
+        desc: 'الانتقال من الخوارزميات الإحصائية البسيطة إلى معمارية الشبكات العصبية الاصطناعية العميقة التي تعالج التمثيلات المعقدة.',
+        desc_en: 'Multi-layered neural architectures capable of automatically learning hierarchical representations from high-dimensional data.',
+        terms: [
+          { ar: 'الشبكات العصبية الاصطناعية', en: 'Artificial Neural Networks', d: 'بنية حاسوبية تتألف من عقد مترابطة تحاكي الخلايا العصبية الحيوية وتنتظم في طبقات.', d_en: 'Computational graphs of interconnected nodes inspired by biological neurons, organized in sequential processing layers.' },
+          { ar: 'المستشعر الفردي', en: 'Perceptron', d: 'الوحدة البنائية الأبسط في الشبكة؛ تجمع المدخلات الموزونة وتمررها عبر دالة تنشيط.', d_en: 'The foundational building block of neural networks: computes a linear combination of inputs followed by an activation threshold.' },
+          { ar: 'المستشعر متعدد الطبقات', en: 'Multi-Layer Perceptron', d: 'شبكة عصبية تضم طبقة مدخلات وطبقة مخرجات وبينهما طبقة خفية أو أكثر لحل المسائل اللاخطية.', d_en: 'Deep feedforward network featuring hidden layers, capable of modeling arbitrary complex non-linear functions.' },
+          { ar: 'الانتشار الأمامي', en: 'Forward Propagation', d: 'تدفق الإشارات والبيانات من طبقة المدخلات عبر العقد وصولاً لإنتاج التوقع النهائي.', d_en: 'The sequential flow of input data through network layers and activations to calculate the final model output.' },
+          { ar: 'الانتشار الخلفي', en: 'Backpropagation', d: 'حساب مشتقات الخطأ بالتراجع العكسي من المخرجات إلى المدخلات لضبط الأوزان بدقة.', d_en: 'Efficient backward algorithmic pass computing loss gradients with respect to each parameter using the chain rule.' },
+          { ar: 'دوال التنشيط', en: 'Activation Functions', d: 'معادلات تضفي اللاخطية على الشبكة، مما يتيح لها استيعاب الدوال والأنماط بالغة التعقيد.', d_en: 'Mathematical non-linear transformations applied to neuron sums, allowing neural networks to learn non-linear patterns.' },
+          { ar: 'دالة ريلو', en: 'ReLU', d: 'الدالة الأكثر استخداماً؛ تبقي على القيم الموجبة وتحول كل قيمة سالبة إلى صفر لتسريع الحسابات.', d_en: 'Rectified Linear Unit; returns max(0, x), preventing vanishing gradients and facilitating computational speed.' },
+          { ar: 'دالة سيجمويد', en: 'Sigmoid', d: 'تحول المخرجات إلى نطاق احتمالي بين صفر وواحد وتناسب مهام التصنيف الثنائي.', d_en: 'S-curve function mapping real inputs into the [0, 1] range, standard for binary classification output probabilities.' },
+          { ar: 'دالة الظل الزائدي', en: 'Tanh', d: 'تحول القيم إلى نطاق ممتد بين سالب واحد وموجب واحد وتتمركز حول الصفر.', d_en: 'Hyperbolic tangent function mapping inputs to [-1, 1], offering zero-centered outputs to balance gradient descent.' },
+          { ar: 'دالة غيلو', en: 'GELU', d: 'دالة تنشيط ناعمة تعتمد على التوزيع الطبيعي وتستخدم على نطاق واسع في محولات اللغة الحديثة.', d_en: 'Gaussian Error Linear Unit; probabilistic activation function standard in modern transformer architectures like BERT and GPT.' },
+          { ar: 'تطبيع الدفعات', en: 'Batch Normalization', d: 'إعادة موازنة مخرجات كل طبقة لتقليل التشتت وتسريع استقرار التدريب في الشبكات العميقة.', d_en: 'Technique normalizing mini-batch activations to stabilize training, mitigate internal covariate shift, and accelerate convergence.' }
+        ]
+      },
+      {
+        id: '03', t: 'أدوات ومكتبات التدريب', en: 'FRAMEWORKS & TOOLING',
+        desc: 'المنظومة البرمجية والأدوات التي يعتمد عليها المطورون والباحثون لبناء وضبط وتدريب النماذج على مستوى الإنتاج.',
+        desc_en: 'The production-grade software ecosystems and frameworks utilized to construct, distribute, and fine-tune large foundation models.',
+        terms: [
+          { ar: 'إطار بايتورش', en: 'PyTorch', d: 'إطار العمل الأكثر انتشاراً عالمياً في الأبحاث والتطوير، يتميز بمرونته ودعمه للرسم الحسابي الديناميكي.', d_en: 'The industry and academic gold standard deep learning library, famous for dynamic computation graphs and seamless GPU execution.' },
+          { ar: 'إطار تنسرفلو', en: 'TensorFlow', d: 'منصة متكاملة وقوية من جوجل مجهزة لنشر النماذج وتشغيلها بكفاءة في بيئات العمل الضخمة.', d_en: 'Comprehensive machine learning ecosystem engineered by Google for scalable production deployment and cross-platform serving.' },
+          { ar: 'مكتبة جاكس', en: 'JAX', d: 'إطار عالي السرعة من جوجل يعتمد على التفاضل التلقائي والتحويلات الرياضية الفائقة على المعالجات المتوازية.', d_en: 'Google high-performance library combining automatic differentiation and XLA hardware compilation for accelerated research.' },
+          { ar: 'مكتبة المحولات', en: 'Hugging Face Transformers', d: 'المستودع البرمجي القياسي العالمي للوصول إلى آلاف النماذج اللغوية المدربة وتطبيقها فوراً.', d_en: 'Reference open-source library granting instant access to thousands of pre-trained state-of-the-art foundation models.' },
+          { ar: 'مستودع النماذج والبيانات', en: 'Hugging Face Hub', d: 'المنصة العالمية الرائدة لتبادل ومشاركة النماذج ومجموعات البيانات والتقييمات.', d_en: 'Centralized collaborative platform for sharing model checkpoints, research datasets, and interactive machine learning spaces.' },
+          { ar: 'الضبط الفعال للمعاملات', en: 'PEFT', d: 'حزمة تقنيات لتخصيص النماذج العملاقة بتدريب نسبة ضئيلة جداً من الأوزان لتوفير الذاكرة.', d_en: 'Parameter-Efficient Fine-Tuning; suite of methodologies updating small parameter fractions to customize giant LLMs with minimal VRAM.' },
+          { ar: 'التكييف منخفض الرتبة', en: 'LoRA', d: 'تقنية شهيرة تجمّد أوزان النموذج الأصلي وتدرّب مصفوفات إضافية صغيرة بجانبه توفيراً للعتاد.', d_en: 'Low-Rank Adaptation; freezes base model weights and trains low-rank decomposition matrices, saving GPU memory by up to 80%.' },
+          { ar: 'تقنية كيو لورا', en: 'QLoRA', d: 'دمج تقنية التكييف منخفض الرتبة مع التكميم الرقمي الرباعي لتمكين التدريب على حواسيب شخصية.', d_en: 'Combines 4-bit NormalFloat quantization with LoRA, enabling fine-tuning of 70B parameter models on consumer-grade hardware.' },
+          { ar: 'دمج النماذج', en: 'Model Merging', d: 'دمج أوزان نموذجين مدربين أو أكثر في نموذج واحد لتوحيد مهاراتهم دون تكاليف تدريب جديدة.', d_en: 'Techniques merging the parameter matrices of distinct fine-tuned models into a unified checkpoint without compute overhead.' },
+          { ar: 'مكتبة أكسيليريت', en: 'Accelerate', d: 'أداة من هاجينج فيس لتوزيع التدريب على عدة معالجات رسومية دون تعقيدات برمجية.', d_en: 'Hugging Face utility simplifying distributed multi-GPU and mixed-precision execution with minimal code modifications.' },
+          { ar: 'منظومة ديب سبيد', en: 'DeepSpeed', d: 'مكتبة متطورة من مايكروسوفت لضغط الذاكرة ومضاعفة سرعة تدريب وتشغيل النماذج الفائقة.', d_en: 'Microsoft distributed optimization engine implementing ZeRO memory stages to train multi-hundred-billion parameter models.' },
+          { ar: 'التعلم المعزز للمحولات', en: 'TRL', d: 'أدوات برمجية متخصصة في توجيه وصقل النماذج عبر تقنيات التعلم المعزز بالتغذية الراجعة.', d_en: 'Transformer Reinforcement Learning; library streamlining post-training alignment through RLHF, DPO, and PPO methodologies.' },
+          { ar: 'تتبع التجارب والمراقبة', en: 'Weights & Biases', d: 'منصة لمراقبة منحنيات الخسارة، تسجيل التجارب المتكررة، والمقارنة الدقيقة بين النماذج.', d_en: 'Enterprise MLOps tool for real-time loss tracking, hyperparameter sweep optimization, and dataset version lineage.' }
+        ]
+      },
+      {
+        id: '04', t: 'هندسة البيانات للذكاء الاصطناعي', en: 'DATA ENGINEERING FOR AI',
+        desc: 'البيانات هي الوقود الحقيقي لكل نظام ذكي؛ تشمل جمعها وتنظيفها وإدارتها وتجهيزها بأعلى معايير الجودة.',
+        desc_en: 'The foundational pipelines and architectures governing data collection, cleaning, feature management, and quality control.',
+        terms: [
+          { ar: 'جمع البيانات وتغذيتها', en: 'Data Collection', d: 'استخلاص البيانات النصية والبصرية من مصادرها المتعددة كالمواقع وقواعد البيانات والملفات.', d_en: 'Systematic acquisition of raw corpora, documents, and multimedia across web scraping, APIs, and enterprise lakes.' },
+          { ar: 'تنظيف وتطهير البيانات', en: 'Data Cleaning', d: 'استبعاد الشوائب والأخطاء والقيم الشاذة والمكررة لضمان تدريب النموذج على معرفة نقية.', d_en: 'Filtering out noise, deduplicating records, addressing null values, and parsing malformed entries to ensure data integrity.' },
+          { ar: 'تصنيف البيانات والوسم', en: 'Data Labeling & Annotation', d: 'وضع علامات مرجعية دقيقة على العينات كتعريف محتويات الصور أو تصنيف النصوص.', d_en: 'Supervised enrichment annotating raw assets with verified target classifications, tags, or bounding boxes.' },
+          { ar: 'زيادة البيانات اصطناعياً', en: 'Data Augmentation', d: 'توليد عينات جديدة عبر تدوير الصور أو تبديل الكلمات لزيادة تنوع وحجم التدريب.', d_en: 'Programmatic expansion of training diversity by creating semantic variations, flips, crops, and synonym replacements.' },
+          { ar: 'التعلم النشط', en: 'Active Learning', d: 'جعل النموذج يحدد بنفسه العينات الأكثر غموضاً وحيرة ليطلب من الإنسان تصنيفها يدوياً.', d_en: 'Iterative strategy where the model queries human experts specifically on the lowest-confidence data points to maximize label ROI.' },
+          { ar: 'الإشراف الضعيف', en: 'Weak Supervision', d: 'استخدام دوال برمجية وقواعد تلقائية لوسم ملايين البيانات غير المصنفة بسرعة.', d_en: 'Labeling massive datasets programmatically through heuristics, pattern rules, and auxiliary models via systems like Snorkel.' },
+          { ar: 'الذكاء المتمركز حول البيانات', en: 'Data-Centric AI', d: 'التركيز على تحسين جودة ونقاء البيانات بدلاً من الانشغال المستمر بتعديل بنية النموذج.', d_en: 'Engineering philosophy emphasizing continuous enhancement of data fidelity rather than tweaking algorithmic architectures.' },
+          { ar: 'خطوط أنابيب البيانات', en: 'Data Pipelines (ETL/ELT)', d: 'بناء مسارات آلية وموثوقة لاستخراج البيانات وتحويلها وتغذيتها إلى مخازن التدريب.', d_en: 'Automated workflows Extracting, Transforming, and Loading raw data streams into high-throughput storage systems.' },
+          { ar: 'تتبع إصدارات البيانات', en: 'Data Versioning', d: 'أرشفة وتتبع كل تعديل يطرأ على البيانات لضمان إمكانية إعادة تكرار التجارب العلمية بدقة.', d_en: 'Git-like version tracking for training datasets (DVC, lakeFS), ensuring full reproducibility across training iterations.' },
+          { ar: 'مستودع الميزات المركزية', en: 'Feature Store', d: 'مستودع مشترك يتيح حفظ الميزات المحسوبة واسترجاعها بسرعة بين فرق التدريب والإنتاج.', d_en: 'Centralized repository providing low-latency feature serving, consistency between training/inference, and team sharing.' },
+          { ar: 'أنابيب التدفق اللحظية', en: 'Streaming Pipelines', d: 'معالجة وتجهيز البيانات لحظة تدفقها في الوقت الفعلي لدعم النماذج الحية.', d_en: 'Real-time event streaming architectures (Kafka, Flink) processing continuous data streams with sub-second latency.' },
+          { ar: 'توليد البيانات الاصطناعية', en: 'Synthetic Data Generation', d: 'استخدام الذكاء الاصطناعي لإنشاء بيانات واقعية جديدة كلياً لتعويض نقص البيانات وحماية الخصوصية.', d_en: 'Generating high-fidelity artificial data using generative models to bridge data scarcity and protect sensitive privacy.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's2', n: '02', t: 'النماذج اللغوية', en: 'LARGE LANGUAGE MODELS', ent: 'attention',
+    d: 'ثورة العصر: من معمارية Transformer وآليات الانتباه الذاتي إلى تدريب وضبط النماذج اللغوية العملاقة، وبناء الوكلاء الأذكياء، وتحسين سرعة الاستدلال.',
+    d_en: 'The core architecture driving the generative revolution: Transformer self-attention, pretraining foundation models, autonomous agent frameworks, and inference acceleration.',
+    pkgs: [
+      {
+        id: '05', t: 'معمارية Transformer', en: 'TRANSFORMER ARCHITECTURE',
+        desc: 'المعمارية الثورية القائمة على الانتباه الذاتي التي أزاحت الشبكات التكرارية وصنعت طفرة الذكاء الاصطناعي التوليدي.',
+        desc_en: 'The revolutionary self-attention architecture that displaced recurrent neural networks and enabled modern generative AI.',
+        terms: [
+          { ar: 'التقطيع والترميز', en: 'Tokenization', d: 'تقسيم النصوص الكاملة إلى وحدات صلبة أصغر (كلمات أو مقاطع) لتتمكن النماذج من قراءتها.', d_en: 'The process of parsing raw character strings into discrete token IDs understandable by transformer architectures.' },
+          { ar: 'الوحدات الدلالية', en: 'Tokens', d: 'القطع الناتجة عن عملية التقطيع، وتمثل اللبنة الأساسية للنصوص داخل النموذج.', d_en: 'Atomic subwords, characters, or words representing the elementary units processed and generated by language models.' },
+          { ar: 'قاموس الرموز', en: 'Vocabulary', d: 'الفهرس الثابت الذي يحتوي على جميع الوحدات اللغوية الممكنة التي يفهمها وينتجها النموذج.', d_en: 'The complete fixed dictionary of permissible tokens indexed with unique integer IDs within a given tokenizer.' },
+          { ar: 'خوارزمية بي بي إي', en: 'BPE', d: 'خوارزمية شائعة تقوم بدمج أزواج الحروف والمقاطع الأكثر تكراراً لبناء القاموس بكفاءة.', d_en: 'Byte-Pair Encoding; iterative subword compression algorithm merging frequent character pairs to form optimal tokens.' },
+          { ar: 'خوارزمية وورد بيس', en: 'WordPiece', d: 'خوارزمية تقطيع لغوي مشابهة تعتمد على احتمالات ظهور الكلمات، واشتهرت في نماذج BERT.', d_en: 'Subword tokenization method used by BERT, optimizing token choices based on language model maximum likelihood.' },
+          { ar: 'خوارزمية سينتنس بيس', en: 'SentencePiece', d: 'نظام تقطيع متطور يتعامل مع النص كتدفق نقي من البايتات دون الاعتماد على المسافات.', d_en: 'Language-agnostic tokenizer treating text as raw byte sequences, natively supporting unspaced multilingual scripts.' },
+          { ar: 'تدريب المقطع اللغوي', en: 'Tokenizer Training', d: 'تحليل نصوص ضخمة لحساب تردد المقاطع وتكوين القاموس الأمثل لتخصص النموذج.', d_en: 'The unsupervised pre-computation pass that constructs a vocabulary and merge tables from a representative text corpus.' },
+          { ar: 'متجهات التضمين الدلالي', en: 'Embeddings', d: 'تحويل الرموز المقطعة إلى متجهات رياضية رقمية عالية الأبعاد تعكس المعنى الحقيقي.', d_en: 'High-dimensional continuous vector mappings where geometric distance directly captures contextual semantic meaning.' },
+          { ar: 'الترميز الموضعي', en: 'Positional Encoding', d: 'إضافة معلومات رياضية لمصفوفة المدخلات توضح ترتيب الكلمات داخل الجملة.', d_en: 'Injected mathematical vectors that provide sequence order awareness to permutation-invariant self-attention layers.' },
+          { ar: 'الترميز الموضعي الدوار', en: 'RoPE', d: 'تقنية حديثة تشفر المواقع بتدوير المتجهات وتستخدم في كبرى النماذج مثل Llama.', d_en: 'Rotary Position Embeddings; encodes token positions through rotation in vector space, dominating models like Llama.' },
+          { ar: 'ترميز أليبي', en: 'ALiBi', d: 'طريقة لترميز المواقع تفرض عقوبة تتناسب خطياً مع بعد الكلمات لتسهيل قراءة نصوص أطول.', d_en: 'Attention with Linear Biases; imposes distance penalties directly on attention scores, enabling long-context extrapolation.' },
+          { ar: 'آلية الانتباه', en: 'Attention Mechanism', d: 'القدرة على توجيه تركيز النموذج لربط كل كلمة ببقية الكلمات الأكثر ارتباطاً بها في المعنى.', d_en: 'Mathematical mechanism dynamically computing weighted relevance scores between tokens in a context sequence.' },
+          { ar: 'الانتباه الذاتي', en: 'Self-Attention', d: 'حساب ارتباط وانتباه الكلمات لبعضها البعض داخل نفس الجملة الواحدة.', d_en: 'Computing attention weights between all token pairs within the same sequence to capture intra-text dependencies.' },
+          { ar: 'الانتباه التبادلي', en: 'Cross-Attention', d: 'حساب الانتباه بين تسلسلين مختلفين (مثل ربط جملة الإدخال بجملة الترجمة).', d_en: 'Attention computed where queries come from one sequence and keys/values originate from another, standard in translation.' },
+          { ar: 'الانتباه متعدد الرؤوس', en: 'Multi-Head Attention', d: 'تقسيم عملية الانتباه إلى عدة مسارات متوازية ليلتقط كل رأس زاوية لغوية مختلفة.', d_en: 'Running attention projections multiple times in parallel, capturing multifaceted syntactic and semantic relationships.' },
+          { ar: 'الانتباه السببي الموجه', en: 'Causal Attention', d: 'حجب الكلمات المستقبلية وإجبار النموذج على النظر للكلمات السابقة فقط أثناء التوليد.', d_en: 'Masked attention variant preventing tokens from attending to subsequent tokens, required for autoregressive LLMs.' },
+          { ar: 'حجب الكلمات', en: 'Masking', d: 'إخفاء كلمات معينة في التدريب لاختبار قدرة النموذج على تخمينها أو لمنع الغش المستقبلي.', d_en: 'Deliberately setting attention matrix entries to negative infinity to hide future tokens or train masked language models.' },
+          { ar: 'شبكات التغذية الأمامية', en: 'Feed Forward Network', d: 'طبقة عصبية مدمجة داخل كل كتلة محول تعالج وتدمج المعلومات بعد مرحلة الانتباه.', d_en: 'Position-wise multi-layer perceptron inside each transformer block applying non-linear transformations to each token.' },
+          { ar: 'الاتصالات المتبقية والتخطي', en: 'Residual Connections', d: 'مسارات التفافية تنقل إشارة المدخلات مباشرة للمخرجات لمنع تلاشي التدرجات العصبية.', d_en: 'Skip-connections adding block inputs directly to block outputs, preventing vanishing gradients in deep architectures.' },
+          { ar: 'تطبيع الطبقات', en: 'Layer Normalization', d: 'إعادة ضبط تباين مخرجات العقد داخل الطبقة الواحدة لتثبيت سرعة التدريب.', d_en: 'Normalization technique standardizing activations across the hidden features of each individual token independently.' },
+          { ar: 'المشفّر والمستوعب', en: 'Encoder', d: 'النصف المسؤول عن قراءة النص وفهم سياقه بالكامل (مثل نماذج BERT).', d_en: 'Transformer sub-structure dedicated to reading input text bidirectionally to produce rich contextual representations.' },
+          { ar: 'المولّد المفكك', en: 'Decoder', d: 'النصف المسؤول عن توليد النصوص كلمة بعد كلمة بناء على ما فهمه (مثل نماذج GPT).', d_en: 'Autoregressive transformer sub-structure generating output tokens sequentially conditioned on prior tokens.' },
+          { ar: 'الهيكل الكامل للمحول', en: 'Transformer Architecture', d: 'التصميم الهندسي المتكامل الذي يجمع كل هذه الطبقات في نسق عالي الكفاءة.', d_en: 'The complete unified blueprint integrating attention, normalization, and feedforward blocks into foundation models.' }
+        ]
+      },
+      {
+        id: '06', t: 'النماذج اللغوية الكبيرة', en: 'LARGE LANGUAGE MODELS (LLMs)',
+        desc: 'كيف تُبنى وتُدرب أضخم العقول الاصطناعية على مليارات المعاملات، وقوانين التوسع، وضبط السلوك التوليدي.',
+        desc_en: 'Pretraining, aligning, scaling, and sampling multi-billion parameter foundation models across massive compute clusters.',
+        terms: [
+          { ar: 'نماذج الأساس', en: 'Foundation Models', d: 'نماذج عملاقة دُربت على كميات هائلة من المعرفة وتعمل كمنصة لآلاف التطبيقات.', d_en: 'Broadly trained massive models serving as versatile common foundations adaptable to diverse downstream applications.' },
+          { ar: 'التدريب التأسيسي المسبق', en: 'Pre-training', d: 'مرحلة التدريب الأولى التي تبتلع تريليونات الكلمات ليتعلم النموذج بنية اللغة والعالم.', d_en: 'Unsupervised initial training stage processing trillions of tokens to internalize syntax, semantics, and world facts.' },
+          { ar: 'الضبط والتخصيص الدقيق', en: 'Fine-tuning', d: 'إعادة تدريب النموذج المسبق على بيانات متخصصة ليتقن مهمة أو مجال بعينه.', d_en: 'Secondary training pass adapting pre-trained weights to specialized domains or specific functional behaviors.' },
+          { ar: 'الضبط الموجه', en: 'SFT', d: 'تدريب النموذج على أمثلة دقيقة من نوع (سؤال ممتاز - جواب نموذجي) ليتعلم أسلوب المحادثة.', d_en: 'Supervised Fine-Tuning; training foundation models on curated instruction-response pairs to adhere to human prompts.' },
+          { ar: 'المحاذاة بالتغذية الراجعة', en: 'RLHF', d: 'استخدام تقييمات البشر لتدريب النموذج على أن يكون صادقاً، مفيداً، وغير ضار.', d_en: 'Reinforcement Learning from Human Feedback; aligning model outputs with human intent and ethical values via reward models.' },
+          { ar: 'التحسين المباشر للتفضيل', en: 'DPO', d: 'طريقة ثورية حديثة بديلة لـ RLHF تحاذي سلوك النموذج مباشرة بدون بناء نموذج مكافأة وسيط.', d_en: 'Direct Preference Optimization; mathematical formulation aligning models directly on pairwise preferences without a reward model.' },
+          { ar: 'ضبط الامتثال للأوامر', en: 'Instruction Tuning', d: 'صقل النموذج ليصبح بارعاً في فهم وتنفيذ الأوامر البشرية المعقدة في الحال.', d_en: 'Training models across diverse prompt-response tasks to ensure reliable zero-shot comprehension of user instructions.' },
+          { ar: 'التقطير المعرفي', en: 'Distillation', d: 'تدريب نموذج صغير ليتعلم ذكاء نموذج عملاق ليعمل بسرعة وتكلفة منخفضة.', d_en: 'Knowledge distillation; transferring behavioral competence from a giant teacher model into a compact, fast student model.' },
+          { ar: 'خليط الخبراء', en: 'Mixture of Experts', d: 'معمارية تقسم النموذج لعدة خبراء متخصصين وتفعل جزءاً صغيراً منهم فقط لكل كلمة لتوفير الحوسبة.', d_en: 'Architecture routing tokens dynamically to a subset of specialized expert layers, multiplying capacity while saving compute.' },
+          { ar: 'قوانين التوسع الحسابي', en: 'Scaling Laws', d: 'علاقات رياضية دقيقة تثبت كيف يزداد ذكاء النموذج مع زيادة حجم البيانات والمعاملات والحوسبة.', d_en: 'Empirical power-law formulations predicting performance leaps as parameter count, dataset volume, and compute increase.' },
+          { ar: 'القدرات المنبثقة', en: 'Emergent Abilities', d: 'مهارات مدهشة (مثل الاستنتاج المنطقي) تظهر فجأة عندما يتجاوز حجم النموذج حداً معيناً.', d_en: 'Advanced capabilities (reasoning, multi-step math) that appear abruptly in models only after exceeding critical scale thresholds.' },
+          { ar: 'توسيع نافذة السياق', en: 'Context Length Scaling', d: 'زيادة عدد الكلمات التي يستطيع النموذج تذكرها وقراءتها دفعة واحدة (تصل لملايين الكلمات).', d_en: 'Architectural innovations enabling models to ingest, process, and accurately recall entire books within a single prompt window.' },
+          { ar: 'عملية الاستدلال والتوليد', en: 'Inference', d: 'تشغيل النموذج المدرب للإجابة على المستخدم وتوليد مخرجات جديدة.', d_en: 'The runtime execution of a trained neural model to generate predictions, completions, or answers to live user queries.' },
+          { ar: 'فك الترميز والتوليد', en: 'Decoding', d: 'تحويل درجات الاحتمالات الرياضية التي ينتجها النموذج إلى كلمات بشرية مقروءة.', d_en: 'The algorithmic process translating raw output logits into sequential discrete language tokens.' },
+          { ar: 'معامل درجة الحرارة', en: 'Temperature', d: 'مؤشر يتحكم في مدى عشوائية النموذج؛ تقليله يعطي إجابات صارمة ودقيقة ورفعه يطلق الإبداع.', d_en: 'Hyperparameter scaling probability logits; lower values enforce deterministic logic, higher values foster creative diversity.' },
+          { ar: 'أخذ العينات توب كي', en: 'Top-k', d: 'حصر اختيار الكلمة التالية من بين أعلى عدد محدد (k) من الكلمات المرجحة فقط.', d_en: 'Filtering token candidates to the top-k highest probabilities, truncating low-probability hallucinations.' },
+          { ar: 'أخذ العينات توب بي', en: 'Top-p', d: 'اختيار الكلمات التالية من أصغر مجموعة يشكل مجموع احتمالاتها نسبة مئوية محددة (p).', d_en: 'Nucleus sampling; dynamically choosing from the minimal subset of tokens whose cumulative probability exceeds threshold p.' },
+          { ar: 'البحث الشعاعي', en: 'Beam Search', d: 'استكشاف عدة مسارات متوازية لتوليد الجملة لاختيار المسار الأكثر ترابطاً رياضياً.', d_en: 'Heuristic search tracking the top-B most probable sequence paths in parallel to identify global sequence optimums.' }
+        ]
+      },
+      {
+        id: '07', t: 'أنظمة RAG المتطورة', en: 'ADVANCED RAG SYSTEMS',
+        desc: 'دمج النماذج اللغوية مع قواعد البيانات ومصادر المعرفة الخارجية لإنتاج إجابات حية وموثقة بلا اختلاق.',
+        desc_en: 'Retrieval-Augmented Generation architectures grounding foundation models on external enterprise data without hallucinations.',
+        terms: [
+          { ar: 'استراتيجيات تقطيع المستندات', en: 'Chunking Strategies', d: 'تقسيم الملفات الطويلة إلى أجزاء دلالية متناسقة تضمن دقة البحث والاسترجاع.', d_en: 'Algorithmic splitting of long documents into semantic chunks optimized for vector similarity search and context budgets.' },
+          { ar: 'الاسترجاع الدلالي الكثيف', en: 'Dense Retrieval', d: 'البحث في المعاني والمفاهيم باستخدام متجهات التضمين بدلاً من مطابقة الكلمات الحرفية.', d_en: 'Semantic search indexing and retrieving document chunks based on high-dimensional vector proximity in embedding space.' },
+          { ar: 'البحث الهجين المدمج', en: 'Hybrid Search', d: 'الجمع الذكي بين البحث النصي الحرفي (BM25) والبحث الدلالي بالمتجهات لأعلى دقة استرجاع.', d_en: 'Fusing traditional keyword lexical search (BM25) with vector similarity embeddings to achieve maximum retrieval recall.' },
+          { ar: 'إعادة الترتيب العصبي', en: 'Re-ranking', d: 'استخدام نموذج مخصص لإعادة تقييم النتائج المسترجعة ووضع الأنسب منها في الصدارة.', d_en: 'Secondary neural cross-encoder pass re-scoring retrieved candidates to prioritize the most relevant chunks for the prompt.' },
+          { ar: 'الاسترجاع المعتمد على الرسوم البيانية', en: 'Graph RAG', d: 'ربط المعرفة في شبكة من العلاقات الكيانية لتمكين النموذج من الإجابة على الأسئلة المركبة.', d_en: 'Structuring documents into knowledge graph entity relationships, allowing models to answer complex multi-hop queries.' }
+        ]
+      },
+      {
+        id: '08', t: 'الوكلاء الأذكياء والأنظمة الفرعية', en: 'AI AGENTS & SUB-AGENTS',
+        desc: 'الانتقال من مجرد الإجابة على الأسئلة إلى أنظمة مستقلة تخطط، تستخدم الأدوات، وتتعاون لإنجاز مهام معقدة.',
+        desc_en: 'Autonomous systems using LLMs as cognitive engines to plan, reason, invoke external tools, and collaborate in multi-agent squads.',
+        terms: [
+          { ar: 'الوكلاء الأذكياء المستقلون', en: 'AI Agents', d: 'برمجيات تعتمد على عقل النموذج اللغوي لتقرر بنفسها خطوات العمل وتستخدم الأدوات لإنجاز أهدافها.', d_en: 'Autonomous software systems employing an LLM core to reason, plan, invoke APIs, and achieve complex goals.' },
+          { ar: 'الوكلاء الفرعيون المتخصصون', en: 'Sub-agents', d: 'وكلاء مصغرون متخصصون في مهام محددة (كالبحث أو الكود) يتلقون أوامرهم من وكيل رئيسي.', d_en: 'Specialized subordinate agents assigned discrete sub-tasks (search, coding, verification) by an orchestrator agent.' },
+          { ar: 'الأنظمة متعددة الوكلاء', en: 'Multi-Agent Systems', d: 'بيئة يتعاون فيها عدة وكلاء ويتحاورون فيما بينهم لحل معضلات برمجية أو هندسية كفريق عمل.', d_en: 'Ecosystems of collaborating or debating specialized agents coordinating via messaging to solve multifaceted workflows.' },
+          { ar: 'التنسيق واستخدام الأدوات', en: 'Orchestration & Tools', d: 'تزويد الوكيل بقدرات خارجية كالحاسبة والمتصفح وقواعد البيانات وإدارة تسلسل تنفيذها.', d_en: 'Frameworks granting agents real-world affordances (web browsers, shells, APIs) and governing execution logic.' },
+          { ar: 'أطر عمل بناء الوكلاء', en: 'Agent Frameworks', d: 'مكتبات حديثة متطورة مثل CrewAI وAutoGen وMetaGPT لبناء وإدارة فرق الوكلاء بسهولة.', d_en: 'Production libraries (CrewAI, AutoGen, MetaGPT, LangGraph) designed to architect, route, and supervise agent teams.' }
+        ]
+      },
+      {
+        id: '09', t: 'تحسين الاستدلال والتشغيل', en: 'INFERENCE OPTIMIZATION',
+        desc: 'التقنيات الهندسية التي تجعل النماذج اللغوية العملاقة تعمل بأقصى سرعة وأقل استهلاك للذاكرة وتكلفة السيرفرات.',
+        desc_en: 'Hardware and algorithmic acceleration techniques maximizing generation throughput, reducing latency, and slashing VRAM footprints.',
+        terms: [
+          { ar: 'تكميم الأوزان الرقمية', en: 'Model Quantization', d: 'ضغط أرقام أوزان النموذج من 16 بت إلى 8 أو 4 بت لتشغيل نماذج ضخمة على عتاد محدود.', d_en: 'Compressing weight precisions (FP16 down to INT8 or INT4) to dramatically reduce memory footprints with negligible loss.' },
+          { ar: 'إدارة ذاكرة المفاتيح والقيم', en: 'KV Cache Optimization', d: 'حفظ وتخزين حسابات الانتباه السابقة في الذاكرة لتجنب إعادة حسابها في كل كلمة جديدة.', d_en: 'Storing computed key-value tensors across generation steps (PagedAttention, vLLM) to eliminate redundant matrix math.' },
+          { ar: 'التوليد التخميني المتسارع', en: 'Speculative Decoding', d: 'استخدام نموذج مصغر سريع لاقتراح عدة كلمات ثم مراجعتها دفعة واحدة عبر النموذج الكبير لتسريع التوليد.', d_en: 'Drafting tokens using a fast auxiliary model and verifying them in parallel with the target LLM, accelerating generation.' },
+          { ar: 'تسريع الانتباه الومضي', en: 'FlashAttention', d: 'خوارزمية ذكية تعيد تنظيم حركة البيانات في ذاكرة كارت الشاشة لتسريع حسابات الانتباه أضعافاً.', d_en: 'Hardware-aware IO-tiled attention algorithm eliminating memory bottlenecks between GPU SRAM and HBM.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's3', n: '03', t: 'الاختبار والمحاذاة والشفافية', en: 'TESTING, ALIGNMENT & TRUST', ent: 'engine',
+    d: 'كيف نثق في الذكاء الاصطناعي ونحميه من الاختراق والهلوسة، ونجعل قراراته مفسرة ومتوافقة مع المعايير والأخلاق الإنسانية.',
+    d_en: 'Rigorous LLM benchmarking, hallucination defense, prompt injection mitigation, AI alignment, and mechanistic interpretability.',
+    pkgs: [
+      {
+        id: '10', t: 'الاختبارات المعيارية والقياس', en: 'BENCHMARKING & STANDARDS',
+        desc: 'المقاييس العلمية والاختبارات المعتمدة عالمياً لمقارنة ذكاء النماذج وتطور قدراتها الاستدلالية.',
+        desc_en: 'Standardized scientific benchmarks evaluating knowledge, multi-step reasoning, mathematical problem solving, and coding capability.',
+        terms: [
+          { ar: 'الاختبارات الأكاديمية القياسية', en: 'Academic Benchmarks', d: 'اختبارات موحدة مثل MMLU وGSM8K وHumanEval لقياس المعرفة العامة والرياضيات والبرمجة.', d_en: 'Standardized datasets (MMLU, GSM8K, HumanEval) quantitatively assessing reasoning, science, and coding proficiency.' },
+          { ar: 'منصة حلبة النماذج التنافسية', en: 'Chatbot Arena', d: 'منصة تقييم عمياء يصوت فيها البشر بالمقارنة المباشرة بين إجابات نموذجين مجهولين.', d_en: 'Crowdsourced blind head-to-head evaluation platform ranking models via human preference and Elo ratings.' },
+          { ar: 'الاختبارات المعيارية المتخصصة', en: 'Domain Benchmarks', d: 'اختبارات مصممة لقياس كفاءة النموذج في مجالات حساسة كالطب والقانون والتحليل المالي.', d_en: 'Rigorous domain-specific assessments measuring professional competence across healthcare, jurisprudence, and finance.' }
+        ]
+      },
+      {
+        id: '11', t: 'تقييم واختبار أنظمة LLM', en: 'ADVANCED LLM EVALUATION',
+        desc: 'الأدوات والمقاييس المستخدمة داخل الشركات لرصد الهلوسات ومراقبة جودة تطبيقات الذكاء الاصطناعي.',
+        desc_en: 'Automated evaluation pipelines, metrics, and LLM-as-a-judge frameworks verifying application performance and grounding.',
+        terms: [
+          { ar: 'رصد الهلوسة والتحقق', en: 'Hallucination Detection', d: 'التقنيات التي تكشف متى يقوم النموذج باختلاق معلومات خاطئة والتحدث بها بثقة زائفة.', d_en: 'Automated validation frameworks identifying when models output ungrounded, fabricated, or factually inaccurate claims.' },
+          { ar: 'مقاييس الدقة والاستدعاء', en: 'Precision & Recall', d: 'مؤشرات إحصائية تحسب نسبة الإجابات الصحيحة ونسبة العثور على كافة الإجابات المطلوبة.', d_en: 'Statistical performance metrics quantifying classification accuracy, relevance, and coverage across predicted outcomes.' },
+          { ar: 'المتوسط التوافقي إف 1', en: 'F1 Score', d: 'الميزان الرقمي الذي يجمع بين الدقة والاستدعاء ليعطي تقييماً عادلاً لأداء النموذج.', d_en: 'Harmonic mean of precision and recall providing a balanced evaluation metric for models dealing with class imbalance.' },
+          { ar: 'مقياس بلو للترجمة', en: 'BLEU', d: 'معيار لمقارنة جودة الترجمة الآلية عبر مقارنة نص النموذج بنصوص المترجمين البشريين.', d_en: 'Bilingual Evaluation Understudy; automated metric scoring machine translation quality against human reference translations.' },
+          { ar: 'مقياس روج للتلخيص', en: 'ROUGE', d: 'مقياس إحصائي يقيس جودة التلخيص عبر حساب نسبة الكلمات المشتركة مع الملخص المرجعي.', d_en: 'Evaluation metric comparing n-gram overlap between machine-generated summaries and human reference summaries.' },
+          { ar: 'سرعة الاستجابة والإنتاجية', en: 'Latency & Throughput', d: 'قياس الوقت المستغرق لبدء خروج أول كلمة وعدد الكلمات التي ينتجها السيرفر في الثانية.', d_en: 'Critical operational metrics tracking time-to-first-token (TTFT), inter-token latency, and total server throughput.' },
+          { ar: 'إطار راغاس لتقييم RAG', en: 'RAGAS Framework', d: 'أداة رائدة تختبر مدى أمانة الإجابات ومطابقتها للمستندات المسترجعة في أنظمة RAG.', d_en: 'Evaluation framework assessing retrieval context relevance, faithfulness, and answer relevance in RAG architectures.' },
+          { ar: 'مكتبة ديب إيفال', en: 'DeepEval', d: 'مكتبة متخصصة في كتابة اختبارات آلية للنماذج اللغوية شبيهة باختبارات الوحدة في البرمجة.', d_en: 'Production-ready LLM testing suite enabling automated unit testing for prompts, toxicity, and hallucinations.' },
+          { ar: 'أداة برومبت فو', en: 'promptfoo', d: 'أداة لاختبار ومقارنة عدة صياغات للأوامر (Prompts) والتأكد من عدم تراجع جودتها بعد التحديث.', d_en: 'Command-line and CI/CD tool for evaluating prompt quality, testing regressions, and comparing model outputs.' },
+          { ar: 'منصة لانغ سميث', en: 'LangSmith', d: 'منصة احترافية تتبع كل خطوة وكل استدعاء يقوم به النموذج لتشخيص المشاكل بدقة.', d_en: 'Comprehensive platform for debugging, monitoring, testing, and evaluating complex LLM applications and agent chains.' },
+          { ar: 'النموذج كحكم ومقيّم', en: 'LLM-as-a-Judge', d: 'استخدام نموذج فائق الذكاء (مثل GPT-4) لتقييم وتصحيح إجابات النماذج الأخرى وفق معايير صارمة.', d_en: 'Methodology using capable frontier models to evaluate, score, and provide detailed feedback on other models at scale.' },
+          { ar: 'مجموعات البيانات المرجعية الذهبية', en: 'Golden Datasets', d: 'حزم بيانات نموذجية راجعها خبراء بشريون بدقة متناهية لتستخدم كمعيار ذهبي للاختبار.', d_en: 'Carefully vetted, human-verified benchmark datasets serving as the immutable ground-truth for production testing.' },
+          { ar: 'الاختبارات المقارنة والتجريبية', en: 'A/B Testing & Canary', d: 'إطلاق النسخة الجديدة من النموذج لنسبة صغيرة من المستخدمين لمراقبة أدائها قبل الاعتماد الشامل.', d_en: 'Staged deployment strategies validating candidate model iterations against live production traffic before universal rollout.' }
+        ]
+      },
+      {
+        id: '12', t: 'الأمان والمحاذاة', en: 'SAFETY & ALIGNMENT',
+        desc: 'حماية الأنظمة الذكية من محاولات التلاعب وحقن الأوامر، وضمان التزامها الصارم بالقيم والأخلاق.',
+        desc_en: 'Defending LLM deployments against adversarial jailbreaks, prompt injections, data leakage, and toxic outputs.',
+        terms: [
+          { ar: 'حواجز الحماية الأمنية', en: 'Guardrails', d: 'طبقات حماية برمجية تراقب المدخلات والمخرجات وتمنع أي محتوى ضار أو غير آمن فوراً.', d_en: 'Programmable safety filters inspecting user prompts and model completions in real-time to intercept malicious inputs.' },
+          { ar: 'أمان الذكاء الاصطناعي', en: 'AI Safety', d: 'المجال الهندسي والبحثي الذي يضمن عدم خروج الأنظمة عن السيطرة أو التسبب في أضرار غير مقصودة.', d_en: 'The interdisciplinary discipline committed to mitigating unintended catastrophic or existential risks posed by AI.' },
+          { ar: 'المحاذاة القيمية', en: 'Alignment', d: 'ضبط سلوك واستجابات النماذج لتتوافق بالكامل مع رغبات وتطلعات وقيم المجتمعات البشرية.', d_en: 'The practice of ensuring an AI model’s autonomous objectives and actions strictly align with human ethics and intent.' },
+          { ar: 'الذكاء الاصطناعي الدستوري', en: 'Constitutional AI', d: 'تدريب النموذج على نقد وتصحيح نفسه بناء على قائمة مكتوبة من المبادئ الأخلاقية الصريحة.', d_en: 'Anthropic alignment approach training models to critique and refine responses against an explicit set of constitutional principles.' },
+          { ar: 'هجمات حقن الأوامر', en: 'Prompt Injection', d: 'محاولات احتيالية يكتب فيها المستخدم تعليمات خفية تخدع النموذج لتجاوز قواعده الأمنية.', d_en: 'Adversarial attack technique embedding illicit instructions into input text to override system prompts and safety rules.' },
+          { ar: 'كسر الحماية والاختراق', en: 'Jailbreak', d: 'صياغة أسئلة سيناريوهات ذكية تجبر النموذج على تقديم إرشادات محظورة أو ضارة.', d_en: 'Crafting complex conversational prompts designed to bypass model guardrails and elicit restricted, harmful content.' },
+          { ar: 'الفِرَق الحمراء الأمنية', en: 'Red Teaming', d: 'فريق من خبراء الأمن يهاجمون النموذج عمداً لاكتشاف ثغراته ونقاط ضعفه قبل إطلاقه.', d_en: 'Structured adversarial testing where security engineers intentionally attack a model to discover hidden vulnerabilities.' },
+          { ar: 'منع تسريب البيانات الحساسة', en: 'Data Leakage Defense', d: 'تدابير تمنع النموذج من البوح بمعلومات سرية أو بيانات شخصية اطلع عليها أثناء التدريب.', d_en: 'Architectural safeguards preventing models from inadvertently memorizing or regurgitating confidential PII.' },
+          { ar: 'فلترة وتعديل المحتوى', en: 'Content Moderation', d: 'فلاتر سريعة لحجب خطابات الكراهية، العنف، والمحتوى غير اللائق قبل وصوله للمستخدم.', d_en: 'Automated screening layers blocking hate speech, self-harm instructions, toxicity, and illicit material in real time.' },
+          { ar: 'تقييم المخاطر الاستباقي', en: 'Risk Assessment', d: 'فحص شامل للمخاطر المحتملة للنموذج قبل السماح بنشره في السوق.', d_en: 'Systematic pre-deployment audits assessing potential societal, cybersecurity, and operational hazards of a model.' }
+        ]
+      },
+      {
+        id: '13', t: 'قابلية التفسير والثقة', en: 'INTERPRETABILITY & TRUST',
+        desc: 'فتح الصندوق الأسود وفهم الكيفية التي يتخذ بها النموذج قراراته لبناء الثقة والاعتمادية.',
+        desc_en: 'Opening the neural black box: mechanistic interpretability, attribution methods, and uncertainty calibration.',
+        terms: [
+          { ar: 'الذكاء الاصطناعي القابل للتفسير', en: 'Explainable AI (XAI)', d: 'مجموعة تقنيات تجعل أسباب اتخاذ النموذج لقرار معين واضحة ومفهومة للبشر.', d_en: 'Methodologies rendering the reasoning processes and outputs of complex neural networks transparent and audit-ready.' },
+          { ar: 'تفسير شابلي الرياضي', en: 'SHAP', d: 'طريقة قائمة على نظرية الألعاب لتوزيع المساهمة الدقيقة لكل مدخل في الوصول للنتيجة النهائية.', d_en: 'Shapley Additive exPlanations; game-theoretic approach allocating the marginal contribution of each feature to a prediction.' },
+          { ar: 'التفسير المحلي البسيط', en: 'LIME', d: 'شرح التوقعات الفردية عبر بناء نموذج خطي بسيط حول التوقع المستهدف لتسهيل فهمه.', d_en: 'Local Interpretable Model-agnostic Explanations; builds simple local surrogate models to explain individual predictions.' },
+          { ar: 'خرائط الانتباه البصري', en: 'Attention Visualization', d: 'رسوم توضح أين كان تركيز النموذج و"نظراته" موجهة بين الكلمات عند صياغة إجابته.', d_en: 'Heatmap visualization displaying attention weights across tokens, showing what context the model prioritized.' },
+          { ar: 'نسب الميزات للمخرجات', en: 'Feature Attribution', d: 'تحديد أي جزء من المدخلات كان له الفضل الأكبر في النتيجة الصادرة.', d_en: 'Techniques quantifying the exact mathematical influence exerted by input features on downstream model outputs.' },
+          { ar: 'تفسير الآليات العصبية', en: 'Mechanistic Interpretability', d: 'دراسة الدوائر العصبية والخلايا الفردية داخل النموذج لفهم كيفية تمثيله للمفاهيم.', d_en: 'Reverse-engineering individual neural circuits and weight matrices to uncover algorithmic computations within weights.' },
+          { ar: 'المصنفات الكاشفة', en: 'Probing Classifiers', d: 'اختبارات تقيس ما إذا كانت الطبقات العميقة للنموذج تختزن معلومات محددة كأزمنة الأفعال.', d_en: 'Auxiliary linear models trained on intermediate activations to test if specific linguistic properties are represented.' },
+          { ar: 'تكميم وقياس عدم اليقين', en: 'Uncertainty Quantification', d: 'قياس نسبة ثقة النموذج في كلامه ليعرف متى يجب أن يمتنع عن الإجابة بقول "لا أعلم".', d_en: 'Statistical methods evaluating model confidence, enabling systems to flag doubtful responses or decline to answer.' },
+          { ar: 'معايرة دقة النموذج', en: 'Model Calibration', d: 'ضبط احتمالات النموذج لتتطابق ثقته المعلنة (مثلاً 90%) مع نسبة دقته الواقعية بالفعل.', d_en: 'Aligning a model predicted probability scores with its observed empirical accuracy, avoiding overconfident errors.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's4', n: '04', t: 'هندسة البرمجيات والإنتاج', en: 'AI ENGINEERING & PRODUCTION', ent: 'stack',
+    d: 'تحويل النماذج من أبحاث وأكواد تجريبية إلى أنظمة إنتاجية حية وموثوقة تخدم ملايين المستخدمين على مدار الساعة.',
+    d_en: 'Operationalizing AI: cloud microservices, MLOps, streaming endpoints, agentic workflows, and high-concurrency production architectures.',
+    pkgs: [
+      {
+        id: '14', t: 'هندسة أنظمة الإنتاج', en: 'PRODUCTION AI SYSTEMS & MLOPS',
+        desc: 'البنية التحتية البرمجية والسحابية اللازمة لتشغيل وصيانة وتوسيع أنظمة الذكاء الاصطناعي في بيئات العمل الحقيقية.',
+        desc_en: 'The software engineering foundations, cloud orchestration, CI/CD pipelines, and observability required for live deployments.',
+        terms: [
+          { ar: 'بايثون المتقدمة للإنتاج', en: 'Python (Advanced)', d: 'إتقان كتابة كود بايثون سريع وقابل للتطوير باستخدام البرمجة غير المتزامنة والمفاهيم المتقدمة.', d_en: 'Mastery of advanced Python, async paradigms, typing, concurrency, and memory management for enterprise backends.' },
+          { ar: 'مبادئ هندسة البرمجيات النظيفة', en: 'Software Engineering', d: 'تطبيق أسس التصميم النظيف، الاختبارات الآلية، وكتابة أكواد سهلة الصيانة والتطوير.', d_en: 'Applying clean architecture, modular design patterns, test-driven development, and maintainability best practices.' },
+          { ar: 'إدارة الإصدارات البرمجية', en: 'Git', d: 'تتبع كافة التعديلات في الكود البرمجي والتعاون السلس بين فرق المطورين.', d_en: 'Distributed version control system tracking codebase history, enabling concurrent branching and collaborative review.' },
+          { ar: 'حاويات دوكر المعزولة', en: 'Docker', d: 'تغليف التطبيق ونموذجه بكل ملحقاته في حاوية مستقلة تضمن عمله في أي خادم دون مشاكل.', d_en: 'Containerization technology encapsulating models, environments, and libraries into reproducible runtime images.' },
+          { ar: 'بيئة تشغيل لينكس', en: 'Linux', d: 'إتقان نظام التشغيل القياسي الذي تعمل عليه كافة خوادم وسيرفرات الذكاء الاصطناعي في العالم.', d_en: 'The foundational enterprise operating system powering cloud clusters, GPU nodes, and model inference servers.' },
+          { ar: 'قواعد البيانات المتنوعة', en: 'Databases', d: 'التعامل مع قواعد البيانات العلائقية (SQL) وغير العلائقية (NoSQL) لتخزين بيانات المستخدمين.', d_en: 'Relational (SQL) and non-relational (NoSQL) persistent storage engines powering modern data-driven architectures.' },
+          { ar: 'واجهات برمجة التطبيقات والواجهات الخلفية', en: 'Backend & APIs', d: 'بناء خوادم سريعة عبر FastAPI أو Node لتلقي طلبات المستخدمين وتوصيلها بالنماذج.', d_en: 'High-throughput backend server architectures (FastAPI, Go) serving REST and WebSocket endpoints to end clients.' },
+          { ar: 'طوابير الرسائل غير المتزامنة', en: 'Message Queues', d: 'أنظمة مثل Kafka وRabbitMQ لإدارة ومعالجة آلاف الطلبات بالتوازي دون انهيار الخوادم.', d_en: 'Distributed message brokers (Kafka, RabbitMQ) decoupling services and managing high-volume asynchronous tasks.' },
+          { ar: 'الحوسبة السحابية للمؤسسات', en: 'Cloud Services', d: 'توظيف خدمات الحوسبة السحابية الضخمة من AWS وGCP وAzure لتشغيل وتدريب النماذج.', d_en: 'Leveraging hyperscale cloud infrastructure (AWS, GCP, Azure) for on-demand GPU provisioning and object storage.' },
+          { ar: 'إدارة الحاويات الموزعة كوبرنيتيس', en: 'Kubernetes', d: 'المنظومة القياسية لإدارة وتوسيع وتشغيل آلاف حاويات التطبيقات تلقائياً تحت الضغط العالي.', d_en: 'Container orchestration platform automating deployment, auto-scaling, and self-healing across massive compute clusters.' },
+          { ar: 'خطوط التكامل والنشر المستمر', en: 'CI/CD Pipelines', d: 'أتمتة عمليات فحص واختبار ونشر التحديثات البرمجية للإنتاج دون توقف الخدمة.', d_en: 'Automated Continuous Integration and Continuous Deployment pipelines validating and deploying model weights.' },
+          { ar: 'عمليات تعلم الآلة التشغيلية', en: 'MLOps', d: 'دمج أفضل ممارسات تطوير البرمجيات مع دورة حياة نماذج الذكاء الاصطناعي لضمان استقرارها.', d_en: 'Unifying machine learning system development and operations to standardize tracking, deployment, and governance.' },
+          { ar: 'المراقبة والقياس عن بعد', en: 'Monitoring & Telemetry', d: 'متابعة أداء السيرفرات وجودة الإجابات ومعدلات الخطأ لحظة بلحظة للتدخل السريع.', d_en: 'Comprehensive real-time telemetry tracking GPU utilization, inference latency, drift metrics, and error rates.' },
+          { ar: 'التأمين السيبراني للأنظمة', en: 'AI Security', d: 'تأمين واجهات برمجة التطبيقات وقواعد البيانات من الاختراق وتسريب الأوزان البرمجية.', d_en: 'Hardening inference endpoints, securing API credentials, and defending model pipelines from unauthorized intrusion.' },
+          { ar: 'توسيع نطاق الأنظمة', en: 'Scaling AI', d: 'هندسة بنية تحتية تتحمل ملايين الزيارات المتزامنة بكفاءة وبأقل تكلفة تشغيل ممكنة.', d_en: 'Architecting horizontal scaling and load balancing to sustain millions of concurrent requests under tight SLAs.' }
+        ]
+      },
+      {
+        id: '15', t: 'التطبيقات وبناء المنتجات', en: 'APPLICATIONS & BUILDING PRODUCTS',
+        desc: 'تحويل قوة النماذج اللغوية إلى منتجات رقمية مبهرة ومساعدين أذكياء يحلون مشاكل حقيقية للمستخدمين.',
+        desc_en: 'Designing and launching commercial AI software: enterprise copilots, vector databases, and full-stack generative apps.',
+        terms: [
+          { ar: 'واجهات برمجة النماذج اللغوية', en: 'LLM APIs', d: 'الاتصال بالنماذج السحابية الجاهزة مثل OpenAI وAnthropic لتضمين الذكاء في تطبيقك فوراً.', d_en: 'Consuming hosted foundation model endpoints (OpenAI, Anthropic) via authenticated developer SDKs and REST APIs.' },
+          { ar: 'البث الحي للإجابات', en: 'Streaming Responses', d: 'عرض الإجابة كلمة بكلمة لحظة توليدها لتحسين تجربة المستخدم وتقليل الانتظار.', d_en: 'Delivering tokens incrementally via Server-Sent Events (SSE), slashing perceived latency for end users.' },
+          { ar: 'تطبيقات المحادثة والمساعدين', en: 'Chat Apps & Assistants', d: 'بناء واجهات محادثة ذكية تفهم السياق وتحتفظ بذاكرة الحوار مع المستخدمين.', d_en: 'Building conversational systems with memory persistence, context retention, and multi-turn dialog logic.' },
+          { ar: 'المساعدين البرمجيين ومساعدي العمل', en: 'Copilots', d: 'أدوات مساعدة مدمجة في برامج العمل اليومية (كمساعد كتابة الكود داخل المحرر).', d_en: 'Context-aware companion tools embedded directly into workflows (IDE autocomplete, document copilots).' },
+          { ar: 'أنظمة الذكاء الاصطناعي للشركات', en: 'Enterprise AI', d: 'تطبيقات مخصصة للمؤسسات تراعي أعلى معايير الخصوصية والأمان وحماية أسرار العمل.', d_en: 'Tailored enterprise deployments respecting strict SOC2/GDPR compliance, tenant isolation, and private networking.' },
+          { ar: 'تطبيقات الاسترجاع المعزز بالتوليد', en: 'RAG Applications', d: 'ربط النموذج بملفات ومستندات الشركة ليجيب المستخدمين بدقة استناداً لمعلوماتهم الخاصة.', d_en: 'Production apps grounding model completions on company documentation to deliver factual answers.' },
+          { ar: 'التطبيقات الوكيلة التفاعلية', en: 'Agentic Applications', d: 'برامج ذكية قادرة على التخطيط الذاتي واستدعاء الأدوات لتنفيذ معاملات حقيقية.', d_en: 'Software leveraging autonomous agent planning to complete complex multi-step workflows with real-world tool execution.' },
+          { ar: 'إطار عمل لانغ تشين', en: 'LangChain', d: 'إطار العمل الأشهر لربط النماذج اللغوية بالأدوات الخارجية وبناء سلاسل منطقية معقدة.', d_en: 'Modular developer framework connecting language models with data loaders, tools, vector stores, and prompt chains.' },
+          { ar: 'إطار العمل الحلقي لانغ غراف', en: 'LangGraph', d: 'مكتبة حديثة لبناء تطبيقات وكلاء قادرة على التكرار والمراجعة الذاتية عبر رسوم بيانية حلقية.', d_en: 'Orchestration library for building stateful, multi-actor agent workflows with cyclic control loops and persistence.' },
+          { ar: 'إطار لاما إندكس', en: 'LlamaIndex', d: 'إطار عمل متخصص في تنظيم واسترجاع البيانات الضخمة وتغذيتها للنماذج اللغوية بأعلى كفاءة.', d_en: 'Data framework optimized for indexing, searching, and feeding external private datasets into LLM applications.' },
+          { ar: 'قواعد البيانات الشعاعية المتجهة', en: 'Vector Databases', d: 'قواعد بيانات متخصصة في تخزين والبحث في التضمينات الدلالية مثل Pinecone وChroma وQdrant.', d_en: 'Specialized databases (Pinecone, Chroma, Qdrant) designed for lightning-fast approximate nearest neighbor vector search.' },
+          { ar: 'الرصد الداخلي للسلوك', en: 'Observability', d: 'مراقبة ما يفعله النموذج خطوة بخطوة وفهم الأسباب التي دفعته لتقديم إجابة معينة.', d_en: 'Deep application tracing inspecting prompts, intermediate steps, token costs, and agent trajectories.' },
+          { ar: 'إدارة إصدارات الأوامر', en: 'Prompt Versioning', d: 'حفظ وتتبع إصدارات قوالب التوجيه (Prompts) تماماً كما يُدار الكود البرمجي في Git.', d_en: 'Systematic version control for prompt templates and configurations, ensuring stability across application iterations.' },
+          { ar: 'نشر وإطلاق المنتجات', en: 'Deployment', d: 'إطلاق التطبيق الذكي للمستخدمين في كل أنحاء العالم مع ضمان استقراره وسرعته.', d_en: 'Operational deployment of AI products to global users with high availability, redundancy, and low latency.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's5', n: '05', t: 'البحث والحوكمة', en: 'FRONTIER RESEARCH & GOVERNANCE', ent: 'globe',
+    d: 'آفاق المستقبل وحدود المعرفة: نماذج التفكير المنطقي، الذكاء متعدد الوسائط، الأوراق البحثية، وقوانين تنظيم وأخلاقيات الذكاء الاصطناعي العالمية.',
+    d_en: 'Frontier AI research paradigms, reasoning architectures, scientific paper reproduction, global AI regulatory laws, and product economics.',
+    pkgs: [
+      {
+        id: '16', t: 'الموضوعات الحديثة والمتقدمة', en: 'FRONTIER & ADVANCED TOPICS',
+        desc: 'أحدث ما توصلت له مراكز الأبحاث العالمية اليوم: نماذج التفكير العميق، الذكاء الصوتي والبصري، والأنظمة التوليدية المتطورة.',
+        desc_en: 'Cutting-edge state-of-the-art research: reasoning models, test-time compute, multimodal architectures, and diffusion transformers.',
+        terms: [
+          { ar: 'نماذج التفكير والاستدلال', en: 'Reasoning Models', d: 'نماذج مخصصة لحل المسائل المعقدة عبر التفكير المنطقي خطوة بخطوة (مثل نماذج o1).', d_en: 'Architectures optimized to allocate compute to internal chains-of-thought to solve difficult reasoning problems.' },
+          { ar: 'حوسبة وقت الاستدلال', en: 'Test-Time Compute', d: 'تخصيص قوة معالجة إضافية أثناء التفكير لإنتاج إجابة أدق بدلاً من الاعتماد فقط على التدريب.', d_en: 'Technique spending extra compute at inference time (search trees, self-critique) to dramatically improve answer quality.' },
+          { ar: 'الذكاء الاصطناعي الوكيلي المستقل', en: 'Agentic AI', d: 'الجيل الجديد من الذكاء الاصطناعي القادر على اتخاذ مبادرات والعمل كسكرتير أو مهندس مستقل.', d_en: 'Autonomous systems capable of taking proactive, multi-step actions across digital tools with minimal human supervision.' },
+          { ar: 'النماذج اللغوية الصغيرة والطرفية', en: 'Small Language Models (SLMs)', d: 'نماذج ذكية مصغرة ومضغوطة مصممة لتعمل بكفاءة فائقة على الهواتف والأجهزة دون حاجة للإنترنت.', d_en: 'Highly efficient sub-10B models designed to run locally on consumer devices with minimal memory requirements.' },
+          { ar: 'النماذج متعددة الوسائط', en: 'Multimodal Models', d: 'نماذج تقرأ وتفهم وتنتج النصوص والصور والأصوات والفيديو معاً في سياق معرفي واحد.', d_en: 'Unified neural models simultaneously ingesting, processing, and generating text, imagery, audio, and video.' },
+          { ar: 'نماذج الرؤية واللغة المدمجة', en: 'Vision-Language Models', d: 'أنظمة ذكية تفهم محتويات الصور بعمق وتستطيع شرحها ومناقشة تفاصيلها المعقدة.', d_en: 'Neural systems combining visual recognition with textual reasoning, understanding photos, diagrams, and video frames.' },
+          { ar: 'نماذج الانتشار التوليدية', en: 'Diffusion Models', d: 'النماذج المسؤولة عن ثورة توليد الصور وتعمل عبر إزالة الضوضاء العشوائية تدريجياً حتى تكتمل الصورة.', d_en: 'Generative frameworks creating realistic images by learning to reverse a gradual multi-step noise diffusion process.' },
+          { ar: 'محولات الانتشار المتقدمة', en: 'Diffusion Transformers', d: 'دمج معمارية Transformer مع نماذج الانتشار، وهي التقنية الثورية المسؤولة عن توليد الفيديو فائق الواقعية.', d_en: 'Architectures replacing UNets with Transformers inside diffusion models, powering hyper-realistic video generation.' },
+          { ar: 'نماذج فهم العالم والمحاكاة', en: 'World Models', d: 'نماذج تبني فهماً فيزيائياً داخلياً للبيئة المحيطة لتتوقع ما سيحدث في المستقبل (تُستخدم في الروبوتات).', d_en: 'Neural models internalizing physical and spatial laws of the environment to simulate and predict future world states.' },
+          { ar: 'التعلم الاتحادي وحماية الخصوصية', en: 'Federated Learning', d: 'تدريب النماذج على هواتف وأجهزة المستخدمين دون إرسال بياناتهم الخاصة إلى خوادم الشركة أبداً.', d_en: 'Distributed training approach training global models across edge devices while keeping sensitive raw user data localized.' },
+          { ar: 'الوكلاء ذوو التحسين الذاتي', en: 'Self-Improving Agents', d: 'أنظمة ذكية تتعلم من أخطائها وتراجع سجلات عملها لترقي مهاراتها بنفسها بمرور الوقت.', d_en: 'Autonomous agent frameworks capable of analyzing their own execution trajectories to improve their skills over time.' }
+        ]
+      },
+      {
+        id: '17', t: 'مهارات البحث العلمي', en: 'AI RESEARCH SKILLS',
+        desc: 'المنهجية العلمية والأدوات التي يعتمد عليها كبار الباحثين لمواكبة التطور ونشر واختبار الابتكارات الجديدة.',
+        desc_en: 'The rigorous academic methodology required to digest papers on arXiv, design ablation experiments, and validate discoveries.',
+        terms: [
+          { ar: 'قراءة وفحص الأوراق العلمية', en: 'Reading Papers', d: 'اكتساب مهارة استخلاص الفكرة الجوهرية والمنهجية من أبحاث الذكاء الاصطناعي بسرعة ودقة.', d_en: 'The foundational skill of critically digesting complex machine learning manuscripts, extracting core mechanisms and limitations.' },
+          { ar: 'منصة أبحاث أرخايف', en: 'arXiv', d: 'المستودع الأكاديمي الرقمي المفتوح الذي تُنشر عليه كافة أبحاث واكتشافات الذكاء الاصطناعي أولاً بأول.', d_en: 'The premier open-access digital archive where frontier machine learning and computer science research is published pre-peer-review.' },
+          { ar: 'إعادة إنتاج التجارب والأبحاث', en: 'Paper Reproduction', d: 'بناء الأكواد والتجارب المذكورة في ورقة بحثية للتأكد من صدق ودقة النتائج المعلنة.', d_en: 'Rebuilding and validating the methodology and claims of a published paper from scratch to confirm scientific reproducibility.' },
+          { ar: 'دراسات الاستئصال التحليلية', en: 'Ablation Studies', d: 'إزالة مكون محدد من النموذج لمعرفة مدى تأثيره الفعلي على الأداء وإثبات فائدته العلمية.', d_en: 'Experimental rigor systematically isolating and removing model components to prove their individual contribution to performance.' },
+          { ar: 'تصميم التجارب العلمية', en: 'Experiment Design', d: 'تحديد الفرضيات والمتغيرات والشواهد بدقة لضمان الخروج بنتائج علمية لا لبس فيها.', d_en: 'Formulating structured testable hypotheses, control variables, and fair benchmark environments to evaluate improvements.' },
+          { ar: 'مراجعة الأدبيات السابقة', en: 'Literature Review', d: 'مسح الأبحاث التاريخية والحديثة في مجال معين لتحديد ما تم إنجازه والمساحات الشاغرة.', d_en: 'Comprehensive synthesis and surveying of existing published scholarship to ground new research directions.' },
+          { ar: 'تصميم المعايير القياسية', en: 'Benchmark Design', d: 'صناعة اختبارات ومجموعات بيانات جديدة تقيس مهارات لم تكن تقاس من قبل.', d_en: 'Architecting novel, robust evaluation tasks and datasets capable of diagnosing model deficiencies and measuring breakthroughs.' },
+          { ar: 'المراجعة والتحكيم الأقران', en: 'Peer Review', d: 'فحص وتقييم أبحاث الباحثين الآخرين بموضوعية للتأكد من جودتها قبل النشر في المؤتمرات.', d_en: 'Critical, objective evaluation of scientific submissions for international AI conferences to ensure rigor and integrity.' },
+          { ar: 'اختبارات الدلالة الإحصائية', en: 'Statistical Significance', d: 'معادلات رياضية تؤكد أن تفوق النموذج لم يحدث بمحض الصدفة أو ضربة حظ.', d_en: 'Mathematical hypothesis testing confirming that observed performance deltas are statistically meaningful, not random noise.' },
+          { ar: 'الكتابة التقنية والأكاديمية', en: 'Technical Writing', d: 'صياغة النتائج والأفكار بأسلوب لغوي وعلمي رصين ومقنع يسهل فهمه وتطبيقه.', d_en: 'Clearly communicating complex theoretical, architectural, and experimental insights into peer-review-ready prose.' }
+        ]
+      },
+      {
+        id: '18', t: 'الأخلاقيات والحوكمة والتنظيم', en: 'ETHICS, GOVERNANCE & REGULATION',
+        desc: 'الإطار القانوني والأخلاقي الحاكم لتطوير الذكاء الاصطناعي لضمان العدالة وحماية الخصوصية وحقوق الملكية.',
+        desc_en: 'Global legal frameworks, algorithmic fairness, intellectual property rights, and responsible AI governance.',
+        terms: [
+          { ar: 'التحيز الخوارزمي والعدالة', en: 'Bias & Fairness', d: 'مراجعة النماذج لضمان عدم تمييزها ضد أي فئة بشرية وتقديم مخرجات عادلة ومحايدة.', d_en: 'Auditing models to prevent discriminatory demographic disparities and ensure equitable, unbiased outputs.' },
+          { ar: 'القوانين المنظمة للذكاء الاصطناعي', en: 'AI Regulation', d: 'التشريعات الدولية التي تضع ضوابط صارمة على مجالات استخدام الذكاء الاصطناعي.', d_en: 'Emerging global legal statutes establishing enforceable guardrails, audit standards, and liabilities for AI deployment.' },
+          { ar: 'قانون الذكاء الاصطناعي الأوروبي', en: 'EU AI Act', d: 'أول قانون شامل في العالم يصنف أنظمة الذكاء الاصطناعي حسب درجة خطورتها ويفرض معايير أمان صارمة.', d_en: 'The world first comprehensive AI statute, categorizing AI applications by risk tiers with strict mandatory compliance.' },
+          { ar: 'حقوق الملكية الفكرية', en: 'Copyright & IP in AI', d: 'القضايا القانونية المرتبطة باستخدام البيانات المحمية في التدريب وحقوق ملكية المحتوى المولد.', d_en: 'Legal frameworks concerning training data fair use, intellectual property protection, and ownership of synthetic outputs.' },
+          { ar: 'حماية خصوصية البيانات', en: 'Data Privacy (GDPR)', d: 'الالتزام بقوانين الخصوصية وحق المستخدم في حذف بياناته ومنع استغلالها دون موافقته.', d_en: 'Adherence to privacy regulations (GDPR, CCPA), governing user consent, data retention, and machine unlearning rights.' },
+          { ar: 'بطاقات النماذج الشفافة', en: 'Model Cards', d: 'وثائق تقنية تفصيلية توضح للجمهور بيانات تدريب النموذج، حدوده، والمجالات التي لا يصلح لها.', d_en: 'Standardized documentation detailing model architecture, training data composition, performance limitations, and safety evaluations.' },
+          { ar: 'الذكاء الاصطناعي المسؤول', en: 'Responsible AI', d: 'ثقافة تطوير تركز على الفائدة المجتمعية والأمان قبل تحقيق المكاسب المادية السريعة.', d_en: 'Development philosophy prioritizing human welfare, safety, environmental sustainability, and ethical transparency.' },
+          { ar: 'حوكمة الذكاء الاصطناعي للمؤسسات', en: 'AI Governance', d: 'السياسات الداخلية التي تحدد كيف ومتى يُسمح باستخدام الذكاء الاصطناعي داخل الشركات.', d_en: 'Enterprise frameworks and oversight boards governing how AI tools are audited, procured, and deployed internally.' }
+        ]
+      },
+      {
+        id: '19', t: 'إدارة منتجات الذكاء الاصطناعي', en: 'AI PRODUCT MANAGEMENT & BUSINESS',
+        desc: 'الجانب التجاري والاستثماري: كيف تدار وتباع منتجات الذكاء الاصطناعي وتحقق عائداً حقيقياً على الاستثمار.',
+        desc_en: 'Commercial strategy, unit economics, model vendor selection, pricing models, and enterprise go-to-market execution.',
+        terms: [
+          { ar: 'إدارة منتجات الذكاء الاصطناعي', en: 'AI Product Management', d: 'قيادة بناء المنتجات الذكية عبر التوفيق بين الممكن تقنياً والناجح تجارياً واحتياجات العميل.', d_en: 'Leading cross-functional teams to build AI products that intersect technical feasibility, user experience, and business value.' },
+          { ar: 'نمذجة وحساب التكاليف', en: 'Cost Modeling for LLMs', d: 'حساب التكاليف الدقيقة لتشغيل النماذج (سعر الرموز، طاقة السيرفرات) لضمان الربحية.', d_en: 'Forecasting inference operational expenses (token pricing, GPU hourly costs, caching) to ensure sustainable margins.' },
+          { ar: 'اقتصاديات الوحدة والربحية', en: 'Unit Economics', d: 'حساب تكلفة خدمة المستخدم الواحد مقابل الإيراد المحقق منه لضمان استدامة المشروع.', d_en: 'Evaluating profitability at the single-user or single-query level to guarantee positive unit contribution margins.' },
+          { ar: 'تقدير العائد على الاستثمار', en: 'ROI Estimation', d: 'حساب الفوائد الملموسة لتطبيق الذكاء الاصطناعي مقارنة بالأموال المستثمرة فيه.', d_en: 'Quantifying measurable productivity, revenue gains, or cost reductions delivered by AI deployments against development expenses.' },
+          { ar: 'استراتيجية البناء أم الشراء', en: 'Build vs. Buy', d: 'اتخاذ القرار الاستراتيجي بين تدريب نموذج خاص بالشركة أو الاكتفاء بالاشتراك في واجهات جاهزة.', d_en: 'Strategic framework weighing internal custom model training against licensing proprietary frontier API services.' },
+          { ar: 'اختيار المزود والنموذج الأمثل', en: 'Model / Vendor Selection', d: 'المفاضلة الذكية بين النماذج مفتوحة المصدر والنماذج المغلقة لاختيار الأنسب من حيث السعر والجودة.', d_en: 'Evaluating open-weight versus closed API models against latency, quality, licensing, and data residency criteria.' },
+          { ar: 'استراتيجيات التسعير الذكية', en: 'Pricing Strategy', d: 'تحديد نماذج تسعير الخدمة (اشتراك شهري، دفع حسب الاستخدام، أو تسعير بالنتائج).', d_en: 'Designing commercial pricing structures: token-based consumption tiers, seat licenses, or value-based monetization.' },
+          { ar: 'استراتيجية الذكاء الاصطناعي للشركات', en: 'AI Strategy', d: 'خطة الشركة الشاملة للاستفادة من الذكاء الاصطناعي للتفوق على المنافسين في السوق.', d_en: 'Long-term corporate roadmaps identifying where AI generates durable competitive moats and operational leverage.' },
+          { ar: 'خطط النزول إلى السوق', en: 'Go-To-Market (GTM)', d: 'استراتيجيات التسويق والمبيعات لإيصال منتج الذكاء الاصطناعي للعملاء المستهدفين بنجاح.', d_en: 'Comprehensive launch, marketing, and sales distribution strategies to drive initial customer adoption and retention.' },
+          { ar: 'التبني المؤسسي للتقنية', en: 'Enterprise Adoption', d: 'كيفية تدريب وتأهيل الموظفين في الشركات الكبرى على استخدام أدوات الذكاء الاصطناعي في عملهم.', d_en: 'Change management frameworks enabling traditional enterprises to integrate AI tools into established operational workflows.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's6', n: '06', t: 'التخصصات المتقدمة', en: 'ADVANCED SPECIALIZATIONS', ent: 'trio',
+    d: 'المسارات التخصصية المتقدمة: معالجة الصور والرؤية الحاسوبية، النماذج الصوتية التوليدية، والتعلم المعزز عالي التعقيد.',
+    d_en: 'Deep-dive domain specializations: Computer Vision, Speech AI, and multi-agent Reinforcement Learning.',
+    pkgs: [
+      {
+        id: '20', t: 'الرؤية الحاسوبية', en: 'COMPUTER VISION',
+        desc: 'تعليم الحواسيب كيف تفهم، تحلل، وتستخرج المعلومات الدقيقة من الصور ومقاطع الفيديو التفاعلية.',
+        desc_en: 'Enabling machines to perceive, segment, identify, and reason over visual pixels and video streams.',
+        terms: [
+          { ar: 'تصنيف وتحديد الصور', en: 'Image Classification', d: 'تحديد نوع ومحتوى الصورة ككل (مثل التمييز التلقائي بين صورة قطة وصورة كلب).', d_en: 'Categorizing entire images into predefined class categories based on deep visual pattern extraction.' },
+          { ar: 'اكتشاف وتحديد مواقع الأجسام', en: 'Object Detection', d: 'تحديد نوع ومكان كل جسم داخل الصورة بدقة عبر رسم مربعات إحاطة حوله (مثل عائلة YOLO).', d_en: 'Simultaneously classifying and localizing multiple distinct objects within a scene with bounding box coordinates.' },
+          { ar: 'تجزئة الصور بالبكسل', en: 'Image Segmentation', d: 'تحديد حدود كل كائن داخل الصورة بالبكسل المنفرد لفصل الخلفيات والأجسام (مثل نموذج SAM).', d_en: 'Pixel-level classification delineating the exact geometric boundaries of objects (Segment Anything Model - SAM).' },
+          { ar: 'التعرف الضوئي على الحروف', en: 'OCR', d: 'استخراج النصوص المكتوبة أو المطبوعة من داخل الصور وتحويلها لكلمات رقمية قابلة للبحث والتعديل.', d_en: 'Optical Character Recognition; converting visual images of typed, handwritten, or printed text into editable strings.' },
+          { ar: 'محولات الرؤية العصبية', en: 'Vision Transformers (ViT)', d: 'تطبيق معمارية Transformer على الصور عبر تقطيعها لمربعات صغيرة ومعالجتها ككلمات.', d_en: 'Applying pure transformer architectures to images by dividing them into patches treated as visual token sequences.' },
+          { ar: 'نموذج كليب للربط البصري', en: 'CLIP', d: 'نموذج رائد من OpenAI يربط بين الصور والنصوص ليفهم وصف الصورة ويبحث فيها بالكلمات.', d_en: 'OpenAI multi-modal model trained on image-text pairs, enabling zero-shot classification and semantic visual search.' },
+          { ar: 'نماذج يولو فائقة السرعة', en: 'YOLO', d: 'أشهر عائلة نماذج في العالم لاكتشاف الأجسام في أجزاء من الثانية بالفيديو اللحظي.', d_en: 'You Only Look Once; real-time single-stage object detection architectures prized for high frame-rate edge throughput.' },
+          { ar: 'تجزئة أي شيء فوري', en: 'Segment Anything (SAM)', d: 'نموذج من Meta يستطيع فصل وتحديد أي جسم في أي صورة فوراً بمجرد النقر عليه.', d_en: 'Meta foundation model for promptable, zero-shot pixel-level segmentation of any object across arbitrary images.' }
+        ]
+      },
+      {
+        id: '21', t: 'الذكاء الصوتي', en: 'SPEECH AI',
+        desc: 'التعامل مع الصوت البشري: الاستماع والتحويل لنصوص، توليد أصوات بشرية طبيعية، واستنساخ البصمة الصوتية.',
+        desc_en: 'Acoustic modeling: speech-to-text transcription, expressive voice synthesis, and zero-shot voice cloning.',
+        terms: [
+          { ar: 'التعرف الآلي على الكلام', en: 'Automatic Speech Recognition (ASR)', d: 'تحويل الصوت المسجل أو المباشر إلى نصوص مكتوبة بدقة متناهية وبمختلف اللهجات.', d_en: 'Converting spoken acoustic audio waveforms into written natural language text transcriptions.' },
+          { ar: 'تحويل النص إلى كلام بشري', en: 'Text-to-Speech (TTS)', d: 'قراءة النصوص الرقمية بأصوات بشرية فائقة الواقعية تحاكي مشاعر ونبرات الإنسان.', d_en: 'Synthesizing natural, expressive, and human-like spoken audio streams directly from input textual strings.' },
+          { ar: 'التعرف على هوية المتحدث', en: 'Speaker Recognition', d: 'التحقق التلقائي من شخصية وهوية المتحدث بناءً على بصمته الصوتية الفريدة.', d_en: 'Biometric verification and identification of individual speakers based on unique vocal tract acoustic characteristics.' },
+          { ar: 'استنساخ البصمة الصوتية', en: 'Voice Cloning', d: 'محاكاة نبرة صوت شخص حقيقي وتوليد أي كلام جديد بصوته بعد سماع عينة قصيرة.', d_en: 'Synthesizing arbitrary speech in the target timbre, accent, and style of a person from a brief reference audio sample.' },
+          { ar: 'نموذج ويسبر العالمي', en: 'Whisper', d: 'أقوى نموذج مفتوح المصدر من OpenAI للتعرف على الكلام وترجمته بعشرات اللغات واللهجات.', d_en: 'OpenAI open-weights multi-task speech recognition model trained on hundreds of thousands of hours of multilingual audio.' },
+          { ar: 'التضمينات الصوتية المتجهة', en: 'Audio Embeddings', d: 'تحويل المقاطع الصوتية إلى متجهات رياضية للبحث في المشاعر وتمييز الأصوات بدقة.', d_en: 'Dense vector representations capturing pitch, acoustic timbre, and phonetics for audio retrieval and emotion detection.' }
+        ]
+      },
+      {
+        id: '22', t: 'التعلم المعزز المتقدم', en: 'ADVANCED REINFORCEMENT LEARNING',
+        desc: 'أرقى طرق تعليم الآلات اتخاذ قرارات متتالية استراتيجية للفوز بالألعاب المعقدة وتوجيه الروبوتات والأنظمة المالية.',
+        desc_en: 'Strategic sequential decision-making: policy optimization, deep Q-networks, actor-critic, and multi-agent coordination.',
+        terms: [
+          { ar: 'عمليات ماركوف لاتخاذ القرار', en: 'Markov Decision Process (MDP)', d: 'الإطار الرياضي النظري الذي يُبنى عليه التعلم المعزز لنمذجة الحالات والقرارات والمكافآت.', d_en: 'Mathematical framework formalizing discrete-time stochastic control processes with states, actions, transitions, and rewards.' },
+          { ar: 'تحسين السياسة المباشر', en: 'Policy Gradient', d: 'خوارزميات تعدل أوزان استراتيجية اتخاذ القرار مباشرة لزيادة فرص الفوز بأعلى مكافأة.', d_en: 'Methods optimizing policy parameters directly via gradient ascent on expected cumulative reward trajectories.' },
+          { ar: 'خوارزمية بي بي أو الشهيرة', en: 'PPO', d: 'الخوارزمية الأكثر استقراراً وشهرة في التعلم المعزز، وهي المستخدمة في محاذاة نماذج مثل ChatGPT.', d_en: 'Proximal Policy Optimization; clipped objective policy gradient algorithm prized for training stability in RLHF.' },
+          { ar: 'شبكات كيو العميقة', en: 'Deep Q-Network (DQN)', d: 'دمج التعلم المعزز مع الشبكات العصبية العميقة لحل مشاكل اتخاذ القرار المعقدة (ألعاب أتاري).', d_en: 'Combining reinforcement learning with deep neural networks to approximate optimal action-value functions in high dimensions.' },
+          { ar: 'معمارية الفاعل والناقد', en: 'Actor-Critic', d: 'نظام يجمع شبكتين: شبكة تتخذ القرار (الفاعل) وشبكة تقيّم جودة هذا القرار (الناقد) لتسريع التعلم.', d_en: 'Hybrid architecture combining policy optimization (Actor) with value function estimation (Critic) to reduce gradient variance.' },
+          { ar: 'التعلم المعزز متعدد الوكلاء', en: 'Multi-Agent RL', d: 'تدريب عدة أنظمة ذكية تتنافس أو تتعاون في نفس البيئة لابتكار استراتيجيات جماعية متطورة.', d_en: 'Ecosystems of multiple autonomous agents learning optimal joint policies in shared cooperative or zero-sum environments.' }
+        ]
+      }
+    ]
+  }
+];
+
+var SI = {
+  ladder: [
+    { k: 'ANI', t: 'الذكاء الضيق', t_en: 'Artificial Narrow Intelligence', d: 'متخصص في مهمة محددة ومحدودة (مثل الشطرنج أو التعرف على الصوت) ولا يمتلك وعياً عاماً.', d_en: 'Specialized in bounded, specific domains (like chess, translation, or computer vision). Represents today state of AI.', st: 'الحالة الراهنة · واقعنا اليوم', st_en: 'Current Reality' },
+    { k: 'AGI', t: 'الذكاء العام', t_en: 'Artificial General Intelligence', d: 'أنظمة تحاكي قدرة الإنسان العقلية في كافة المجالات العلمية، الإبداعية، والمنطقية.', d_en: 'Autonomous systems matching human cognitive flexibility, general reasoning, and creative mastery across all disciplines.', st: 'مرحلة البحث النشط والتسابق', st_en: 'Active Frontier' },
+    { k: 'ASI', t: 'الذكاء الفائق', t_en: 'Artificial Superintelligence', d: 'عقل اصطناعي يتجاوز الذكاء البشري الجمعي بمراحل شاسعة في كل المجالات والعلوم والابتكار.', d_en: 'Transcendent intelligence radically surpassing all collective human intellect across science, invention, and philosophy.', st: 'القمة النظرية وسؤال المصير', st_en: 'Hypothetical Summit' }
+  ],
+  insights: [
+    { ar: 'معضلة المحاذاة الوجودية: التحدي الحاسم لضمان بقاء كيان أذكى من البشرية جمعاء ملتزماً بأمانهم وقيمهم للأبد دون أي احتمال للانحراف.', en: 'Existential Alignment: The critical imperative ensuring an entity vastly smarter than humanity remains permanently benevolent and aligned with human flourishing.' },
+    { ar: 'الانفجار الاستخباري والترقية الذاتية: اللحظة الفارقة التي يتمكن فيها النموذج من إعادة برمجة وتحسين كوده بنفسه، مما يولد قفزات ذكاء أسية في ساعات.', en: 'Recursive Self-Improvement: The intelligence explosion threshold where an autonomous model redesigns its own code, sparking exponential cognitive leaps.' },
+    { ar: 'الحدود الفيزيائية والطاقية: التحديات الديناميكية الحرارية والكمومية التي تحكم مراكز البيانات وتوفر الطاقة اللازمة لمعالجة هذا الحجم من الذكاء.', en: 'Thermodynamic & Compute Limits: The physical constraints governing planet-scale data centers, energy consumption, and quantum scaling boundaries.' }
+  ]
+};
+
+var ALL = STAGES.concat([{
+  id: 'si', n: 'SI', t: 'الذكاء الاصطناعي الفائق', en: 'SUPERINTELLIGENCE', ent: 'si',
+  d: 'قِمّة المسار: أفق ما بعد النماذج اللغوية، الانتقال من الذكاء الضيق إلى العام، وسؤال المحاذاة الوجودية لمستقبل الحضارة الإنسانية.',
+  d_en: 'The summit of the ascent roadmap: beyond language models, the transition from narrow AI to AGI, and existential alignment for the future of civilization.'
+}]);
+
+/* ------------------------------------------------------------------
+   Theme Colors Helper
+   ------------------------------------------------------------------ */
+var root = document.documentElement;
+function getThemeColors() {
+  var s = getComputedStyle(root);
+  return {
+    bg: s.getPropertyValue('--bg').trim() || '#EFEBE2',
+    card: s.getPropertyValue('--card').trim() || '#FFFFFF',
+    ink: s.getPropertyValue('--ink').trim() || '#26282B',
+    accent: s.getPropertyValue('--accent').trim() || '#8A6A4A',
+    line: s.getPropertyValue('--line').trim() || '#E0DCD3'
+  };
+}
+
+/* ------------------------------------------------------------------
+   HTML Rendering (Strictly Clean, Multilingual-Aware)
+   ------------------------------------------------------------------ */
+function renderTerms(terms, isAr) {
+  return '<div class="term-grid">' + terms.map(function(t){
+    var tags = t.tags ? '<div class="term-tags">' + t.tags.map(function(tg){
+      return '<span class="term-tag">' + tg + '</span>';
+    }).join('') + '</div>' : '';
+
+    var mainTitle = isAr ? t.ar : t.en;
+    var subBadge = isAr ? t.en : t.ar;
+    var descText = isAr ? t.d : (t.d_en || t.d);
+    var searchStr = (t.ar + ' ' + t.en + ' ' + descText).toLowerCase();
+
+    return '<article class="term-card" data-search="' + searchStr + '">' +
+      '<div class="term-top">' +
+        '<span class="term-title">' + mainTitle + '</span>' +
+        '<span class="term-badge">' + subBadge + '</span>' +
+      '</div>' +
+      '<p class="term-desc">' + descText + '</p>' +
+      tags +
+    '</article>';
+  }).join('') + '</div>';
+}
+
+function renderPackages(pkgs, isAr, lang) {
+  return '<div class="packs">' + pkgs.map(function(pkg, idx){
+    var pkgName = isAr ? pkg.t : ((I18N.pkgs[pkg.id] && I18N.pkgs[pkg.id][lang]) || pkg.en);
+    var pkgDesc = isAr ? pkg.desc : (pkg.desc_en || pkg.desc);
+    var pkgBadge = isAr ? ('الحزمة ' + pkg.id) : ('PKG ' + pkg.id);
+
+    return '<details class="pkg-accordion" data-pkg="' + pkg.id + '"' + (idx === 0 ? ' open' : '') + '>' +
+      '<summary>' +
+        '<span class="pkg-num">' + pkgBadge + '</span>' +
+        '<span class="pkg-name">' + pkgName + '</span>' +
+        '<span class="icon-toggle">+</span>' +
+      '</summary>' +
+      '<div class="pkg-body">' +
+        '<p class="pkg-desc">' + pkgDesc + '</p>' +
+        renderTerms(pkg.terms, isAr) +
+      '</div>' +
+    '</details>';
+  }).join('') + '</div>';
+}
+
+function renderSI(isAr) {
+  var ladder = '<div class="ladder">' + SI.ladder.map(function(item, idx){
+    var title = isAr ? item.t : item.t_en;
+    var desc = isAr ? item.d : item.d_en;
+    var status = isAr ? item.st : item.st_en;
+
+    return '<div class="ladder-item' + (idx === 2 ? ' active' : '') + '">' +
+      '<span class="badge">' + item.k + '</span>' +
+      '<h4>' + title + '</h4>' +
+      '<p>' + desc + '</p>' +
+      '<span class="status">' + status + '</span>' +
+    '</div>';
+  }).join('') + '</div>';
+
+  var insights = '<div class="si-insights">' + SI.insights.map(function(ins){
+    var text = isAr ? ins.ar : ins.en;
+    return '<div class="si-insight">' + text + '</div>';
+  }).join('') + '</div>';
+
+  return ladder + insights;
+}
+
+function buildDOM() {
+  var stepsEl = document.getElementById('cSteps');
+  var meterEl = document.getElementById('cMeter');
+  if(!stepsEl || !meterEl) return;
+
+  var lang = window.CURRENT_LANG || root.getAttribute('lang') || 'ar';
+  var isAr = (lang === 'ar');
+
+  stepsEl.innerHTML = ALL.map(function(stage, idx){
+    var isSI = (stage.id === 'si');
+    var content = isSI ? renderSI(isAr) : renderPackages(stage.pkgs, isAr, lang);
+
+    var stageTitle = isAr ? stage.t : ((I18N.stages[stage.id] && I18N.stages[stage.id][lang]) || stage.en);
+    var stageLead = isAr ? stage.d : (stage.d_en || stage.d);
+    var badgeText = isSI ?
+      (isAr ? 'القمة · ما بعد خارطة الطريق' : 'SUMMIT · BEYOND THE ROADMAP') :
+      (isAr ? ('المرحلة ' + stage.n + ' / 06 · ' + stage.en) : ('STAGE ' + stage.n + ' / 06 · ' + stage.en));
+
+    return '<section class="c-step" data-index="' + idx + '" id="stage-' + stage.id + '">' +
+      '<div class="c-card">' +
+        '<div class="step-head">' +
+          '<span class="num">' + badgeText + '</span>' +
+          '<h2>' + stageTitle + '</h2>' +
+          '<p class="lead">' + stageLead + '</p>' +
+        '</div>' +
+        content +
+      '</div>' +
+    '</section>';
+  }).join('');
+
+  meterEl.innerHTML = ALL.map(function(stage){
+    return '<span>' + stage.n + '</span>';
+  }).join('');
+}
+
+buildDOM();
+
+/* ------------------------------------------------------------------
+   Interactive Search & Filtering
+   ------------------------------------------------------------------ */
+var searchInput = document.getElementById('atlasSearch');
+var expandBtn = document.getElementById('expandAllBtn');
+var collapseBtn = document.getElementById('collapseAllBtn');
+
+if(expandBtn) {
+  expandBtn.addEventListener('click', function(){
+    document.querySelectorAll('.pkg-accordion').forEach(function(d){ d.open = true; });
+  });
+}
+if(collapseBtn) {
+  collapseBtn.addEventListener('click', function(){
+    document.querySelectorAll('.pkg-accordion').forEach(function(d){ d.open = false; });
+  });
+}
+
+if(searchInput) {
+  searchInput.addEventListener('input', function(e){
+    var q = e.target.value.trim().toLowerCase();
+    var terms = document.querySelectorAll('.term-card');
+    if(!q) {
+      terms.forEach(function(c){ c.classList.remove('highlight'); c.style.display = ''; });
+      document.querySelectorAll('.pkg-accordion').forEach(function(d){ d.style.display = ''; });
+      return;
+    }
+    terms.forEach(function(card){
+      var txt = card.getAttribute('data-search') || '';
+      if(txt.indexOf(q) > -1) {
+        card.classList.add('highlight');
+        card.style.display = '';
+        var details = card.closest('details');
+        if(details) { details.open = true; details.style.display = ''; }
+      } else {
+        card.classList.remove('highlight');
+        card.style.display = 'none';
+      }
+    });
+    // Hide details that have zero matches
+    document.querySelectorAll('.pkg-accordion').forEach(function(details){
+      var visibleCards = details.querySelectorAll('.term-card:not([style*="display: none"])');
+      if(visibleCards.length === 0) {
+        details.style.display = 'none';
+      } else {
+        details.style.display = '';
+        details.open = true;
+      }
+    });
+  });
+}
+
+/* ------------------------------------------------------------------
+   Three.js Ascent Path & 3D Visual Entities (Design C)
+   ------------------------------------------------------------------ */
+if(window.THREE) {
+  var canvas = document.getElementById('cCanvas');
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 250);
+  camera.position.set(0, 4, 15);
+
+  var rootGroup = new THREE.Group();
+  scene.add(rootGroup);
+
+  var mats = [];
+  function createMat(role, type, opacity) {
+    var p = getThemeColors();
+    var col = p[role] || p.ink;
+    var m;
+    if(type === 'mesh') {
+      m = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: opacity || 0.12, depthWrite: false, side: THREE.DoubleSide });
+    } else if(type === 'pts') {
+      m = new THREE.PointsMaterial({ color: col, size: opacity || 0.08, sizeAttenuation: true, transparent: true, opacity: 0.85 });
+    } else {
+      m = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: opacity || 1 });
+    }
+    m.userData = { role: role };
+    mats.push(m);
+    return m;
+  }
+
+  function recolorScene() {
+    var p = getThemeColors();
+    mats.forEach(function(m){
+      var r = m.userData.role;
+      m.color.set(p[r] || p.ink);
+    });
+  }
+
+  function makeEdges(geo, role, op) {
+    return new THREE.LineSegments(new THREE.EdgesGeometry(geo), createMat(role, 'line', op));
+  }
+  function makeCircle(r, role, op, seg) {
+    var pts = []; seg = seg || 96;
+    for(var i = 0; i <= seg; i++){
+      var a = i / seg * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
+    }
+    return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), createMat(role, 'line', op));
+  }
+
+  /* ----------------------------------------------------------------
+     7 Distinct 3D Geometric Entities
+     ---------------------------------------------------------------- */
+  function createEntity(type) {
+    var g = new THREE.Group();
+    var updaters = [];
+
+    // Stage 1: Mathematical Lattice & Gradient Flow
+    if(type === 'lattice') {
+      var ico = new THREE.IcosahedronGeometry(2.1, 1);
+      g.add(makeEdges(ico, 'ink', 0.85));
+      var oct = new THREE.OctahedronGeometry(1.15, 0);
+      var octWire = makeEdges(oct, 'accent', 1);
+      var octFill = new THREE.Mesh(oct, createMat('accent', 'mesh', 0.15));
+      g.add(octWire); g.add(octFill);
+      var pos = ico.attributes.position.array;
+      var ptsGeo = new THREE.BufferGeometry();
+      ptsGeo.setAttribute('position', new THREE.Float32BufferAttribute(Array.from(pos), 3));
+      g.add(new THREE.Points(ptsGeo, createMat('accent', 'pts', 0.12)));
+      updaters.push(function(t){
+        octWire.rotation.y = -t * 0.7;
+        octWire.rotation.x = t * 0.4;
+        octFill.rotation.copy(octWire.rotation);
+      });
+    }
+
+    // Stage 2: Attention Arcs & Transformer Tokens
+    else if(type === 'attention') {
+      var xs = [-2.4, -1.2, 0, 1.2, 2.4];
+      var boxes = [];
+      xs.forEach(function(x, i){
+        var b = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+        var e = makeEdges(b, i === 2 ? 'accent' : 'ink', 1);
+        e.position.x = x;
+        var f = new THREE.Mesh(b, createMat('accent', 'mesh', i === 2 ? 0.28 : 0.08));
+        f.position.x = x;
+        g.add(e); g.add(f);
+        boxes.push(e);
+      });
+      var arcs = [];
+      [[0,2],[1,2],[3,2],[4,2],[0,4],[1,3]].forEach(function(pr, i){
+        var x0 = xs[pr[0]], x1 = xs[pr[1]];
+        var midX = (x0 + x1) / 2;
+        var dist = Math.abs(x1 - x0);
+        var arcPts = [];
+        for(var k = 0; k <= 32; k++) {
+          var u = k / 32;
+          var px = x0 + (x1 - x0) * u;
+          var py = Math.sin(u * Math.PI) * (dist * 0.55 + 0.4);
+          arcPts.push(new THREE.Vector3(px, py, 0));
+        }
+        var arcLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(arcPts), createMat(i % 2 === 0 ? 'accent' : 'line', 'line', 0.85));
+        g.add(arcLine);
+        arcs.push(arcLine);
+      });
+      updaters.push(function(t){
+        boxes.forEach(function(bx, i){
+          bx.rotation.y = t * 0.8 + i;
+          bx.rotation.x = t * 0.4;
+        });
+      });
+    }
+
+    // Stage 3: LLM Evaluation & Alignment Gyroscope
+    else if(type === 'engine') {
+      var rOuter = makeCircle(2.2, 'ink', 0.95);
+      var rMid = makeCircle(1.65, 'accent', 1);
+      var rInner = makeCircle(1.1, 'ink', 0.7);
+      g.add(rOuter); g.add(rMid); g.add(rInner);
+      var core = makeEdges(new THREE.DodecahedronGeometry(0.7, 0), 'accent', 1);
+      g.add(core);
+      updaters.push(function(t){
+        rOuter.rotation.x = t * 0.5;
+        rOuter.rotation.y = t * 0.3;
+        rMid.rotation.y = -t * 0.8;
+        rMid.rotation.z = t * 0.4;
+        rInner.rotation.x = -t * 0.6;
+        core.rotation.y = t * 1.2;
+      });
+    }
+
+    // Stage 4: Microservices Pipeline Stack & MLOps Mesh
+    else if(type === 'stack') {
+      var layers = [];
+      for(var i = 0; i < 4; i++) {
+        var geo = new THREE.CylinderGeometry(1.8 - i * 0.22, 1.8 - i * 0.22, 0.28, 6);
+        var e = makeEdges(geo, i % 2 === 0 ? 'accent' : 'ink', 1);
+        e.position.y = -1 + i * 0.95;
+        g.add(e);
+        layers.push(e);
+      }
+      for(var k = 0; k < 4; k++) {
+        var pts = [new THREE.Vector3(-1 + k * 0.66, -1.3, 0), new THREE.Vector3(-1 + k * 0.66, 1.6, 0)];
+        var l = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), createMat('line', 'line', 0.65));
+        g.add(l);
+      }
+      updaters.push(function(t){
+        layers.forEach(function(b, i){
+          b.position.y = -1 + i * 0.95 + Math.sin(t * 1.5 + i * 1.2) * 0.12;
+          b.rotation.y = Math.sin(t * 0.6 + i) * 0.15;
+        });
+      });
+    }
+
+    // Stage 5: Geodesic Research Globe & Governance Rings
+    else if(type === 'globe') {
+      var globe = new THREE.Group();
+      for(var i = -2; i <= 2; i++) {
+        var y = i * 0.7, r = Math.sqrt(Math.max(0, 4 - y * y));
+        var c = makeCircle(r, 'ink', 0.65);
+        c.position.y = y; globe.add(c);
+      }
+      for(var j = 0; j < 6; j++) {
+        var m = makeCircle(2, 'ink', 0.5);
+        m.rotation.z = Math.PI / 2; m.rotation.y = j * Math.PI / 6;
+        globe.add(m);
+      }
+      g.add(globe);
+      var orbit = makeCircle(2.8, 'accent', 1);
+      orbit.rotation.x = 1.15; orbit.rotation.z = 0.3;
+      g.add(orbit);
+      updaters.push(function(t){
+        globe.rotation.y = t * 0.28;
+        orbit.rotation.y = t * 0.85;
+      });
+    }
+
+    // Stage 6: Tri-Modal Constellation (Vision, Audio, Action)
+    else if(type === 'trio') {
+      var center = makeEdges(new THREE.DodecahedronGeometry(0.75, 0), 'ink', 1);
+      g.add(center);
+      var shapes = [new THREE.OctahedronGeometry(0.45), new THREE.TetrahedronGeometry(0.5), new THREE.BoxGeometry(0.6, 0.6, 0.6)];
+      var satellites = [];
+      shapes.forEach(function(sh, i){
+        var holder = new THREE.Group();
+        var e = makeEdges(sh, 'accent', 1);
+        e.position.x = 2.15;
+        var f = new THREE.Mesh(sh, createMat('accent', 'mesh', 0.2));
+        f.position.x = 2.15;
+        holder.add(e); holder.add(f);
+        var rod = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.75, 0, 0), new THREE.Vector3(1.75, 0, 0)]), createMat('line', 'line', 0.8));
+        holder.add(rod);
+        holder.rotation.y = i * Math.PI * 2 / 3;
+        holder.rotation.z = (i - 1) * 0.35;
+        g.add(holder);
+        satellites.push({ holder: holder, e: e, f: f });
+      });
+      updaters.push(function(t){
+        center.rotation.y = -t * 0.45;
+        satellites.forEach(function(s, i){
+          s.holder.rotation.y = i * Math.PI * 2 / 3 + t * 0.65;
+          s.e.rotation.x = t * (1 + i * 0.35);
+          s.f.rotation.copy(s.e.rotation);
+        });
+      });
+    }
+
+    // Stage SI: Singularity Halo & Transcendent Cosmos
+    else if(type === 'si') {
+      var shells = [];
+      [2.35, 1.65, 0.95].forEach(function(r, i){
+        var e = makeEdges(new THREE.IcosahedronGeometry(r, i === 0 ? 1 : 0), i === 1 ? 'accent' : 'ink', i === 0 ? 0.45 : 1);
+        g.add(e);
+        shells.push(e);
+      });
+      var pts = [];
+      for(var k = 0; k < 420; k++) {
+        var theta = Math.random() * Math.PI * 2;
+        var phi = Math.acos(2 * Math.random() - 1);
+        var rad = 2.4 + Math.random() * 0.8;
+        pts.push(new THREE.Vector3(rad * Math.sin(phi) * Math.cos(theta), rad * Math.sin(phi) * Math.sin(theta), rad * Math.cos(phi)));
+      }
+      var pGeo = new THREE.BufferGeometry().setFromPoints(pts);
+      g.add(new THREE.Points(pGeo, createMat('accent', 'pts', 0.06)));
+      updaters.push(function(t){
+        shells[0].rotation.y = t * 0.2;
+        shells[1].rotation.x = -t * 0.35;
+        shells[2].rotation.z = t * 0.45;
+      });
+    }
+
+    g.userData.update = function(t){ updaters.forEach(function(fn){ fn(t); }); };
+    return g;
+  }
+
+  /* ----------------------------------------------------------------
+     Build the Ascent Spiral Curve and Place Entities
+     ---------------------------------------------------------------- */
+  var P = [];
+  for(var i = 0; i < 7; i++) {
+    var angle = i * 0.95;
+    var radius = (i === 6) ? 0 : 5.2;
+    P.push(new THREE.Vector3(Math.sin(angle) * radius, i * 2.6, Math.cos(angle) * radius));
+  }
+  var curve = new THREE.CatmullRomCurve3(P);
+  var curvePoints = curve.getPoints(320);
+
+  // Background ascent track line
+  rootGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curvePoints), createMat('line', 'line', 0.6)));
+
+  // Highlighted progress line
+  var progGeo = new THREE.BufferGeometry().setFromPoints(curvePoints);
+  var progLine = new THREE.Line(progGeo, createMat('accent', 'line', 1));
+  rootGroup.add(progLine);
+
+  // Base platform circle
+  var ground = makeCircle(8.2, 'line', 0.5, 120);
+  ground.position.y = -1.6;
+  rootGroup.add(ground);
+
+  var platforms = [];
+  ALL.forEach(function(stage, idx){
+    var holder = new THREE.Group();
+    holder.position.copy(P[idx]);
+    var ring = makeCircle(idx === 6 ? 2.4 : 1.6, idx === 6 ? 'accent' : 'ink', 0.85);
+    ring.position.y = -1.3;
+    holder.add(ring);
+
+    var ent = createEntity(stage.ent);
+    var baseScale = (idx === 6) ? 0.85 : 0.55;
+    ent.scale.setScalar(baseScale);
+    holder.add(ent);
+    rootGroup.add(holder);
+
+    platforms.push({ holder: holder, ent: ent, baseScale: baseScale });
+  });
+
+  /* ----------------------------------------------------------------
+     Pointer drag to rotate current 3D view
+     ---------------------------------------------------------------- */
+  var rot = { x: 0, y: 0, vx: 0, vy: 0.003, drag: false };
+  var startX, startY;
+  canvas.addEventListener('pointerdown', function(e){
+    rot.drag = true;
+    startX = e.clientX; startY = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function(e){
+    if(!rot.drag) return;
+    var dx = e.clientX - startX;
+    var dy = e.clientY - startY;
+    startX = e.clientX; startY = e.clientY;
+    rot.y += dx * 0.008;
+    rot.x = Math.max(-0.6, Math.min(0.8, rot.x + dy * 0.004));
+  });
+  canvas.addEventListener('pointerup', function(e){
+    rot.drag = false;
+  });
+
+  /* ----------------------------------------------------------------
+     Intersection Observer to Track Current Active Stage
+     ---------------------------------------------------------------- */
+  var currentStage = 0;
+  var stepElements = document.querySelectorAll('.c-step');
+  var meterSpans = document.querySelectorAll('.c-meter span');
+
+  function setActiveStage(idx) {
+    if(currentStage === idx) return;
+    currentStage = idx;
+    stepElements.forEach(function(el, k){ el.classList.toggle('on', k === idx); });
+    meterSpans.forEach(function(sp, k){ sp.classList.toggle('on', k <= idx); });
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting) {
+        var idx = parseInt(entry.target.getAttribute('data-index'), 10);
+        setActiveStage(idx);
+      }
+    });
+  }, { rootMargin: '-20% 0px -50% 0px', threshold: 0 });
+
+  stepElements.forEach(function(step){ io.observe(step); });
+
+  /* ----------------------------------------------------------------
+     Resize & Render Loop
+     ---------------------------------------------------------------- */
+  function onResize() {
+    var rect = canvas.getBoundingClientRect();
+    if(rect.width === 0 || rect.height === 0) return;
+    renderer.setSize(rect.width, rect.height, false);
+    camera.aspect = rect.width / rect.height;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  var camTargetPos = new THREE.Vector3(0, 4, 15);
+  var camTargetLook = new THREE.Vector3(0, 0, 0);
+
+  var tStart = performance.now();
+  function animate(now) {
+    var t = (now - tStart) / 1000;
+
+    var pt = P[currentStage];
+    var outDir = new THREE.Vector3(pt.x, 0, pt.z);
+    if(outDir.length() < 0.1) outDir.set(0, 0, 1);
+    outDir.normalize();
+
+    var desiredPos = new THREE.Vector3(pt.x + outDir.x * 8.5, pt.y + 3.2, pt.z + outDir.z * 8.5);
+    if(currentStage === 6) {
+      desiredPos.set(0, pt.y + 4.2, 15);
+    }
+
+    camTargetPos.lerp(desiredPos, 0.05);
+    camTargetLook.lerp(pt, 0.06);
+
+    camera.position.copy(camTargetPos);
+    camera.lookAt(camTargetLook);
+
+    if(!rot.drag) {
+      rot.y += 0.002;
+    }
+    rootGroup.rotation.y = rot.y;
+    rootGroup.rotation.x = rot.x;
+
+    progGeo.setDrawRange(0, Math.round(320 * (currentStage / 6)) + 1);
+
+    platforms.forEach(function(pl, i){
+      var isCur = (i === currentStage);
+      var targetS = isCur ? (pl.baseScale * 1.35) : pl.baseScale;
+      var newS = pl.ent.scale.x + (targetS - pl.ent.scale.x) * 0.08;
+      pl.ent.scale.setScalar(newS);
+      if(pl.ent.userData.update) pl.ent.userData.update(t);
+    });
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+  var observer = new MutationObserver(function(){
+    recolorScene();
+  });
+  observer.observe(root, { attributes: true, attributeFilter: ['data-skin', 'data-theme'] });
+}
+
+})();
+</script>

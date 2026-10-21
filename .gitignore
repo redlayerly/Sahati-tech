@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.env
+.env.local
+.venv
+env/
+venv/
+ENV/
+
+# Vercel
+.vercel
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archives & Backups
+*.tgz
+*.tar.gz
+*.zip
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary scripts
+scratch/
+scratch_*.py
