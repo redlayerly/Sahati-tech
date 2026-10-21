@@ -102,7 +102,9 @@
     "atlas_collapse_all": "طي الكل",
     "atlas_drag_hint": "اسحب للتدوير ↔",
     "atlas_stage_label": "المرحلة",
-    "atlas_pkg_label": "الحزمة"
+    "atlas_pkg_label": "الحزمة",
+    "social_follow": "تابع سَحاتِك",
+    "social_aria": "حسابات التواصل الاجتماعي"
   },
   "en": {
     "lang_name": "English",
@@ -207,7 +209,9 @@
     "atlas_collapse_all": "Collapse All",
     "atlas_drag_hint": "Drag to rotate ↔",
     "atlas_stage_label": "Stage",
-    "atlas_pkg_label": "PKG"
+    "atlas_pkg_label": "PKG",
+    "social_follow": "Follow Sahati Tech",
+    "social_aria": "Social media channels"
   },
   "tr": {
     "lang_name": "Türkçe",
@@ -312,7 +316,9 @@
     "atlas_collapse_all": "Tümünü Daralt",
     "atlas_drag_hint": "Döndürmek için sürükleyin ↔",
     "atlas_stage_label": "Aşama",
-    "atlas_pkg_label": "Paket"
+    "atlas_pkg_label": "Paket",
+    "social_follow": "Sahati Tech'i Takip Edin",
+    "social_aria": "Sosyal medya hesapları"
   },
   "ru": {
     "lang_name": "Русский",
@@ -417,7 +423,9 @@
     "atlas_collapse_all": "Свернуть все",
     "atlas_drag_hint": "Потяните для вращения ↔",
     "atlas_stage_label": "Этап",
-    "atlas_pkg_label": "Пакет"
+    "atlas_pkg_label": "Пакет",
+    "social_follow": "Подписывайтесь на Sahati Tech",
+    "social_aria": "Социальные сети"
   },
   "es": {
     "lang_name": "Español",
@@ -522,7 +530,9 @@
     "atlas_collapse_all": "Colapsar todo",
     "atlas_drag_hint": "Arrastra para rotar ↔",
     "atlas_stage_label": "Etapa",
-    "atlas_pkg_label": "Paquete"
+    "atlas_pkg_label": "Paquete",
+    "social_follow": "Sigue a Sahati Tech",
+    "social_aria": "Redes sociales"
   },
   "fil": {
     "lang_name": "Filipino",
@@ -627,7 +637,9 @@
     "atlas_collapse_all": "I-collapse Lahat",
     "atlas_drag_hint": "I-drag para paikutin ↔",
     "atlas_stage_label": "Yugto",
-    "atlas_pkg_label": "Pakete"
+    "atlas_pkg_label": "Pakete",
+    "social_follow": "I-follow ang Sahati Tech",
+    "social_aria": "Mga social media channel"
   },
   "zh": {
     "lang_name": "中文",
@@ -732,6 +744,8 @@
     "atlas_collapse_all": "全部折叠",
     "atlas_drag_hint": "拖拽以旋转视角 ↔",
     "atlas_stage_label": "阶段",
-    "atlas_pkg_label": "知识包"
+    "atlas_pkg_label": "知识包",
+    "social_follow": "关注 Sahati Tech",
+    "social_aria": "社交媒体账号"
   }
 }

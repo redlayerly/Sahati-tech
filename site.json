@@ -3,6 +3,12 @@
   "title": "سَحاتِك | Sahati Tech",
   "description": "سَحاتِك: مدونة توعية تقنية بالعربي. الأمن السيبراني بلغة نفهمها، شروح ونصائح وقواعد أمنية.",
   "newsletter_endpoint": "",
+  "social": {
+    "facebook": "https://www.facebook.com/sahati.tech",
+    "tiktok": "https://www.tiktok.com/@sahati.tech",
+    "x": "https://x.com/sahatitech?s=11",
+    "telegram": "https://t.me/sahati_tech"
+  },
   "categories": {
     "acc":  {"ar": "حماية الحسابات", "en": "ACCOUNTS"},
     "scam": {"ar": "الاحتيال والهندسة الاجتماعية", "en": "SCAMS"},
