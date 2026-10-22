@@ -374,7 +374,13 @@ def build():
 
     home_urls = {l: STR[l]['prefix'] + '/' for l in LANGS}
     atlas_urls = {l: STR[l]['prefix'] + '/atlas/' for l in LANGS}
-    sitemap = []
+    sitemap = []   # (path, lastmod)
+    def pdate(p):
+        u = p.get('updated')
+        try: return datetime.date.fromisoformat(str(u)) if u else p['date']
+        except ValueError: return p['date']
+    atlas_mod = SITE.get('atlas_updated') or datetime.date.today().isoformat()
+    social = [u.split('?')[0] for u in SITE.get('social', {}).values() if u]
     for lang in LANGS:
         S = STR[lang]; posts = by_lang[lang]; root = os.path.join(out, S['prefix'].strip('/'))
         pages = [p for p in posts if p['kind'] in ('article', 'head')]
@@ -384,8 +390,14 @@ def build():
         home = fill(read(P('templates', 'home.html')), S, sprite_lockup=read(P('templates', 'sprite-lockup.html')), ai_stage_chips=ai_chips,
                     count_posts=len(posts), count_topics=len(CAT_EN), count_terms=len(terms),
                     feed='\n'.join(card(p, S) for p in posts), glossary='\n'.join(terms), prefix=S['prefix'])
-        write(os.path.join(root, 'index.html'), page(lang, home, S['site_title'], S['site_description'], S['prefix'] + '/', home_urls))
-        sitemap.append(S['prefix'] + '/')
+        home_ld = {"@context": "https://schema.org", "@graph": [
+            {"@type": "Organization", "@id": BASE_URL + '/#org', "name": STR[DEFAULT]['site_name'], "alternateName": ["Sahati Tech", "CyberLogy"],
+             "url": BASE_URL + '/', "logo": {"@type": "ImageObject", "url": BASE_URL + '/assets/icon-192.png', "width": 192, "height": 192}, "sameAs": social},
+            {"@type": "WebSite", "@id": BASE_URL + S['prefix'] + '/#website', "name": S['site_name'], "url": BASE_URL + S['prefix'] + '/',
+             "description": S['site_description'], "inLanguage": S['html_lang'], "publisher": {"@id": BASE_URL + '/#org'}}]}
+        write(os.path.join(root, 'index.html'), page(lang, home, S['site_title'], S['site_description'], S['prefix'] + '/', home_urls,
+              head_extra='<script type="application/ld+json">%s</script>' % js_json(home_ld)))
+        sitemap.append((S['prefix'] + '/', max([pdate(p) for p in posts]).isoformat() if posts else atlas_mod))
 
         # AI Atlas for this language
         atlas_tpl = read(P('templates', 'atlas.html'))
@@ -394,7 +406,7 @@ def build():
                              atlas_data='<script type="application/json" id="atlasData">%s</script>' % js_json(adata))
         atlas_page_html = page(lang, atlas_content, S['atlas_title'], S['atlas_lead'], S['prefix'] + '/atlas/', atlas_urls, body_class='is-atlas')
         write(os.path.join(root, 'atlas', 'index.html'), atlas_page_html)
-        sitemap.append(S['prefix'] + '/atlas/')
+        sitemap.append((S['prefix'] + '/atlas/', atlas_mod))
 
         for idx, p in enumerate(pages):
             toc = []; body = md(p['body_md'], S, toc)
@@ -410,8 +422,8 @@ def build():
             url = BASE_URL + p['url']
             alts = {l: v['url'] for l, v in versions[p['slug']].items()}
             ld = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p['title'], "description": p.get('excerpt', ''),
-                  "datePublished": p['date'].isoformat(), "inLanguage": S['html_lang'], "mainEntityOfPage": url,
-                  "author": {"@type": "Organization", "name": S['site_name']}, "publisher": {"@type": "Organization", "name": S['site_name']}}
+                  "datePublished": p['date'].isoformat(), "dateModified": pdate(p).isoformat(), "image": BASE_URL + '/assets/og-cover.png', "inLanguage": S['html_lang'], "mainEntityOfPage": url,
+                  "author": {"@type": "Organization", "name": S['site_name']}, "publisher": {"@type": "Organization", "@id": BASE_URL + '/#org', "name": S['site_name'], "logo": {"@type": "ImageObject", "url": BASE_URL + '/assets/icon-192.png'}}}
             content = fill(read(P('templates', 'post.html')), S, prefix=S['prefix'],
                 hero_class=' is-head' if p['kind'] == 'head' else '', kind_label=esc(S['pill_' + p['kind']]), kind_label_single=esc(S['kind_' + p['kind']]),
                 category_ar=esc(cat), title=esc(p['title']), excerpt=esc(p.get('excerpt', '')), date_iso=p['date'].isoformat(), date_ar=fmt_date(p['date'], lang),
@@ -421,7 +433,7 @@ def build():
                   page(lang, content, '%s | %s' % (p['title'], S['site_name']), p.get('excerpt') or S['site_description'], p['url'], alts,
                        og_type='article', og_title=p['title'], body_class='is-post',
                        head_extra='<script type="application/ld+json">%s</script>' % js_json(ld)))
-            sitemap.append(p['url'])
+            sitemap.append((p['url'], pdate(p).isoformat()))
 
         items = ''.join('<item><title>%s</title><link>%s</link><guid>%s</guid><pubDate>%s</pubDate><description>%s</description></item>' % (
             esc(p['title']), BASE_URL + p['url'], BASE_URL + p['url'],
@@ -434,7 +446,7 @@ def build():
     nf_langs = ''.join('<li><a href="%s/" lang="%s">%s</a></li>' % (STR[l]['prefix'], STR[l]['html_lang'], esc(STR[l]['lang_name'])) for l in LANGS)
     write(os.path.join(out, '404.html'), page(DEFAULT, fill(read(P('templates', '404.html')), S, prefix='', nf_langs=nf_langs),
           '%s | %s' % (S['nf_page_title'], S['site_name']), S['site_description'], '/404.html', home_urls))
-    write(os.path.join(out, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>' % ''.join('<url><loc>%s%s</loc></url>' % (BASE_URL, u) for u in sitemap))
+    write(os.path.join(out, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>' % ''.join('<url><loc>%s%s</loc><lastmod>%s</lastmod></url>' % (BASE_URL, esc(u), m) for u, m in sitemap))
     write(os.path.join(out, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n' % BASE_URL)
     print('✓ تم البناء ← public/')
     for lang in LANGS:

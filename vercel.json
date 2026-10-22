@@ -67,6 +67,17 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.sahati-tech.com.ly"
+        }
+      ],
+      "destination": "https://sahati-tech.com.ly/:path*",
+      "permanent": true
+    },
+    {
       "source": "/.htaccess",
       "destination": "/404.html",
       "permanent": false
