@@ -248,6 +248,62 @@ def glossary_html(lang):
             out.append('<div class="term"><div class="t"><h3>%s</h3>%s</div><p>%s</p></div>' % (esc(term), '<span class="en">%s</span>' % esc(en) if en else '', esc(d)))
     return out
 
+
+# ------------------------------------------------------------------ AI Atlas content
+def atlas_parse(path):
+    """Read content/atlas/<lang>.txt: [section] headers followed by 'key = value' lines."""
+    secs, cur = {}, None
+    if not os.path.exists(path): return secs
+    for ln in read(path).splitlines():
+        if not ln.strip() or ln.lstrip().startswith('#'): continue
+        m = re.match(r'^\[(.+?)\]\s*$', ln)
+        if m: cur = m.group(1).strip(); secs.setdefault(cur, {}); continue
+        if cur is None or '=' not in ln: raise SystemExit('%s: سطر غير مفهوم: %s' % (path, ln))
+        k, _, v = ln.partition('=')
+        secs[cur][k.strip()] = v.strip()
+    return secs
+
+ATLAS_CACHE = {}
+def atlas_lang(lang):
+    if lang not in ATLAS_CACHE: ATLAS_CACHE[lang] = atlas_parse(P('content', 'atlas', '%s.txt' % lang))
+    return ATLAS_CACHE[lang]
+
+def atlas_data(lang):
+    """Merged Atlas data for one language (falls back to English, then Arabic, key by key)."""
+    struct = json.load(open(P('content', 'atlas', 'structure.json'), encoding='utf-8'))
+    chain = [atlas_lang(lang), atlas_lang('en'), atlas_lang('ar')]
+    en = atlas_lang('en')
+    def g(sec, key, default=''):
+        for c in chain:
+            v = c.get(sec, {}).get(key)
+            if v: return v
+        return default
+    def block(sec, keys): return {k: g(sec, k) for k in keys}
+    ui = block('ui', ('simple', 'analogy', 'why', 'example', 'terms', 'summit', 'stage', 'pkg', 'idea', 'insights'))
+    stages = []
+    for st in struct['stages']:
+        so = dict(id=st['id'], n=st['n'], label=st['label'], ent=st['ent'], **block('stage ' + st['id'], ('title', 'lead', 'simple', 'analogy', 'why', 'example')))
+        so['pkgs'] = []
+        for p in st['pkgs']:
+            po = dict(id=p['id'], label=p['label'], **block('pkg ' + p['id'], ('name', 'desc', 'simple', 'analogy', 'why', 'example')))
+            po['terms'] = []
+            for t in p['terms']:
+                sec = 'term ' + t['k']
+                name = g(sec, 'name'); en_name = en.get(sec, {}).get('name', '')
+                badge = en_name if (lang != 'en' and en_name and en_name != name) else atlas_lang('ar').get(sec, {}).get('name', '')
+                po['terms'].append({'name': name, 'badge': badge, 'def': g(sec, 'def'), 'tags': t.get('tags', [])})
+            so['pkgs'].append(po)
+        stages.append(so)
+    si = dict(id='si', n='SI', label=struct['si']['label'], ent=struct['si']['ent'], **block('si', ('title', 'lead', 'simple', 'analogy', 'why', 'example')))
+    si['ladder'] = [{'k': k, 'title': g('si', 'ladder.%s.title' % k), 'def': g('si', 'ladder.%s.def' % k), 'status': g('si', 'ladder.%s.status' % k)} for k in ('ANI', 'AGI', 'ASI')]
+    si['insights'] = [g('si', 'insight.%d' % i) for i in range(1, 10) if g('si', 'insight.%d' % i)]
+    return {'ui': ui, 'stages': stages, 'si': si}
+
+def atlas_missing(lang):
+    """Keys present in Arabic but missing in this language (for `build.py status`)."""
+    ar, cur = atlas_lang('ar'), atlas_lang(lang)
+    return [(sec, k) for sec, kv in ar.items() for k in kv if not cur.get(sec, {}).get(k)]
+
 # ------------------------------------------------------------------ build
 def load_base_posts():
     posts = []
@@ -312,7 +368,9 @@ def build():
         S = STR[lang]; posts = by_lang[lang]; root = os.path.join(out, S['prefix'].strip('/'))
         pages = [p for p in posts if p['kind'] in ('article', 'head')]
         terms = glossary_html(lang)
-        home = fill(read(P('templates', 'home.html')), S, sprite_lockup=read(P('templates', 'sprite-lockup.html')),
+        ad = atlas_data(lang)
+        ai_chips = ''.join('<span>%s %s</span>' % (st['n'], esc(st['title'])) for st in ad['stages']) + '<span class="si-badge">SI %s</span>' % esc(ad['si']['title'])
+        home = fill(read(P('templates', 'home.html')), S, sprite_lockup=read(P('templates', 'sprite-lockup.html')), ai_stage_chips=ai_chips,
                     count_posts=len(posts), count_topics=len(CAT_EN), count_terms=len(terms),
                     feed='\n'.join(card(p, S) for p in posts), glossary='\n'.join(terms), prefix=S['prefix'])
         write(os.path.join(root, 'index.html'), page(lang, home, S['site_title'], S['site_description'], S['prefix'] + '/', home_urls))
@@ -320,13 +378,12 @@ def build():
 
         # AI Atlas for this language
         atlas_tpl = read(P('templates', 'atlas.html'))
-        atlas_content = fill(atlas_tpl, S, prefix=S['prefix'])
+        adata = atlas_data(lang)
+        atlas_content = fill(atlas_tpl, S, prefix=S['prefix'],
+                             atlas_data='<script type="application/json" id="atlasData">%s</script>' % json.dumps(adata, ensure_ascii=False).replace('</', '<\\/'))
         atlas_page_html = page(lang, atlas_content, S['atlas_title'], S['atlas_lead'], S['prefix'] + '/atlas/', atlas_urls, body_class='is-atlas')
         write(os.path.join(root, 'atlas', 'index.html'), atlas_page_html)
         sitemap.append(S['prefix'] + '/atlas/')
-        if lang == DEFAULT:
-            write(os.path.join(out, 'أطلس الذكاء الاصطناعي.html'), atlas_page_html)
-            write(os.path.join(out, 'atlas.html'), atlas_page_html)
 
         for idx, p in enumerate(pages):
             toc = []; body = md(p['body_md'], S, toc)
@@ -382,6 +439,11 @@ def status(quiet=False):
         if not quiet and miss:
             print('%s (%s): %s' % (lang, STR[lang]['lang_name'], ', '.join(miss)))
     if not quiet and not n: print('✓ كل المنشورات مترجمة لكل اللغات.')
+    for lang in LANGS[1:]:
+        m = atlas_missing(lang)
+        n += len(m)
+        if not quiet and m:
+            print('الأطلس · %s (%s): %d نص ناقص، مثل: %s' % (lang, STR[lang]['lang_name'], len(m), ', '.join('[%s] %s' % x for x in m[:4])))
     return n
 
 # ------------------------------------------------------------------ commands

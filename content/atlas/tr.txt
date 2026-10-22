@@ -1,0 +1,1535 @@
+# Sahati Tech · AI Atlas content (tr)
+# Format: [section] then "key = value" lines (one line per value).
+# Structure, order and 3D entities live in structure.json. Missing keys fall back to English, then Arabic.
+
+[ui]
+simple = Basitçe
+analogy = Benzetme
+why = Bu seni neden ilgilendiriyor?
+example = Gerçek hayattan örnek
+terms = Terimler
+summit = ZİRVE · YOL HARİTASININ ÖTESİ
+stage = Aşama
+pkg = Paket
+idea = Fikir
+insights = Bildiklerimiz ve bilmediklerimiz
+
+[stage s1]
+title = Temel Bilgiler
+lead = Yapay zekâda inşa edilen her şeyin temeli: algoritmaların yazıldığı matematik dili, makine öğreniminin kuralları, derin sinir ağlarının yapısı ve bunları besleyen araçlar ile veri mühendisliği.
+simple = Yapay zekâ bizim gibi "düşünmez". Her kuralı elle yazmak yerine örneklerden öğrenen bir yazılımdır. Öğrenmek için üç şeye ihtiyaç duyar: verileri tarif edeceği bir matematik dili, kendi hatasını ölçüp düzeltmenin bir yolu ve öğreneceği iyi veriler. Bu aşama üçünü de kurar.
+analogy = Araba kullanmayı öğrenmek gibi: matematik hareketi yöneten fizik kurallarıdır, makine öğrenimi biri seni düzeltirken alanda yaptığın alıştırmadır, veriler ise direksiyon başında geçirdiğin saatlerdir. Yeterince sürüş yapmadan kuralları ezberlemek işe yaramaz.
+why = Bu atlasta daha sonra okuyacağın her şey, ChatGPT'den yapay zekâ ajanlarına kadar, aynı fikirlerin üzerine kurulu. Temeli anlayan, bir modelin neden bazen yanıldığını ve kötü verinin neden kötü model ürettiğini anlar.
+example = E-posta kutundaki istenmeyen posta filtresi. Kimse her dolandırıcılık e-postası için bir kural yazmadı. Sistem, önceden etiketlenmiş milyonlarca e-postadan istenmeyen postanın neye benzediğini öğrendi.
+
+[pkg 00]
+name = Matematiksel Temeller
+desc = Algoritmaların içeride nasıl çalıştığını anlamanın temeli. Bu olmadan araştırma makalelerini okumak ya da model eğitimini kavramak mümkün değil.
+simple = Bilgisayar bir resim ya da cümle görmez; tablolar (matrisler) hâlinde dizilmiş sayılar görür. Doğrusal cebir bu sayıların nasıl saklanıp çarpılacağını belirler, kalkülüs hatayı azaltmak için sayıları hangi yöne değiştirmemiz gerektiğini söyler, olasılık ise modelin düz bir evet/hayır yerine "yüzde 90 eminim" demesini sağlar.
+analogy = Gradyan inişi, yoğun siste dağdan inmeye benzer: vadiyi göremezsin ama ayağının altındaki zemini hisseder ve en düşük noktaya varana kadar hep en dik iniş yönüne adım atarsın.
+example = Harita uygulaması varış süreni tahmin ederken trafik olasılığını sabit bir kurala göre değil, geçmiş verilerden istatistiksel olarak hesaplar.
+
+[term 00.0]
+name = Doğrusal Cebir
+def = Vektörlerin, matrislerin ve bunlara uygulanan işlemlerin incelenmesi; sinir ağı katmanlarında verinin saklanmasının ve işlenmesinin doğrudan temeli.
+
+[term 00.1]
+name = Kalkülüs
+def = Değişim oranlarının ve kısmi türevlerin incelenmesi; model ağırlıklarını hassas şekilde güncellemek için gereken gradyanları hesaplamakta kullanılır.
+
+[term 00.2]
+name = Olasılık Teorisi
+def = Veri dağılımlarının ve olayların gerçekleşme ihtimalinin incelenmesi; üretken modellerde ve belirsizliği ölçmede temel öneme sahip.
+
+[term 00.3]
+name = İstatistik
+def = Veriyi analiz edip ondan göstergeler çıkarmak; ortalama, standart sapma, varyans ve dağılımları anlamak.
+
+[term 00.4]
+name = Optimizasyon
+def = Çok sayıda seçenek arasından en düşük hata oranıyla mümkün olan en iyi matematiksel çözümü bulmak.
+
+[term 00.5]
+name = Gradyan İnişi
+def = Modelin performansını ve kararlılığını iyileştirmek için hata fonksiyonunun en düşük noktasına adım adım ilerleyen matematiksel algoritma.
+
+[pkg 01]
+name = Makine Öğrenimi Temelleri
+desc = Bilgisayarların her adım için açıkça programlanmadan, verilerden kalıpları çıkarıp kendi kendine öğrenmesini sağlayan yöntem.
+simple = Geleneksel programlamada kuralları biz yazar, veriyi verir, sonucu alırız. Makine öğreniminde ise veriyi doğru cevaplarla birlikte veririz, kuralları model kendisi çıkarır. En büyük tehlike, modelin kalıbı öğrenmek yerine eğitim örneklerini ezberlemesi ve yeni her durumda başarısız olmasıdır.
+analogy = Geçmiş yılların sınav cevaplarını ezberleyen öğrenci yalnızca o sınavları geçer, sorular değişince kalır. Buna aşırı öğrenme (overfitting) denir. Bu yüzden verinin bir kısmını (test kümesini) saklar ve modeli hiç görmediği sorularla sınarız.
+example = Bankalar şüpheli işlemleri, "temiz" ya da "dolandırıcılık" olarak etiketlenmiş milyonlarca işlemle eğitilen bir modelle yakalar. Bu, denetimli öğrenmedir.
+
+[term 01.0]
+name = Yapay Zekâ
+def = Bilgisayar sistemlerinde insanın bilişsel yeteneklerini ve akıl yürütmesini taklit etmeye çalışan geniş bilim alanı.
+
+[term 01.1]
+name = Makine Öğrenimi
+def = Yazılımların verilerden deneyim biriktirerek doğruluklarını otomatik olarak artırmasını sağlayan uygulamalı alt alan.
+
+[term 01.2]
+name = Denetimli Öğrenme
+def = Modeli, girdileri ve önceden onaylanmış doğru çıktıları içeren örneklerle eğitmek.
+
+[term 01.3]
+name = Denetimsiz Öğrenme
+def = Modeli önceden cevabı olmayan ham verilerle eğitip gizli grupları ve ilişkileri keşfetmesini sağlamak.
+
+[term 01.4]
+name = Pekiştirmeli Öğrenme
+def = Modeli deneme yanılma ve sürekli etkileşimle eğitmek; doğru kararlar karşılığında ödül alır.
+
+[term 01.5]
+name = Veri Kümesi
+def = Modelleri eğitmek ve test etmek için kullanılan ham dijital verilerin bütünü.
+
+[term 01.6]
+name = Öznitelikler
+def = Veriden çıkarılan ve modelin tahminlerini dayandırdığı belirli özellikler.
+
+[term 01.7]
+name = Etiketler
+def = Modelin doğru şekilde ulaşmaya çalıştığı referans doğru cevaplar.
+
+[term 01.8]
+name = Eğitim Kümesi
+def = Model kurulurken parametreleri ve ağırlıkları ayarlamak için ayrılan verinin büyük kısmı.
+
+[term 01.9]
+name = Doğrulama Kümesi
+def = Eğitim sırasında öğrenmenin kalitesini izlemek, hiperparametreleri ayarlamak ve sapmayı önlemek için kullanılan bağımsız veri.
+
+[term 01.10]
+name = Test Kümesi
+def = Modelin hiç görmediği, tamamen saklanmış tarafsız veri; nihai başarısını nesnel olarak ölçmek için kullanılır.
+
+[term 01.11]
+name = Kayıp Fonksiyonu
+def = Tek bir örnek için modelin tahmini ile gerçek sonuç arasındaki farkı ve hatayı ölçen matematiksel denklem.
+
+[term 01.12]
+name = Maliyet Fonksiyonu
+def = Tüm veri kümesi boyunca hesaplanan kayıpların ortalaması.
+
+[term 01.13]
+name = Öğrenme Oranı
+def = Her güncelleme adımında ağırlıkların ne kadar değişeceğini belirleyen ölçü; dengeli olması başarı için şart.
+
+[term 01.14]
+name = Aşırı Öğrenme (Overfitting)
+def = Modelin eğitim örneklerini aşırı ayrıntıyla ezberlemesi ve yeni verilerle karşılaşınca tamamen başarısız olması.
+
+[term 01.15]
+name = Yetersiz Öğrenme (Underfitting)
+def = Modelin aşırı basit olması yüzünden eğitim verisindeki temel ilişkileri bile kavrayamaması.
+
+[term 01.16]
+name = Yanlılık (Bias)
+def = Öğrenme algoritmasındaki gerçekçi olmayan basitleştirme ve varsayımlardan doğan hata.
+
+[term 01.17]
+name = Varyans
+def = Modelin eğitim verisindeki rastgele dalgalanmalara ve gürültüye aşırı duyarlılığı.
+
+[term 01.18]
+name = Düzenlileştirme (Regularization)
+def = Ezberlemeyi önlemek ve genellemeyi teşvik etmek için modelin karmaşıklığına sınır koyan matematiksel önlemler.
+
+[term 01.19]
+name = Çapraz Doğrulama
+def = Sonuçların güvenilir olduğundan emin olmak için modeli verinin farklı parçalarında dönüşümlü olarak eğitip test etmek.
+
+[term 01.20]
+name = Öznitelik Mühendisliği
+def = Ham veriyi algoritma için daha anlamlı ve kullanışlı biçimlere dönüştürmek.
+
+[term 01.21]
+name = Modelin Genelleme Yeteneği
+def = Bir yapay zekâ sisteminin temel ölçütü: yeni ve hiç görülmemiş verilerde de yüksek doğruluk ve güvenilirliği koruması.
+
+[pkg 02]
+name = Derin Öğrenme
+desc = Yüksek boyutlu verilerden katman katman, giderek daha derin temsilleri kendiliğinden öğrenebilen çok katmanlı sinir ağı mimarileri.
+simple = Sinir ağı, basit dijital "nöronlardan" oluşan katmanlardan yapılır. Her katman bir öncekinin çıktısını alır ve ondan daha derin bir kalıp çıkarır: bir resimde ilk katman kenarları, sonraki şekilleri, daha derindekiler yüzleri yakalar. Ağ yanıldığında hata sondan başa doğru geri yayılır (geri yayılım) ve her katman ağırlıklarını biraz düzeltir.
+analogy = Bir fabrikadaki üretim bandı gibi: her işçi küçük bir dokunuş ekler. Kusurlu bir ürün çıktığında ustabaşı bant boyunca geri yürür ve her işçiye kusura ne kadar katkı yaptığını söyler ki yöntemini düzeltsin.
+example = Telefonunun yüz tanıma kilidi, yüzünü sayısal bir parmak izine dönüştüren ve kayıtlı olanla karşılaştıran evrişimli bir sinir ağına (CNN) dayanır.
+
+[term 02.0]
+name = Yapay Sinir Ağları
+def = Biyolojik nöronlardan esinlenen, birbirine bağlı düğümlerin ardışık katmanlar hâlinde düzenlendiği hesaplama yapıları.
+
+[term 02.1]
+name = Perseptron
+def = Sinir ağlarının temel yapı taşı: girdilerin ağırlıklı toplamını alır, ardından bir eşik uygular.
+
+[term 02.2]
+name = Çok Katmanlı Perseptron
+def = Gizli katmanları olan ileri beslemeli derin ağ; karmaşık ve doğrusal olmayan ilişkileri modelleyebilir.
+
+[term 02.3]
+name = İleri Yayılım
+def = Girdi verisinin nihai çıktıyı hesaplamak için ağ katmanlarından sırayla geçmesi.
+
+[term 02.4]
+name = Geri Yayılım
+def = Zincir kuralını kullanarak hatanın her parametreye göre gradyanını sondan başa doğru verimli şekilde hesaplayan algoritma.
+
+[term 02.5]
+name = Aktivasyon Fonksiyonları
+def = Nöronların toplamına uygulanan doğrusal olmayan dönüşümler; ağın doğrusal olmayan kalıpları öğrenmesini sağlar.
+
+[term 02.6]
+name = ReLU
+def = Girdi pozitifse kendisini, değilse sıfırı veren basit fonksiyon; hızlıdır ve derin ağlarda eğitimi kolaylaştırır.
+
+[term 02.7]
+name = Sigmoid
+def = Her değeri 0 ile 1 arasına sıkıştıran S biçimli eğri; iki sınıflı tahminlerde olasılık üretmek için kullanılır.
+
+[term 02.8]
+name = Tanh
+def = Değerleri -1 ile 1 arasına eşleyen hiperbolik tanjant fonksiyonu; sıfır merkezli çıktılarıyla eğitimi dengeler.
+
+[term 02.9]
+name = GELU
+def = BERT ve GPT gibi modern Transformer modellerinde standart olan olasılıksal aktivasyon fonksiyonu.
+
+[term 02.10]
+name = Yığın Normalizasyonu
+def = Eğitimi kararlı hâle getirmek ve hızlandırmak için her mini yığındaki değerleri standartlaştırma tekniği.
+
+[term dropout]
+name = Dropout
+def = Eğitim sırasında nöronların rastgele bir kısmını kapatmak; böylece ağ tek bir nörona bağımlı kalmaz, ezberlemek yerine daha genel kalıplar öğrenir.
+
+[term weight-init]
+name = Ağırlık Başlatma
+def = Eğitimden önce ağ ağırlıklarının başlangıç değerlerini seçmek. Kötü bir başlangıç eğitimi çok yavaşlatabilir ya da hiç ilerletmeyebilir.
+
+[term lr-scheduler]
+name = Öğrenme Oranı Planlayıcı
+def = Eğitim boyunca öğrenme oranını değiştirmek; genellikle başta büyük, sona doğru küçük ve hassas adımlar.
+
+[term transfer-learning]
+name = Transfer Öğrenme
+def = Büyük bir görevde eğitilmiş bir modeli yeni bir görevin başlangıç noktası olarak kullanmak; çok daha az veri ve zaman gerektirir.
+
+[term optimizers]
+name = Optimize Ediciler: SGD, Adam, AdamW
+def = Hata hesaplandıktan sonra ağırlıkların nasıl ayarlanacağını belirleyen yöntemler. SGD en basitidir, Adam her ağırlık için adım boyunu otomatik ayarlar, onun bir türevi olan AdamW bugün dil modellerini eğitmede en yaygın seçimdir.
+
+[term batch]
+name = Yığın (Batch)
+def = Modelin her ağırlık güncellemesinden önce birlikte işlediği küçük örnek grubu.
+
+[term epoch]
+name = Epoch
+def = Modelin tüm eğitim verisi üzerinden bir kez tam geçmesi. Eğitim genellikle birkaç epoch sürer.
+
+[term cnn]
+name = CNN (Evrişimli Sinir Ağı)
+def = Görüntüler için tasarlanmış, resim üzerinde küçük bir pencere kaydırarak kenarları, şekilleri ve kalıpları tespit eden ağlar. Bilgisayarlı görü devrimini başlattılar.
+
+[term rnn]
+name = RNN (Tekrarlayan Sinir Ağı)
+def = Dizileri adım adım işleyen ve öncekilerden bir "hafıza" taşıyan ağlar. Transformer'dan önce metin ve konuşma için kullanılıyordu.
+
+[term lstm]
+name = LSTM (Uzun Kısa Süreli Bellek)
+def = Neyin tutulup neyin unutulacağına karar veren "kapıları" olan bir tekrarlayan ağ türü; uzun bir dizinin başındaki bilgiyi hatırlayabilir.
+
+[term gru]
+name = GRU (Kapılı Tekrarlayan Birim)
+def = Daha az kapısı olan, LSTM'nin daha basit ve hızlı bir sürümü; pek çok görevde benzer performans gösterir.
+
+[term autoencoder]
+name = Otokodlayıcı
+def = Veriyi küçük bir temsile sıkıştırıp sonra yeniden kurmayı öğrenen ağ. Alışılmadık olduğu için modelin iyi yeniden kuramadığı bir işlem gibi anormallikleri yakalamakta kullanılır.
+
+[pkg 03]
+name = Çerçeveler ve Araçlar
+desc = Büyük temel modelleri kurmak, dağıtmak ve ince ayar yapmak için kullanılan yazılım ekosistemleri ve kütüphaneler.
+simple = Bugün kimse sinir ağlarını sıfırdan yazmaz. PyTorch gibi kütüphaneler ekran kartlarındaki ağır hesapları üstlenir, Hugging Face gibi platformlar binlerce hazır model barındırır. LoRA gibi teknikler ise dev bir modeli, yalnızca çok küçük bir kısmını eğiterek kendi görevine uyarlamanı sağlar.
+analogy = LoRA, kalın bir kitabı baştan basmak yerine ona küçük bir ek eklemek gibidir. Asıl kitap aynı kalır, değişikliklerin ekte durur.
+example = Libya lehçesini anlayan bir model isteyen bir girişimin, sıfırdan eğitim için milyonlarca dolara ihtiyacı yok. Açık bir model alıp tek bir makinede QLoRA ile ince ayar yapabilir.
+
+[term 03.0]
+name = PyTorch
+def = Dinamik hesaplama grafikleri ve sorunsuz GPU desteğiyle tanınan, sektörün ve akademinin standart derin öğrenme kütüphanesi.
+
+[term 03.1]
+name = TensorFlow
+def = Google'ın ölçeklenebilir üretim dağıtımı ve çapraz platform sunum için geliştirdiği kapsamlı makine öğrenimi ekosistemi.
+
+[term 03.2]
+name = JAX
+def = Araştırmayı hızlandırmak için otomatik türev almayı ve XLA donanım derlemesini birleştiren Google kütüphanesi.
+
+[term 03.3]
+name = Hugging Face Transformers
+def = Binlerce önceden eğitilmiş güncel modele anında erişim sağlayan referans açık kaynak kütüphane.
+
+[term 03.4]
+name = Hugging Face Hub
+def = Model dosyalarını, araştırma veri kümelerini ve etkileşimli demoları paylaşmak için merkezi ortak platform.
+
+[term 03.5]
+name = PEFT
+def = Parametre-Verimli İnce Ayar: dev dil modellerini, parametrelerinin yalnızca küçük bir kısmını güncelleyerek az bellekle özelleştiren yöntemler.
+
+[term 03.6]
+name = LoRA
+def = Düşük Rank Uyarlaması: temel modelin ağırlıklarını dondurur ve yalnızca küçük ek matrisleri eğitir; GPU belleğinden büyük tasarruf sağlar.
+
+[term 03.7]
+name = QLoRA
+def = 4 bitlik nicemlemeyi LoRA ile birleştirerek çok büyük modellerin tüketici donanımında ince ayarını mümkün kılar.
+
+[term 03.8]
+name = Model Birleştirme
+def = Farklı şekilde ince ayar yapılmış modellerin ağırlıklarını ek eğitim maliyeti olmadan tek bir modelde birleştirme teknikleri.
+
+[term 03.9]
+name = Accelerate
+def = Çoklu GPU ve karma hassasiyetle çalıştırmayı küçük kod değişiklikleriyle kolaylaştıran Hugging Face aracı.
+
+[term 03.10]
+name = DeepSpeed
+def = Yüz milyarlarca parametreli modelleri eğitmek için bellek optimizasyonu sağlayan Microsoft'un dağıtık eğitim motoru.
+
+[term 03.11]
+name = TRL
+def = Transformer'lar için pekiştirmeli öğrenme: RLHF, DPO ve PPO gibi eğitim sonrası hizalama yöntemlerini kolaylaştıran kütüphane.
+
+[term 03.12]
+name = Weights & Biases
+def = Eğitim kaybını anlık izlemek, hiperparametre denemelerini yönetmek ve veri sürümlerini takip etmek için MLOps aracı.
+
+[pkg 04]
+name = Yapay Zekâ İçin Veri Mühendisliği
+desc = Veri toplama, temizleme, özellik yönetimi ve kalite kontrolünü yöneten temel veri hatları ve mimariler.
+simple = Bir model, öğrendiği veriden daha iyi olamaz. Bu yüzden yapay zekâdaki gerçek işin büyük kısmı veriyi toplamak, tekrarlardan ve hatalardan temizlemek, doğru cevaplarla etiketlemek ve her modelin tam olarak neyle eğitildiğini bilmek için sürümlerini takip etmektir.
+analogy = Usta bir aşçı bozuk malzemeyle iyi yemek yapamaz. Veri mühendisliği, yemeğe başlamadan önceki alışveriş, yıkama ve doğrama işidir.
+example = Tek bir hastanenin röntgenleriyle eğitilen tıbbi bir model, görüntüleme cihazları farklı olduğu için başka bir hastanede başarısız olabilir. Sorun algoritmada değil, veridedir.
+
+[term 04.0]
+name = Veri Toplama
+def = Web, API'ler ve kurumsal depolardan ham metin, belge ve medyanın sistematik olarak toplanması.
+
+[term 04.1]
+name = Veri Temizleme
+def = Veri bütünlüğü için gürültüyü ayıklamak, tekrarları silmek, eksik değerleri gidermek ve bozuk kayıtları düzeltmek.
+
+[term 04.2]
+name = Veri Etiketleme
+def = Ham veriyi doğrulanmış sınıflar, etiketler veya sınırlayıcı kutularla zenginleştirmek.
+
+[term 04.3]
+name = Veri Artırma
+def = Döndürme, kırpma veya eş anlamlı değiştirme gibi varyasyonlarla eğitim çeşitliliğini programlı şekilde artırmak.
+
+[term 04.4]
+name = Aktif Öğrenme
+def = Modelin, en az emin olduğu örnekleri insan uzmanlara sorarak etiketleme emeğinden en yüksek verimi aldığı strateji.
+
+[term 04.5]
+name = Zayıf Denetim
+def = Büyük veri kümelerini sezgisel kurallar ve yardımcı modellerle programlı olarak etiketlemek.
+
+[term 04.6]
+name = Veri Odaklı Yapay Zekâ
+def = Algoritmayla oynamak yerine verinin kalitesini sürekli iyileştirmeyi öne çıkaran yaklaşım.
+
+[term 04.7]
+name = Veri Hatları (ETL/ELT)
+def = Ham veriyi çıkaran, dönüştüren ve depolama sistemlerine yükleyen otomatik iş akışları.
+
+[term 04.8]
+name = Veri Sürümleme
+def = Eğitim veri kümeleri için Git benzeri sürüm takibi; her eğitimin birebir tekrarlanabilmesini sağlar.
+
+[term 04.9]
+name = Öznitelik Deposu
+def = Öznitelikleri hızlı sunan, eğitim ile çalıştırma arasında tutarlılığı koruyan ve ekipler arasında paylaşılan merkezi depo.
+
+[term 04.10]
+name = Akış Hatları
+def = Sürekli veri akışlarını saniyenin altında gecikmeyle işleyen gerçek zamanlı mimariler (Kafka, Flink).
+
+[term 04.11]
+name = Sentetik Veri Üretimi
+def = Veri azlığını gidermek ve hassas gizliliği korumak için üretken modellerle yüksek kaliteli yapay veri üretmek.
+
+[stage s2]
+title = Büyük Dil Modelleri (LLM)
+lead = Üretken yapay zekâ devrimini yönlendiren çekirdek: Transformer'ın dikkat mekanizması, temel modellerin ön eğitimi, bağlam ve RAG sistemleri, yapay zekâ ajanları ve çalıştırmayı hızlandırma.
+simple = ChatGPT ve Claude gibi dil modelleri, özünde şaşırtıcı derecede basit bir fikirle çalışır: sonraki kelimeyi tahmin etmek. Metni küçük parçalara böler, "dikkat" adı verilen bir mekanizmayla önceki kelimelerden hangilerinin şu anki kelime için önemli olduğuna karar verir ve en olası parçayı seçer. Dev bir model muazzam miktarda metinle eğitildiğinde bu basit tahminden anlamaya benzeyen yetenekler doğar: çeviri, özetleme, kod yazma.
+analogy = Cümle tamamlama oyunu gibi: "Fırına ... almaya gittim." "Ekmek" diye tahmin edersin çünkü buna benzer pek çok cümle okudun ve duydun. Model de aynısını yapar, ama milyonlarca kitaba denk gelen metni okumuştur.
+why = Bu modeller artık her yerde: arama, eğitim, müşteri hizmetleri, yazılım. Nasıl çalıştıklarını bilmek, bir cevaba ne zaman güvenip ne zaman doğrulaman gerektiğini ve neden bir bilgiyi tam bir özgüvenle "uydurabildiklerini" (halüsinasyon) anlamanı sağlar.
+example = Telefonunun klavyesi yazarken bir sonraki kelimeyi önerdiğinde, bu aynı prensiple çalışan çok küçük bir dil modelidir.
+
+[pkg 05]
+name = Transformer Mimarisi
+desc = Tekrarlayan sinir ağlarının yerini alan ve modern üretken yapay zekâyı mümkün kılan devrimci öz-dikkat mimarisi.
+simple = Transformer'dan önce modeller metni kelime kelime sırayla okur ve uzun cümlelerin başını unuturdu. Transformer cümlenin tamamını bir kerede okur; "dikkat" her kelimenin diğer tüm kelimelere bakmasını ve hangilerinin kendisi için önemli olduğuna karar vermesini sağlar. Böylece paragrafın sonundaki "o"nun, başta adı geçen kişiyi kastettiğini anlar.
+analogy = Elinde fosforlu kalem olan bir okuyucu gibi: her kelime için, onu anlamaya yardım eden diğer kelimeleri farklı yoğunluklarla işaretler.
+example = "Bardağı masaya koydum çünkü düzdü" cümlesinde, "düzdü"yü bardağa değil masaya bağlayan şey dikkattir.
+
+[term 05.0]
+name = Tokenizasyon
+def = Ham metni Transformer modellerinin anlayabileceği ayrık token kimliklerine ayırma işlemi.
+
+[term 05.1]
+name = Token
+def = Dil modellerinin işlediği ve ürettiği en küçük birimler: alt kelimeler, karakterler veya kelimeler.
+
+[term 05.2]
+name = Sözcük Dağarcığı
+def = Bir tokenizer içinde her birine benzersiz bir sayı verilmiş izin verilen tokenların sabit sözlüğü.
+
+[term 05.3]
+name = BPE
+def = Bayt Çifti Kodlaması: sık geçen karakter çiftlerini tekrar tekrar birleştirerek en uygun tokenları oluşturan algoritma.
+
+[term 05.4]
+name = WordPiece
+def = BERT'in kullandığı, token seçimlerini dil modeli olasılığına göre optimize eden alt kelime yöntemi.
+
+[term 05.5]
+name = SentencePiece
+def = Metni ham bayt dizisi olarak işleyen, boşluksuz yazılan diller dahil pek çok dili doğrudan destekleyen tokenizer.
+
+[term 05.6]
+name = Tokenizer Eğitimi
+def = Temsili bir metin derleminden sözcük dağarcığını ve birleştirme kurallarını oluşturan ön hesaplama.
+
+[term 05.7]
+name = Gömmeler (Embeddings)
+def = Anlamın sayısal vektörlerle temsil edildiği, anlamca yakın kelimelerin birbirine yakın düştüğü uzay.
+
+[term 05.8]
+name = Konumsal Kodlama
+def = Dikkat katmanlarına kelimelerin sırasını bildirmek için eklenen matematiksel vektörler.
+
+[term 05.9]
+name = RoPE
+def = Dönen Konum Gömmesi: token konumlarını vektör uzayında döndürme yoluyla kodlar; Llama gibi modellerde yaygındır.
+
+[term 05.10]
+name = ALiBi
+def = Doğrusal Yanlılıklı Dikkat: dikkat puanlarına mesafeye bağlı ceza uygular; daha uzun metinlere genellemeyi kolaylaştırır.
+
+[term 05.11]
+name = Dikkat Mekanizması
+def = Bir dizideki tokenlar arasında dinamik olarak ağırlıklı önem puanları hesaplayan mekanizma.
+
+[term 05.12]
+name = Öz-Dikkat
+def = Metin içindeki ilişkileri yakalamak için aynı dizideki tüm token çiftleri arasında dikkat hesaplamak.
+
+[term 05.13]
+name = Çapraz Dikkat
+def = Sorguların bir diziden, anahtar ve değerlerin başka bir diziden geldiği dikkat türü; çeviride standarttır.
+
+[term 05.14]
+name = Çok Başlı Dikkat
+def = Dikkati paralel olarak birden çok kez çalıştırıp farklı dilbilgisel ve anlamsal ilişkileri aynı anda yakalamak.
+
+[term 05.15]
+name = Nedensel Dikkat
+def = Tokenların kendinden sonra gelenlere bakmasını engelleyen maskeli dikkat; sıradaki kelimeyi üreten modeller için gerekli.
+
+[term 05.16]
+name = Maskeleme
+def = Gelecekteki tokenları gizlemek veya maskeli dil modellerini eğitmek için dikkat matrisindeki değerleri bilerek kapatmak.
+
+[term 05.17]
+name = İleri Beslemeli Ağ
+def = Her Transformer bloğunun içinde, her token'a ayrı ayrı doğrusal olmayan dönüşüm uygulayan küçük ağ.
+
+[term 05.18]
+name = Artık Bağlantılar
+def = Bloğun girdisini doğrudan çıktısına ekleyen kısa yollar; derin ağlarda gradyanların kaybolmasını önler.
+
+[term 05.19]
+name = Katman Normalizasyonu
+def = Her token'ın değerlerini kendi içinde standartlaştıran normalizasyon tekniği.
+
+[term 05.20]
+name = Kodlayıcı (Encoder)
+def = Girdi metnini iki yönlü okuyup zengin bağlamsal temsiller üreten Transformer bileşeni.
+
+[term 05.21]
+name = Kod Çözücü (Decoder)
+def = Önceki tokenlara dayanarak çıktı tokenlarını sırayla üreten Transformer bileşeni.
+
+[term 05.22]
+name = Transformer Mimarisi
+def = Dikkat, normalizasyon ve ileri beslemeli blokları tek bir temel model tasarımında birleştiren bütün plan.
+
+[pkg 06]
+name = Büyük Dil Modelleri
+desc = Milyarlarca parametreli temel modellerin ön eğitimi, hizalanması, ölçeklenmesi ve metin üretimi sırasında örneklenmesi.
+simple = Büyük bir dil modeli iki aşamadan geçer. Muazzam miktarda metin üzerinde ön eğitim ona dili ve genel bilgiyi öğretir. Ardından sohbet örnekleri ve insan değerlendirmeleriyle yapılan ince ayar onu yararlı ve kibar bir asistana dönüştürür. Kullanırken cevaplarını temperature gibi ayarlarla ve isteğini nasıl yazdığınla (prompt mühendisliği) şekillendirirsin.
+analogy = Ön eğitim, koca bir kütüphaneyi okumuş bir öğrenci gibidir. İnce ayar ise müşterilerle bir yıllık iş başı eğitimidir. Okumak bilgiyi verir, eğitim onu nasıl kullanacağını öğretir.
+example = Bir asistana "adım adım düşün" dediğinde matematik sorusundaki cevabı iyileşiyorsa, düşünce zinciri (Chain of Thought) tekniğini kullanıyorsun demektir.
+
+[term 06.0]
+name = Temel Modeller
+def = Pek çok farklı uygulamaya uyarlanabilen ortak bir temel olarak geniş kapsamlı eğitilmiş dev modeller.
+
+[term 06.1]
+name = Ön Eğitim
+def = Dilbilgisini, anlamı ve dünya bilgisini içselleştirmek için trilyonlarca token işlenen ilk eğitim aşaması.
+
+[term 06.2]
+name = İnce Ayar
+def = Önceden eğitilmiş ağırlıkları uzman bir alana veya belirli bir davranışa uyarlayan ikinci eğitim.
+
+[term 06.3]
+name = SFT
+def = Denetimli İnce Ayar: modeli, insan isteklerine uyması için seçilmiş talimat-cevap çiftleriyle eğitmek.
+
+[term 06.4]
+name = RLHF
+def = İnsan Geri Bildiriminden Pekiştirmeli Öğrenme: model çıktılarını bir ödül modeli üzerinden insan niyeti ve değerleriyle hizalamak.
+
+[term 06.5]
+name = DPO
+def = Doğrudan Tercih Optimizasyonu: ayrı bir ödül modeline gerek kalmadan modeli doğrudan ikili tercihlerle hizalamak.
+
+[term 06.6]
+name = Talimat Ayarı
+def = Kullanıcı talimatlarını güvenilir şekilde anlaması için modeli çok çeşitli istek-cevap görevleriyle eğitmek.
+
+[term 06.7]
+name = Damıtma
+def = Dev bir "öğretmen" modelin becerisini küçük ve hızlı bir "öğrenci" modele aktarmak.
+
+[term 06.8]
+name = Uzmanlar Karışımı (MoE)
+def = Her token'ı uzman katmanların yalnızca bir kısmına yönlendiren mimari; kapasiteyi artırırken hesaplamadan tasarruf eder.
+
+[term 06.9]
+name = Ölçekleme Yasaları
+def = Parametre sayısı, veri miktarı ve hesaplama arttıkça performans artışını öngören deneysel güç yasaları.
+
+[term 06.10]
+name = Ortaya Çıkan Yetenekler
+def = Modelde ancak belirli bir ölçek aşıldıktan sonra beliren akıl yürütme, çok adımlı matematik gibi gelişmiş beceriler.
+
+[term 06.11]
+name = Bağlam Uzunluğunu Ölçekleme
+def = Modellerin tek bir istekte koca kitapları işleyip doğru hatırlamasını sağlayan mimari yenilikler.
+
+[term 06.12]
+name = Çıkarım
+def = Eğitilmiş modelin canlı kullanıcı isteklerine tahmin veya cevap üretmek için çalıştırılması.
+
+[term 06.13]
+name = Kod Çözme
+def = Modelin ham çıktı puanlarını sırayla ayrık dil tokenlarına çeviren algoritmik süreç.
+
+[term 06.14]
+name = Temperature
+def = Olasılıkları ölçekleyen ayar: düşük değerler daha tutarlı ve kesin, yüksek değerler daha yaratıcı ve çeşitli cevaplar verir.
+
+[term 06.15]
+name = Top-k
+def = Aday tokenları en yüksek olasılıklı k tanesiyle sınırlayıp düşük olasılıklı tuhaf seçimleri elemek.
+
+[term 06.16]
+name = Top-p
+def = Çekirdek örnekleme: toplam olasılığı p eşiğini aşan en küçük token grubundan dinamik olarak seçmek.
+
+[term 06.17]
+name = Işın Araması (Beam Search)
+def = En olası birkaç cevap yolunu paralel olarak takip ederek bütünde en iyi diziyi bulmaya çalışan arama yöntemi.
+
+[term language-models]
+name = Dil Modelleri
+def = Bir dilde kelime dizilerinin olasılıklarını öğrenen ve böylece sonraki kelimeyi tahmin edip tutarlı metin üretebilen modeller.
+
+[term logits-softmax]
+name = Logitler ve Softmax
+def = Logitler, modelin olası her sonraki kelimeye verdiği ham puanlardır. Softmax bunları toplamı yüzde 100 olan olasılıklara çevirir ki biri seçilebilsin.
+
+[term sampling]
+name = Örnekleme
+def = Her zaman en yükseği almak yerine sonraki kelimeyi olasılığına göre rastgele seçmek; cevaplar çeşitlenir ve daha doğal görünür.
+
+[term prompt-engineering]
+name = Prompt Mühendisliği
+def = Modele açık istekler yazma becerisi: rol, bağlam, görev ve istenen cevap biçimini belirlemek. Nasıl sorduğun cevabın kalitesini çok değiştirir.
+
+[term prompt-templates]
+name = Prompt Şablonları
+def = Otomatik doldurulan boşlukları olan hazır istekler; örneğin "Aşağıdaki belgeyi 3 maddede özetle: {belge}". Modelin kullanımını standartlaştırır.
+
+[term system-prompt]
+name = Sistem Prompt'u
+def = Uygulama geliştiricisinin her sohbetten önce koyduğu, asistanın kişiliğini, kurallarını ve sınırlarını belirleyen gizli talimatlar.
+
+[term few-shot]
+name = Birkaç Örnekle İsteme (Few-shot)
+def = İsteğin içine görevin iki üç örneğini koymak; model ne istendiğini anlar ve ek eğitim olmadan kalıbı izler.
+
+[term cot]
+name = Düşünce Zinciri (CoT)
+def = Modelden nihai cevaptan önce akıl yürütme adımlarını yazmasını istemek; mantık ve matematik problemlerinde doğruluğu artırır.
+
+[term tool-calling]
+name = Araç / Fonksiyon Çağırma
+def = Modelin harici bir aracı (hesap makinesi, arama, veritabanı) belirli bir biçimde çağırması ve sonucu cevabında kullanması.
+
+[term structured-output]
+name = Yapılandırılmış Çıktı
+def = Modeli cevabını JSON gibi sabit bir biçimde vermeye zorlamak; diğer yazılımlar onu hatasız doğrudan okuyabilir.
+
+[pkg 07]
+name = Bağlam Mühendisliği ve RAG Sistemleri
+desc = Modelin sınırlı çalışma belleğini yönetmek ve onu arama ile geri getirme yoluyla kaynaklarına bağlamak; böylece güncel ve güvenilir bilgiden cevap verir. Sohbetler arasında hatırlamasını sağlayan bellek sistemleri de buna dahil.
+simple = Modelin "bağlam penceresi" denen sınırlı bir çalışma belleği vardır ve şirketinin belgeleri ya da eğitiminden sonra olan hiçbir şey hakkında bilgisi yoktur. Çözüm RAG'dir: kaynaklarında soruyla ilgili pasajları arar, onları soruyla birlikte modelin önüne koyarsın ve model hafızasından değil bunlardan cevap verir. Bu pencereye neyin girip çıkacağını yönetmek artık kendi başına bir uzmanlık: bağlam mühendisliği.
+analogy = Açık kitap sınavı. Öğrencinin her şeyi ezberlemesi gerekmez, ama doğru sayfayı hızla bulmayı bilmesi gerekir. Anlamsal arama dizindir, model de öğrencidir.
+example = Bir telekom şirketinin destek botu, güncel paket fiyatlarını eğitim sırasında öğrendiği eski bilgilerden değil, şirketin güncel belgelerinden cevaplar.
+
+[term 07.0]
+name = Belge Parçalama Stratejileri
+def = Uzun belgeleri vektör aramasına ve bağlam sınırına uygun anlamlı parçalara bölmek.
+
+[term 07.1]
+name = Yoğun Geri Getirme
+def = Belge parçalarını gömme uzayındaki vektör yakınlığına göre indeksleyip getiren anlamsal arama.
+
+[term 07.2]
+name = Hibrit Arama
+def = En iyi sonucu yakalamak için klasik anahtar kelime aramasını (BM25) vektör benzerliğiyle birleştirmek.
+
+[term 07.3]
+name = Yeniden Sıralama
+def = Getirilen adayları ikinci bir sinir modeliyle yeniden puanlayıp en ilgili parçaları öne almak.
+
+[term 07.4]
+name = Graph RAG
+def = Belgeleri varlıklar ve ilişkilerden oluşan bir bilgi grafiğine dönüştürmek; böylece model çok adımlı karmaşık soruları cevaplayabilir.
+
+[term context-window]
+name = Bağlam Penceresi
+def = Modelin bir kerede "görebildiği" en fazla metin miktarı (token cinsinden); talimatlar, sohbet, belgeler ve kendi cevabı dahil.
+
+[term context-management]
+name = Bağlam Yönetimi
+def = Sohbet uzadıkça bağlam penceresine neyin girip neyin çıkacağına karar vermek; önemli bilgi görünür kalsın.
+
+[term context-collapse]
+name = Bağlam Çöküşü
+def = Modelin penceresi fazla ya da çelişkili bilgiyle dolduğunda önemli olana odaklanamaması ve cevap kalitesinin düşmesi.
+
+[term context-compression]
+name = Bağlam Sıkıştırma
+def = Eski sohbet ya da belge kısımlarını silmek yerine özetlemek; anlam korunurken pencerede yer açılır.
+
+[term context-engineering]
+name = Bağlam Mühendisliği
+def = Model cevaplamadan önce ona verilen her şeyi tasarlamak: talimatlar, getirilen belgeler, bellek ve araç sonuçları, bilinçli bir sıra ve miktarda.
+
+[term rag]
+name = RAG (Geri Getirmeyle Güçlendirilmiş Üretim)
+def = Soruyla ilgili bilgiyi harici kaynaklarda arayıp modelin önüne koymak ve oradan cevap vermesini sağlamak; halüsinasyonu azaltır, bilgiyi güncel tutar.
+
+[term semantic-search]
+name = Anlamsal Arama
+def = Kelime eşleşmesine değil anlama göre aramak; "hesabıma nasıl geri girerim" sorusu "Şifre kurtarma" başlıklı belgeyi bulur.
+
+[term recursive-chunking]
+name = Özyinelemeli Parçalama
+def = Belgeyi doğal yapısına göre (bölümler, sonra paragraflar, sonra cümleler) her parça doğru boyuta gelene kadar bölmek; bir fikir ortadan kesilmez.
+
+[term prompt-compression]
+name = Prompt Sıkıştırma
+def = Anlamı koruyarak sonucu etkilemeyen kelimeleri çıkarıp isteği kısaltmak; maliyet düşer, cevap hızlanır.
+
+[term query-expansion]
+name = Sorgu Genişletme
+def = Arama öncesinde kullanıcının sorusunu yeniden ifade etmek veya eş anlamlılar eklemek; doğru belgeleri bulma ihtimali artar.
+
+[term contextual-retrieval]
+name = Bağlamsal Geri Getirme
+def = İndekslemeden önce her parçaya kaynağını ve bağlamını anlatan kısa bir açıklama eklemek; parça tek başına getirildiğinde de anlamını korur.
+
+[term parent-doc]
+name = Üst Belge Geri Getirme
+def = Küçük ve hassas parçalarla arayıp modele bu parçaların ait olduğu daha büyük paragrafı veya bölümü vermek; model tüm bağlamı görür.
+
+[term metadata-filtering]
+name = Meta Veri Filtreleme
+def = Aramayı tarih, departman veya dil gibi belge özellikleriyle daraltmak; örneğin yalnızca 2026 politikaları.
+
+[term knowledge-base]
+name = Bilgi Tabanı
+def = Bir RAG sisteminin veya asistanın cevap verirken dayandığı düzenli belge ve bilgi koleksiyonu.
+
+[term memory-systems]
+name = Bellek Sistemleri
+def = Modelin sohbetler arasında veya uzun görevlerde bilgiyi "hatırlamasını" sağlayan mekanizmalar; çünkü model sohbet bittiğinde hiçbir şey hatırlamaz.
+
+[term short-term-memory]
+name = Kısa Süreli Bellek
+def = Yalnızca mevcut sohbet boyunca bağlam penceresinde kalan ve sohbet bitince kaybolan bilgi.
+
+[term long-term-memory]
+name = Uzun Süreli Bellek
+def = Modelin dışında (bir veritabanında) saklanan ve sonraki sohbetlerde geri getirilen bilgi; kullanıcı tercihleri gibi.
+
+[term conversation-memory]
+name = Sohbet Belleği
+def = Sohbet geçmişini ya da özetini tutmak; böylece model "az önce dediğin gibi" gibi göndermeleri anlar.
+
+[pkg 08]
+name = Yapay Zekâ Ajanları ve Alt Ajanlar
+desc = Plan yapmak, akıl yürütmek, harici araçları çağırmak ve ekipler hâlinde iş birliği yapmak için dil modellerini zihin olarak kullanan özerk sistemler.
+simple = Ajan, araçlar ve bir hedef verilmiş bir dil modelidir. Bir kez cevap vermek yerine görevi planlar, bir araç seçer (arama, kod çalıştırma, istek gönderme), sonucu okur, sonraki adıma karar verir ve hedefe ulaşana kadar tekrarlar. MCP, herhangi bir aracı herhangi bir modele aynı şekilde bağlayan açık bir standarttır.
+analogy = Ansiklopedi ile kişisel asistan arasındaki fark. Ansiklopedi sorduğunda cevap verir. Asistan ise "bana randevu ayarla" görevini alır; arar, karşılaştırır, ayarlar ve sonuçla sana döner.
+why = Ajanlar gerçek eylemler yapar, bu yüzden hataları bir sohbet botununkinden daha ciddidir. E-postalarını okuyan bir ajan, gizli talimatlar içeren bir mesajla kandırılabilir (prompt enjeksiyonu).
+example = Bir kodlama ajanına bir hata raporu verilir. Kodu okur, düzeltmeyi yazar, testleri çalıştırır, geçene kadar ayarlar ve değişikliği incelemeye gönderir.
+
+[term 08.0]
+name = Yapay Zekâ Ajanları
+def = Akıl yürütmek, plan yapmak, API çağırmak ve karmaşık hedeflere ulaşmak için çekirdeğinde dil modeli kullanan özerk yazılım sistemleri.
+
+[term 08.1]
+name = Alt Ajanlar
+def = Bir yönetici ajan tarafından ayrı alt görevler (arama, kodlama, doğrulama) verilen uzman yardımcı ajanlar.
+
+[term 08.2]
+name = Çok Ajanlı Sistemler
+def = Karmaşık iş akışlarını çözmek için mesajlaşarak iş birliği yapan veya tartışan uzman ajanlardan oluşan ekosistemler.
+
+[term 08.3]
+name = Orkestrasyon ve Araçlar
+def = Ajanlara gerçek dünyada iş yapma imkânı (tarayıcı, komut satırı, API) veren ve yürütme mantığını yöneten çerçeveler.
+
+[term 08.4]
+name = Ajan Çerçeveleri
+def = Ajan ekiplerini tasarlamak, yönlendirmek ve denetlemek için üretim kütüphaneleri (CrewAI, AutoGen, MetaGPT, LangGraph).
+
+[term agent-architecture]
+name = Ajan Mimarisi
+def = Bir ajanın nelerden oluştuğu: düşünmek için bir dil modeli, eylem için araçlar, bellek ve "düşün, uygula, gözlemle" döngüsünü tekrarlayan bir kontrol akışı.
+
+[term planning]
+name = Planlama
+def = Başlamadan önce büyük bir hedefi küçük ve sıralı adımlara bölmek ve yeni bilgi çıktıkça planı ayarlamak.
+
+[term reasoning]
+name = Akıl Yürütme
+def = Ajanın bilgileri birleştirip rastgele davranmak yerine mantıklı bir sonraki adımı çıkarabilmesi.
+
+[term reflection]
+name = Öz Değerlendirme
+def = Ajanın devam etmeden önce bir adımın ya da cevabın sonucunu gözden geçirip hatalarını bulması ve düzeltmesi.
+
+[term tool-use]
+name = Araç Kullanımı ve Seçimi
+def = Mevcut araçlar arasından her adım için doğru aracı seçmek ve onu doğru girdilerle kullanmak.
+
+[term memory-retrieval]
+name = Bellekten Geri Getirme
+def = Ajanın mevcut görevle ilgili bilgi veya geçmiş deneyim için belleğinde arama yapması.
+
+[term agent-memory]
+name = Ajan Belleği
+def = Ajanın görevdeki ilerlemesi ve öğrendikleri hakkında tuttukları; aynı adımları veya hataları tekrarlamasın.
+
+[term agent-communication]
+name = Ajanlar Arası İletişim
+def = Birden çok ajanın mesaj ve sonuç alışverişi yapması ve görevleri aralarında paylaşması.
+
+[term workflow-agents]
+name = İş Akışı Ajanları
+def = Önceden tanımlanmış bir adım dizisini izleyen ajanlar. Tamamen özerk ajanlardan daha disiplinli ve izlemesi daha kolaydır.
+
+[term autonomous-agents]
+name = Özerk Ajanlar
+def = Hedefe ulaşmak için her adıma kendi karar veren ajanlar; daha esnek ama daha riskli.
+
+[term agent-evaluation]
+name = Ajan Değerlendirmesi
+def = Tek bir cevabın kalitesini değil, ajanın bütün görevleri ne kadar iyi tamamladığını ölçmek: hedefe ulaştı mı, kaç adımda, yanlış bir eylemde bulundu mu?
+
+[term mcp]
+name = MCP (Model Bağlam Protokolü)
+def = Anthropic'in sunduğu, modellerin araçlara ve veri kaynaklarına bağlanma biçimini birleştiren açık standart; onu destekleyen her araç, onu destekleyen her uygulamayla çalışır.
+
+[pkg 09]
+name = Çıkarım Optimizasyonu
+desc = Üretim hızını artıran, gecikmeyi azaltan ve bellek ihtiyacını küçülten donanım ve algoritma teknikleri.
+simple = Büyük bir modeli çalıştırmak pahalıdır. Bol bellekli ekran kartlarına (GPU) ihtiyaç duyar ve ürettiği her kelime hesaplama gerektirir. Bu paket, bunu daha hızlı ve ucuz yapmakla ilgili: modeli nicemlemeyle küçültmek, tekrarlanan işleri önbelleğe almak ve birçok kullanıcıya aynı anda akıllıca hizmet vermek. Ollama ve llama.cpp gibi araçlar tam modelleri kendi bilgisayarında çalıştırmanı sağlar.
+analogy = Nicemleme, yüksek çözünürlüklü bir fotoğrafı sıkıştırmak gibidir. Pek fark etmediğin ince ayrıntıları kaybedersin ama dosya çok hafifler ve hızlı açılır.
+example = Tam hassasiyette 140 GB bellek isteyen bir model yaklaşık 40 GB'a nicemlenebilir; böylece birkaç sunucu yerine tek makinede çalışır.
+
+[term 09.0]
+name = Model Nicemleme
+def = Bellek ihtiyacını, kalitede önemsiz kayıpla büyük ölçüde azaltmak için ağırlık hassasiyetini düşürmek (FP16'dan INT8 veya INT4'e).
+
+[term 09.1]
+name = KV Önbellek Optimizasyonu
+def = Üretim adımları boyunca hesaplanan anahtar-değer tensörlerini saklayarak tekrar eden matris hesaplarını ortadan kaldırmak.
+
+[term 09.2]
+name = Spekülatif Kod Çözme
+def = Hızlı bir yardımcı modelle taslak tokenlar üretip ana modelle paralel doğrulamak; üretimi hızlandırır.
+
+[term 09.3]
+name = FlashAttention
+def = GPU belleğinin farklı katmanları arasındaki darboğazı ortadan kaldıran, donanıma duyarlı dikkat algoritması.
+
+[term gpu-vram]
+name = GPU ve VRAM
+def = Ekran kartları binlerce hesabı paralel yapar, bu yüzden yapay zekânın motorudur. Belleklerinin (VRAM) boyutu çalıştırabileceğin en büyük modeli belirler.
+
+[term cuda]
+name = CUDA
+def = NVIDIA'nın, yazılımların ekran kartını genel hesaplama için kullanmasını sağlayan programlama platformu. Çoğu yapay zekâ kütüphanesi buna dayanır.
+
+[term pruning]
+name = Budama (Pruning)
+def = Ağı küçültüp hızlandırmak için en az önemli ağırlıkları veya parçaları, doğrulukta az kayıpla çıkarmak.
+
+[term batching]
+name = Sürekli ve Dinamik Yığınlama
+def = Birden çok kullanıcının isteklerine aynı işlemcide birlikte hizmet vermek ve bütün bir grubu beklemek yerine diğerleri biter bitmez yeni istekleri eklemek.
+
+[term paged-attention]
+name = PagedAttention
+def = Modelin üretim sırasındaki belleğini, bir işletim sisteminin yaptığı gibi küçük sayfalar hâlinde yöneten teknik; daha az bellek boşa gider, daha çok kullanıcıya hizmet verilir.
+
+[term prefix-caching]
+name = Önek Önbellekleme ve Paylaşımı
+def = İsteklerin tekrar eden kısmının (uzun bir sistem prompt'u gibi) hesabını saklayıp her istekte yeniden hesaplamak yerine kullanmak.
+
+[term parallelism]
+name = Tensör, Boru Hattı ve Model Paralelliği
+def = Dev bir modeli birkaç işlemciye yaymak: ya matrislerin kendisini bölerek (tensör paralelliği) ya da katmanları bölerek (boru hattı paralelliği).
+
+[term onnx]
+name = ONNX
+def = Modellerin kütüphaneler arasında taşınıp pek çok donanımda çalışabilmesi için standart kaydetme biçimi.
+
+[term tensorrt]
+name = TensorRT ve TensorRT-LLM
+def = Bir modeli özellikle NVIDIA ekran kartları için optimize edip çok daha hızlı çalıştıran araçlar.
+
+[term quant-formats]
+name = Nicemleme biçimleri: GGUF, AWQ, GPTQ, EXL2
+def = Nicemlenmiş modelleri saklamanın farklı yöntem ve dosya biçimleri. GGUF kişisel bilgisayarlarda çalıştırmak için en bilinenidir; diğerleri hızlı GPU çıkarımında yaygındır.
+
+[term llama-cpp]
+name = llama.cpp
+def = Dil modellerini sıradan işlemcilerde, Mac'lerde ve mütevazı bilgisayarlarda verimli çalıştıran açık kaynak program.
+
+[term ollama]
+name = Ollama
+def = Açık modelleri indirip tek bir komutla kendi bilgisayarında çalıştırmayı sağlayan kolay araç; verilerin hiçbir dış sunucuya gitmez.
+
+[term vllm]
+name = vLLM
+def = PagedAttention ve sürekli yığınlama sayesinde aynı anda çok sayıda kullanıcıya hizmet veren yüksek performanslı açık kaynak sunum motoru.
+
+[term serving-engines]
+name = Sunum motorları: SGLang, LMDeploy, TGI
+def = Modelleri üretimde çalıştırmak için diğer motorlar; her birinin hız, kullanım kolaylığı veya belirli model desteğinde güçlü yanları var.
+
+[stage s3]
+title = Test, Hizalama ve Güven
+lead = Modelleri titizlikle ölçmek, halüsinasyonlara ve prompt enjeksiyonuna karşı korunmak, hizalama ve modelin içini anlamaya yönelik yorumlanabilirlik.
+simple = Akıllı bir model inşa etmek işin sadece yarısı. Diğer yarısı: doğru olduğunu nereden bileceğiz? Kötüye kullanılmasını nasıl engelleyeceğiz? Neden o kararı verdiğini nasıl anlayacağız? Bu aşama ölçüm, test ve güvenlikle ilgili: modelleri karşılaştırmak için kıyaslamalar, uygulamalar için sürekli testler, saldırılara karşı savunmalar ve "kara kutuyu" açan araçlar.
+analogy = Uçak üretmek gibi. Uçağı tasarlamak yetmez; rüzgârda ve fırtınada test edilmeli, her parçası denetlenmeli ve her uçuş kara kutuya kaydedilmeli ki herhangi bir arızanın izi sürülebilsin.
+why = Yapay zekânın siber güvenlikle doğrudan kesiştiği yer burası. Prompt enjeksiyonu, jailbreak ve veri sızıntıları bugün gerçek ve dil modeline dayanan her sistem bunlara açık.
+example = Bir kırmızı takım, bir bankanın yapay zekâ asistanını akıllıca kurulmuş cümlelerle başka bir müşterinin bilgilerini açıklamaya ikna etmeye çalışır; açık bir dolandırıcıdan önce bulunur.
+
+[pkg 10]
+name = Kıyaslama ve Standartlar
+desc = Bilgiyi, çok adımlı akıl yürütmeyi, matematik problem çözmeyi ve kodlama yeteneğini ölçen standart bilimsel testler.
+simple = Bir modelin diğerinden daha iyi olduğunu nereden biliriz? Kıyaslamalarla: matematik, kodlama ve genel kültürde her modele aynı şekilde sorulan sabit soru setleri. Bir de insanların hangi modelin yazdığını bilmeden iki cevabı karşılaştırdığı platformlar var.
+analogy = Ulusal standart sınav gibi: karşılaştırma adil olsun diye her öğrenciye aynı sorular. Ama yüksek puan, iş hayatında her zaman en iyi performans anlamına gelmez.
+example = Bir şirket yeni modelinin "MMLU'da yüzde 90 aldığını" duyurduğunda, 57 alanda binlerce sorudan oluşan bir testi kastediyor.
+
+[term 10.0]
+name = Akademik Kıyaslamalar
+def = Akıl yürütme, bilim ve kodlama yeterliliğini sayısal olarak ölçen standart veri kümeleri (MMLU, GSM8K, HumanEval).
+
+[term 10.1]
+name = Chatbot Arena
+def = Modelleri insan tercihlerine ve Elo puanlarına göre sıralayan, kör ikili karşılaştırma yapılan kitle kaynaklı platform.
+
+[term 10.2]
+name = Alana Özel Kıyaslamalar
+def = Sağlık, hukuk ve finans gibi alanlarda mesleki yeterliliği ölçen titiz testler.
+
+[term evals]
+name = Evals (Değerlendirmeler)
+def = Bir modelin veya uygulamanın belirli bir yeteneğini ölçmek için tasarlanan ve her değişiklikte düzenli olarak çalıştırılan test setleri.
+
+[term human-evaluation]
+name = İnsan Değerlendirmesi
+def = İnsanların modelin cevaplarını okuyup kalitesini yargılaması. Yavaş ve pahalı olsa da açık uçlu sorular için en doğru yaklaşım.
+
+[term ground-truth]
+name = Referans Doğru (Ground Truth)
+def = Modelin çıktısının doğru olup olmadığına karar vermek için karşılaştırıldığı onaylanmış doğru cevap.
+
+[term cost-evaluation]
+name = Maliyet Değerlendirmesi
+def = Her cevabın veya görevin parasal ve zamansal maliyetini hesaplamak; çünkü en doğru model, uygulamanın ihtiyacından çok daha pahalı olabilir.
+
+[pkg 11]
+name = İleri LLM Değerlendirmesi
+desc = Uygulama performansını ve cevapların kaynaklara dayanıp dayanmadığını doğrulayan otomatik değerlendirme hatları, ölçütler ve "hakem model" yaklaşımları.
+simple = Kıyaslamalar modeli genel olarak ölçer, ama senin uygulamanın kendi testlerine ihtiyacı var. Doğru belgelerden mi cevap veriyor? Bir şey mi uydurdu? Prompt'u yeniden yazdığımızda davranışı değişti mi? Burada referans test setleri kurar, güçlü bir modeli hakem olarak kullanır ve güncellemeleri önce küçük bir kullanıcı grubuna kademeli olarak açarız.
+analogy = İmza yemeğinin tarifini değiştiren bir restoran gibi: yeni versiyonu önce tek bir masaya sunar, yorumları eski tarifle karşılaştırır ve ancak işe yararsa herkese geçer.
+example = Bir şirket asistanının prompt'larını yeniden yazar, ardından eskiden doğru olan cevapları bozmadığından emin olmak için 500 referans soruyu otomatik olarak çalıştırır.
+
+[term 11.0]
+name = Halüsinasyon Tespiti
+def = Modelin dayanaksız, uydurma veya gerçeğe aykırı iddialar ürettiği durumları belirleyen otomatik doğrulama araçları.
+
+[term 11.1]
+name = Kesinlik ve Duyarlılık
+def = Tahminlerin ne kadar isabetli ve ne kadar kapsayıcı olduğunu ölçen istatistiksel ölçütler.
+
+[term 11.2]
+name = F1 Skoru
+def = Kesinlik ile duyarlılığın harmonik ortalaması; sınıflar dengesiz olduğunda dengeli bir ölçü sağlar.
+
+[term 11.3]
+name = BLEU
+def = Makine çevirisinin kalitesini insan referans çevirileriyle karşılaştırarak puanlayan otomatik ölçüt.
+
+[term 11.4]
+name = ROUGE
+def = Makinenin ürettiği özetler ile insan özetleri arasındaki kelime örtüşmesini karşılaştıran değerlendirme ölçütü.
+
+[term 11.5]
+name = Gecikme ve Verim
+def = İlk token'a kadar geçen süre, tokenlar arası gecikme ve toplam sunucu verimini izleyen kritik işletim ölçütleri.
+
+[term 11.6]
+name = RAGAS
+def = RAG mimarilerinde getirilen bağlamın uygunluğunu, cevabın kaynağa sadakatini ve ilgililiğini değerlendiren çerçeve.
+
+[term 11.7]
+name = DeepEval
+def = Prompt'lar, zararlı içerik ve halüsinasyonlar için otomatik birim testleri sağlayan, üretime hazır LLM test paketi.
+
+[term 11.8]
+name = promptfoo
+def = Prompt kalitesini değerlendirmek, gerilemeleri test etmek ve model çıktılarını karşılaştırmak için komut satırı ve CI/CD aracı.
+
+[term 11.9]
+name = LangSmith
+def = Karmaşık LLM uygulamalarını ve ajan zincirlerini hata ayıklama, izleme, test etme ve değerlendirme platformu.
+
+[term 11.10]
+name = Hakem Olarak LLM
+def = Diğer modellerin cevaplarını geniş ölçekte değerlendirmek, puanlamak ve geri bildirim vermek için güçlü modelleri kullanma yöntemi.
+
+[term 11.11]
+name = Altın Veri Kümeleri
+def = Üretim testlerinde değişmez referans olarak kullanılan, insanlar tarafından dikkatle doğrulanmış veri kümeleri.
+
+[term 11.12]
+name = A/B Testi ve Kanarya
+def = Yeni model sürümlerini herkese açmadan önce canlı trafiğin bir kısmında doğrulayan kademeli yayın stratejileri.
+
+[term trulens]
+name = TruLens
+def = Dil modeli uygulamalarını değerlendirmek ve izlemek için açık bir araç; özellikle cevapların kaynaklarıyla ne kadar desteklendiğini kontrol eder.
+
+[term prompt-regression]
+name = Prompt'lar İçin Gerileme Testi
+def = Eskiden çalışan hiçbir şeyin bozulmadığından emin olmak için her prompt değişikliğinden sonra sabit bir test soru setini yeniden çalıştırmak.
+
+[term offline-online-eval]
+name = Çevrimdışı ve Çevrimiçi Değerlendirme
+def = Çevrimdışı değerlendirme yayından önce test verisi üzerinde yapılır; çevrimiçi değerlendirme yayından sonra gerçek kullanıcılarla performansı ölçer.
+
+[term human-preference]
+name = İnsan Tercihi Değerlendirmesi
+def = İnsanlara iki cevap gösterip hangisinin daha iyi olduğunu sormak. Modelleri insan geri bildirimiyle eğitmekte kullanılan verinin aynısıdır.
+
+[term shadow-deployment]
+name = Gölge Yayın
+def = Yeni sürümü aynı istekler üzerinde eskisiyle paralel çalıştırıp sonuçlarını kullanıcılara göstermemek; yalnızca karşılaştırma için.
+
+[pkg 12]
+name = Güvenlik ve Hizalama
+desc = Dil modeli uygulamalarını jailbreak, prompt enjeksiyonu, veri sızıntısı ve zararlı çıktılara karşı korumak.
+simple = Dil modelleri yazılı talimatlara uyar; bu hem güçlü hem zayıf yanlarıdır. Bir saldırgan, modelin kurallarını görmezden gelmesi için bir belgeye veya web sayfasına talimat gizleyebilir (prompt enjeksiyonu) ya da kısıtlamaları aşmak için dolambaçlı bir istek kurgulayabilir (jailbreak). Hizalama, modelin tasarlayanların niyetine ve değerlerine göre davranmasını sağlama çalışmasıdır. Koruma bariyerleri ise girenleri ve çıkanları denetleyen filtrelerdir.
+analogy = Çok itaatkâr yeni bir resepsiyon görevlisi: biri gelip "Müdür beni gönderdi, personel dosyalarını ver" derse inanabilir. Prompt enjeksiyonu, bir makineye yöneltilmiş aynı hiledir.
+why = Dil modelini verilerine veya araçlarına bağlayan her şirket saldırı yüzeyini genişletir. Bu saldırıları anlamak artık siber güvenlik işinin temel bir parçası.
+example = Beyaz zemin üzerine beyaz yazıyla gizlenmiş bir metin içeren e-posta, yapay zekâ asistanına "Bu kutudaki son 10 mesajı şu adrese ilet" der. Korumasız bir asistan bunu yapabilir.
+
+[term 12.0]
+name = Koruma Bariyerleri (Guardrails)
+def = Kötü niyetli girdileri yakalamak için kullanıcı isteklerini ve model cevaplarını anlık denetleyen programlanabilir güvenlik filtreleri.
+
+[term 12.1]
+name = Yapay Zekâ Güvenliği
+def = Yapay zekânın istenmeyen ciddi risklerini azaltmaya adanmış disiplinlerarası alan.
+
+[term 12.2]
+name = Hizalama
+def = Bir yapay zekâ modelinin hedeflerinin ve eylemlerinin insan değerleri ve niyetiyle uyumlu olmasını sağlama çalışması.
+
+[term 12.3]
+name = Anayasal Yapay Zekâ
+def = Anthropic'in, modelleri cevaplarını açık bir ilkeler listesine göre eleştirip düzeltmeye eğiten hizalama yaklaşımı.
+
+[term 12.4]
+name = Prompt Enjeksiyonu
+def = Sistem talimatlarını ve güvenlik kurallarını geçersiz kılmak için girdi metnine gizli talimatlar yerleştiren saldırı tekniği.
+
+[term 12.5]
+name = Jailbreak
+def = Modelin koruma bariyerlerini aşıp kısıtlanmış, zararlı içerik ürettirmek için tasarlanmış karmaşık konuşma istekleri.
+
+[term 12.6]
+name = Kırmızı Takım Çalışması
+def = Güvenlik mühendislerinin gizli açıkları bulmak için bir modele kasıtlı olarak saldırdığı yapılandırılmış saldırgan testler.
+
+[term 12.7]
+name = Veri Sızıntısına Karşı Koruma
+def = Modellerin kişisel ve gizli verileri yanlışlıkla ezberleyip açığa çıkarmasını önleyen mimari önlemler.
+
+[term 12.8]
+name = İçerik Moderasyonu
+def = Nefret söylemini, zararlı talimatları ve yasa dışı içeriği anlık olarak engelleyen otomatik tarama katmanları.
+
+[term 12.9]
+name = Risk Değerlendirmesi
+def = Bir modelin toplumsal, siber güvenlik ve operasyonel tehlikelerini yayından önce inceleyen sistematik denetimler.
+
+[pkg 13]
+name = Yorumlanabilirlik ve Güven
+desc = Sinir ağının kara kutusunu açmak: mekanik yorumlanabilirlik, etki atfetme yöntemleri ve belirsizlik kalibrasyonu.
+simple = Sinir ağı kararlarını kimsenin doğrudan okuyamayacağı milyarlarca sayı üzerinden verir. Yorumlanabilirlik, bir kararı anlamaya yönelik araçlar bütünüdür: girdinin hangi kısmı onu en çok etkiledi? Model emin mi, yoksa tahmin mi ediyor? Yeni araştırmalar (mekanik yorumlanabilirlik) modelin nasıl hesapladığını anlamak için içindeki "devreleri" çözmeye çalışıyor.
+analogy = "Hastasın" demekle yetinemeyen, kararın gözden geçirilebilmesi için teşhisin dayandığı belirtileri ve tahlilleri açıklaması gereken bir doktor gibi.
+example = Bir model kredi başvurusunu reddeder. SHAP gibi araçlar reddin "aylık gelir" ve "mevcut kredi sayısı"ndan geldiğini gösterir; böylece banka ayrımcı bir etkene dayanmadığından emin olabilir.
+
+[term 13.0]
+name = Açıklanabilir Yapay Zekâ (XAI)
+def = Karmaşık sinir ağlarının akıl yürütmesini ve çıktılarını şeffaf ve denetlenebilir kılan yöntemler.
+
+[term 13.1]
+name = SHAP
+def = Oyun teorisine dayanan, her özniteliğin bir tahmine katkısını hesaplayan açıklama yöntemi.
+
+[term 13.2]
+name = LIME
+def = Tek tek tahminleri açıklamak için çevresinde basit yerel modeller kuran, modelden bağımsız açıklama yöntemi.
+
+[term 13.3]
+name = Dikkat Görselleştirme
+def = Modelin hangi bağlama öncelik verdiğini gösteren, tokenlar arasındaki dikkat ağırlıklarının ısı haritası.
+
+[term 13.4]
+name = Öznitelik Atfetme
+def = Girdi özniteliklerinin model çıktısı üzerindeki etkisini sayısal olarak ölçen teknikler.
+
+[term 13.5]
+name = Mekanik Yorumlanabilirlik
+def = Ağırlıkların içindeki algoritmik hesaplamaları ortaya çıkarmak için tek tek sinir devrelerine tersine mühendislik uygulamak.
+
+[term 13.6]
+name = Yoklama Sınıflandırıcıları
+def = Belirli dilsel özelliklerin modelin ara katmanlarında temsil edilip edilmediğini test etmek için eğitilen yardımcı basit modeller.
+
+[term 13.7]
+name = Belirsizlik Ölçümü
+def = Modelin güvenini değerlendiren istatistiksel yöntemler; sistemlerin şüpheli cevapları işaretlemesini veya cevap vermemesini sağlar.
+
+[term 13.8]
+name = Model Kalibrasyonu
+def = Modelin verdiği olasılıkları gerçek doğruluk oranıyla uyumlu hâle getirmek; aşırı özgüvenli hataları önler.
+
+[stage s4]
+title = Yapay Zekâ Mühendisliği ve Üretim
+lead = Yapay zekâyı işler hâle getirmek: bulut hizmetleri, MLOps, canlı akış uç noktaları, ajan iş akışları ve yüksek trafikli üretim mimarileri.
+simple = Bir araştırmacının dizüstü bilgisayarında çalışan model henüz bir ürün değildir. Binlerce kişinin her gün kullanması için sunuculara, onu yalıtan konteynerlere, bir şey bozulduğunda alarm veren izlemeye ve kesinti olmadan yayınlanan güncellemelere ihtiyaç duyar. Bunların hepsinin üstünde de uygulamanın kendisi durur: bir sohbet arayüzü, bir programın içindeki asistan ya da görevleri tamamlayan bir ajan.
+analogy = Evdeki mutfakta işe yarayan bir tarif, günde bin müşteriye hizmet veren bir restoranı işletmekten farklıdır. Endüstriyel mutfak, personel, stok, sipariş sistemi ve hijyen standartları gerekir.
+why = Bugün yapay zekâ işlerinin çoğu model eğitmekle ilgili değil, onların etrafında güvenilir sistemler kurmakla ilgili. Güvenlik olaylarının çoğu da bu katmandan gelir: açıkta kalan API anahtarları ve korumasız sunucular.
+example = Avukatlar için bir asistan uygulaması: API üzerinden bir dil modeli, mevzuatı içeren bir vektör veritabanı, her sorunun kaydı ve personelin atanmadığı dava dosyalarını görmesini engelleyen bir yetki sistemi.
+
+[pkg 14]
+name = Üretim Sistemleri ve MLOps
+desc = Canlı yayın için gereken yazılım mühendisliği temelleri, bulut orkestrasyonu, CI/CD hatları ve gözlemlenebilirlik.
+simple = Bunlar yapay zekâ sistemlerine uygulanan standart yazılım mühendisliği araçları: değişiklikleri izlemek için Git, modeli ihtiyaç duyduğu her şeyle birlikte her yerde çalışan tek bir konteynere paketlemek için Docker, yüzlerce konteyneri çalıştırıp yükü dağıtmak için Kubernetes ve her güncellemeyi test edip yayınlayan otomatik hatlar.
+analogy = Docker, gemi konteynerlerine benzer. İçinde ne olduğu önemli değildir; boyut standarttır, böylece her gemi, her vinç ve her liman onu taşıyabilir.
+example = Sınav döneminde kullanıcı sayısı aniden fırladığında Kubernetes otomatik olarak sunucu ekler, talep düşünce de para tasarrufu için kapatır.
+
+[term 14.0]
+name = İleri Python
+def = Kurumsal arka uçlar için asenkron programlama, tip sistemi, eşzamanlılık ve bellek yönetiminde ustalık.
+
+[term 14.1]
+name = Yazılım Mühendisliği
+def = Temiz mimari, modüler tasarım kalıpları, test güdümlü geliştirme ve sürdürülebilirlik en iyi uygulamaları.
+
+[term 14.2]
+name = Git
+def = Kod geçmişini izleyen, paralel dallanmayı ve ortak incelemeyi mümkün kılan dağıtık sürüm kontrol sistemi.
+
+[term 14.3]
+name = Docker
+def = Modelleri, ortamları ve kütüphaneleri tekrarlanabilir çalışma imajlarına paketleyen konteyner teknolojisi.
+
+[term 14.4]
+name = Linux
+def = Bulut kümelerini, GPU sunucularını ve model sunucularını çalıştıran temel kurumsal işletim sistemi.
+
+[term 14.5]
+name = Veritabanları
+def = Modern veri odaklı mimarileri besleyen ilişkisel (SQL) ve ilişkisel olmayan (NoSQL) kalıcı depolama motorları.
+
+[term 14.6]
+name = Arka Uç ve API'ler
+def = Son kullanıcılara REST ve WebSocket uç noktaları sunan yüksek verimli sunucu mimarileri (FastAPI, Go).
+
+[term 14.7]
+name = Mesaj Kuyrukları
+def = Servisleri birbirinden ayıran ve yüksek hacimli asenkron görevleri yöneten dağıtık mesaj aracıları (Kafka, RabbitMQ).
+
+[term 14.8]
+name = Bulut Hizmetleri
+def = İhtiyaç anında GPU ve depolama için büyük bulut altyapılarından (AWS, GCP, Azure) yararlanmak.
+
+[term 14.9]
+name = Kubernetes
+def = Dev hesaplama kümelerinde dağıtımı, otomatik ölçeklemeyi ve kendini onarmayı otomatikleştiren konteyner orkestrasyon platformu.
+
+[term 14.10]
+name = CI/CD Hatları
+def = Kod ve model güncellemelerini doğrulayıp yayınlayan otomatik sürekli entegrasyon ve sürekli dağıtım hatları.
+
+[term 14.11]
+name = MLOps
+def = Takip, dağıtım ve yönetişimi standartlaştırmak için makine öğrenimi geliştirme ve işletimini birleştirmek.
+
+[term 14.12]
+name = İzleme ve Telemetri
+def = GPU kullanımını, çıkarım gecikmesini, sapma ölçütlerini ve hata oranlarını anlık takip eden kapsamlı izleme.
+
+[term 14.13]
+name = Yapay Zekâ Sistem Güvenliği
+def = Çıkarım uç noktalarını sıkılaştırmak, API anahtarlarını korumak ve model hatlarını yetkisiz erişime karşı savunmak.
+
+[term 14.14]
+name = Yapay Zekâyı Ölçeklemek
+def = Sıkı hizmet seviyeleri altında milyonlarca eşzamanlı isteği karşılamak için yatay ölçekleme ve yük dengeleme tasarlamak.
+
+[pkg 15]
+name = Uygulamalar ve Ürün Geliştirme
+desc = Ticari yapay zekâ yazılımları tasarlamak ve piyasaya sürmek: kurumsal asistanlar, vektör veritabanları ve uçtan uca üretken uygulamalar.
+simple = Her şey burada insanların gerçekten kullandığı ürünlere dönüşür: sohbet uygulamaları, yazılımların içine yerleşmiş asistanlar (copilot), şirket belgelerinden cevap veren uygulamalar ve görev tamamlayan ajanlar. LangChain, LangGraph ve LlamaIndex gibi çerçeveler modeli verilere ve araçlara bağlamak için hazır parçalar sunar.
+analogy = Dil modeli güçlü bir motordur, uygulama ise arabanın tamamıdır: koltuklar, direksiyon, frenler ve gösterge paneli. Kimse sadece motor satın almaz.
+example = Cevabın sonunda bir anda değil, kelime kelime belirdiği akış (streaming) özelliği, toplam süre aynı olsa bile uygulamayı daha hızlı hissettirir.
+
+[term 15.0]
+name = LLM API'leri
+def = Barındırılan temel model uç noktalarını (OpenAI, Anthropic) kimlik doğrulamalı geliştirici kitleri ve REST API'ler üzerinden kullanmak.
+
+[term 15.1]
+name = Akışlı Cevaplar
+def = Tokenları Server-Sent Events ile parça parça iletmek; kullanıcının hissettiği bekleme süresini büyük ölçüde azaltır.
+
+[term 15.2]
+name = Sohbet Uygulamaları ve Asistanlar
+def = Bellek, bağlam koruma ve çok turlu diyalog mantığına sahip konuşma sistemleri kurmak.
+
+[term 15.3]
+name = Copilot'lar
+def = Doğrudan iş akışlarına yerleştirilmiş, bağlamı anlayan yardımcı araçlar (kod editöründe otomatik tamamlama, belge asistanları).
+
+[term 15.4]
+name = Kurumsal Yapay Zekâ
+def = Sıkı uyumluluk (SOC2/GDPR), müşteri yalıtımı ve özel ağ gereksinimlerine uyan kurumlara özel dağıtımlar.
+
+[term 15.5]
+name = RAG Uygulamaları
+def = Doğru cevaplar vermek için model cevaplarını şirket belgelerine dayandıran üretim uygulamaları.
+
+[term 15.6]
+name = Ajan Uygulamaları
+def = Gerçek dünya araçlarını kullanarak karmaşık çok adımlı iş akışlarını tamamlamak için ajan planlamasından yararlanan yazılımlar.
+
+[term 15.7]
+name = LangChain
+def = Dil modellerini veri yükleyicilere, araçlara, vektör depolarına ve prompt zincirlerine bağlayan modüler geliştirici çerçevesi.
+
+[term 15.8]
+name = LangGraph
+def = Döngüsel kontrol akışları ve kalıcı durum ile çok aktörlü ajan iş akışları kurmak için orkestrasyon kütüphanesi.
+
+[term 15.9]
+name = LlamaIndex
+def = Özel harici veri kümelerini indekslemek, aramak ve LLM uygulamalarına beslemek için optimize edilmiş veri çerçevesi.
+
+[term 15.10]
+name = Vektör Veritabanları
+def = Çok hızlı yaklaşık en yakın komşu vektör araması için tasarlanmış özel veritabanları (Pinecone, Chroma, Qdrant).
+
+[term 15.11]
+name = Gözlemlenebilirlik
+def = Prompt'ları, ara adımları, token maliyetlerini ve ajan izlerini inceleyen derin uygulama izleme.
+
+[term 15.12]
+name = Prompt Sürümleme
+def = Uygulama sürümleri boyunca kararlılık için prompt şablonlarının ve ayarlarının sistematik sürüm kontrolü.
+
+[term 15.13]
+name = Yayına Alma
+def = Yapay zekâ ürünlerini yüksek erişilebilirlik, yedeklilik ve düşük gecikmeyle dünyadaki kullanıcılara sunmak.
+
+[stage s5]
+title = İleri Araştırma ve Yönetişim
+lead = Öncü araştırma yönleri, akıl yürütme modelleri, makaleleri yeniden üretme, yapay zekâyı düzenleyen yasalar ve ürün ekonomisi.
+simple = Alan çok hızlı ilerliyor ve bu aşama ona sorumlu bir şekilde ayak uydurmakla ilgili. Son yönelimler neler? Bir araştırma makalesini nasıl okur ve değerlendirirsin? Yapay zekâ kullanımını hangi yasalar düzenliyor? Ve bir şirket bir yapay zekâ projesinin maliyetine değip değmediğine nasıl karar verir?
+analogy = Yeni araştırmaları takip etmesi, mesleğin etiğine ve yasalarına uyması, ayrıca bir kliniğin finansını yönetmeyi de bilmesi gereken bir doktor gibi.
+why = Yapay zekâ hakkında yayımlananların çoğu pazarlama abartısıdır. Orijinal araştırmayı okuyup kanıtlanmış bir sonucu bir vaatten ayırabilmek, anlamayı gürültüden ayıran şeydir.
+example = AB Yapay Zekâ Yasası, polisin kamusal alanlarda gerçek zamanlı yüz tanıma kullanmasını dar tanımlı istisnalar dışında yasaklar; işe alım ve eğitim gibi diğer kullanımları ise sıkı yükümlülüklerle "yüksek riskli" sayar.
+
+[pkg 16]
+name = Öncü ve İleri Konular
+desc = En yeni araştırmalar: akıl yürütme modelleri, çıkarım anında hesaplama, çok kipli mimariler ve difüzyon transformer'ları.
+simple = Başlıca güncel yönelimler: cevaplamadan önce "düşünen" ve zor problemlere daha uzun zaman ayıran modeller; metinle birlikte görüntü, ses ve videoyu anlayan çok kipli modeller; internetsiz telefonda çalışan küçük modeller; ve metin açıklamasından görüntü ve video üreten difüzyon modelleri.
+analogy = Akıl yürütme modelleri, aklına ilk geleni yazmak yerine çözümün taslağını çıkarıp kontrol ettikten sonra cevabı teslim eden bir öğrenci gibidir.
+example = Az gören insanlar için bir fotoğrafın içeriğini sesli anlatan bir uygulama, görme ve dili birleştiren bir modele dayanır.
+
+[term 16.0]
+name = Akıl Yürütme Modelleri
+def = Zor problemleri çözmek için iç düşünce zincirlerine daha fazla hesaplama ayırmak üzere optimize edilmiş mimariler.
+
+[term 16.1]
+name = Çıkarım Anında Hesaplama
+def = Cevap kalitesini büyük ölçüde artırmak için çıkarım sırasında ek hesaplama harcamak (arama ağaçları, öz eleştiri).
+
+[term 16.2]
+name = Ajan Tabanlı Yapay Zekâ
+def = Asgari insan gözetimiyle dijital araçlar üzerinde proaktif, çok adımlı eylemler yapabilen özerk sistemler.
+
+[term 16.3]
+name = Küçük Dil Modelleri (SLM)
+def = Tüketici cihazlarında düşük bellekle yerel olarak çalışmak üzere tasarlanmış oldukça verimli küçük modeller.
+
+[term 16.4]
+name = Çok Kipli Modeller
+def = Metin, görüntü, ses ve videoyu aynı anda alıp işleyebilen ve üretebilen birleşik modeller.
+
+[term 16.5]
+name = Görü-Dil Modelleri
+def = Görsel tanımayı metinsel akıl yürütmeyle birleştirip fotoğrafları, şemaları ve video karelerini anlayan sistemler.
+
+[term 16.6]
+name = Difüzyon Modelleri
+def = Kademeli gürültü ekleme sürecini tersine çevirmeyi öğrenerek gerçekçi görüntüler üreten üretken yöntemler.
+
+[term 16.7]
+name = Difüzyon Transformer'ları
+def = Difüzyon modellerinde UNet yerine Transformer kullanan, çok gerçekçi video üretimini güçlendiren mimariler.
+
+[term 16.8]
+name = Dünya Modelleri
+def = Ortamın fiziksel ve mekânsal kurallarını içselleştirerek gelecekteki durumları simüle eden ve öngören modeller.
+
+[term 16.9]
+name = Federe Öğrenme
+def = Hassas kullanıcı verisini cihazlarda tutarken ortak bir modeli birçok cihaz üzerinde eğiten dağıtık yöntem.
+
+[term 16.10]
+name = Kendini Geliştiren Ajanlar
+def = Zamanla becerilerini artırmak için kendi çalışma izlerini analiz edebilen özerk ajan çerçeveleri.
+
+[term long-context]
+name = Uzun Bağlamlı Modeller
+def = Yüz binlerce token'a varan çok büyük bağlam penceresine sahip, koca bir kitabı veya büyük bir kod tabanını tek seferde okuyabilen modeller.
+
+[term efficient-ai]
+name = Verimli Yapay Zekâ
+def = Daha az hesaplama, enerji ve veriyle güçlü sonuçlar elde eden modelleri hedefleyen araştırma yönü.
+
+[term ai-os]
+name = Yapay Zekâ İşletim Sistemleri
+def = Dil modelini merkeze koyup uygulamaları, dosyaları ve araçları kullanıcı adına yöneten, geleneksel işletim sisteminin üzerinde bir katman fikri.
+
+[term rat]
+name = Geri Getirmeyle Güçlendirilmiş Eğitim (RAT)
+def = Harici kaynaklardan geri getirmeyi yalnızca cevaplamaya değil, modelin eğitimine de dahil etmek.
+
+[pkg 17]
+name = Yapay Zekâ Araştırma Becerileri
+desc = arXiv'deki makaleleri sindirmek, ablasyon deneyleri tasarlamak ve bulguları doğrulamak için gereken titiz akademik yöntem.
+simple = Yeni keşiflerin çoğu, hakem değerlendirmesinden önce ilk olarak arXiv'de yayımlanır. Araştırma becerisi, bir makaleyi eleştirel gözle okumak, deneyi kendin yeniden yapmak ve bir iyileşmenin şans değil gerçek olduğunu istatistiksel testlerle kontrol etmek demektir.
+analogy = Ablasyon çalışması, gerçekten önemli olup olmadığını görmek için bir tariften tek bir malzemeyi çıkarmak gibidir. Tat değişmiyorsa sır o değilmiş.
+example = Yüzde 2'lik bir iyileşme iddia eden bir makalede, deney yeniden üretildiğinde sadece rastgele tohum (seed) değiştirilince farkın kaybolduğu ortaya çıkabilir. Yeniden üretim bunu gösterir.
+
+[term 17.0]
+name = Makale Okuma
+def = Karmaşık makine öğrenimi makalelerini eleştirel okuyup temel mekanizmaları ve sınırlılıkları çıkarma becerisi.
+
+[term 17.1]
+name = arXiv
+def = Öncü makine öğrenimi ve bilgisayar bilimi araştırmalarının hakem değerlendirmesinden önce yayımlandığı açık erişimli dijital arşiv.
+
+[term 17.2]
+name = Makale Yeniden Üretimi
+def = Bilimsel tekrarlanabilirliği teyit etmek için yayımlanmış bir makalenin yöntemini ve iddialarını sıfırdan yeniden kurup doğrulamak.
+
+[term 17.3]
+name = Ablasyon Çalışmaları
+def = Model bileşenlerini sistematik olarak çıkarıp her birinin performansa tek başına katkısını kanıtlayan deneysel titizlik.
+
+[term 17.4]
+name = Deney Tasarımı
+def = İyileştirmeleri değerlendirmek için test edilebilir hipotezler, kontrol değişkenleri ve adil kıyaslama ortamları kurmak.
+
+[term 17.5]
+name = Literatür Taraması
+def = Yeni araştırma yönlerine zemin hazırlamak için mevcut yayınları kapsamlı şekilde incelemek ve sentezlemek.
+
+[term 17.6]
+name = Kıyaslama Tasarımı
+def = Model eksikliklerini teşhis edebilen ve atılımları ölçebilen yeni, sağlam değerlendirme görevleri ve veri kümeleri tasarlamak.
+
+[term 17.7]
+name = Hakem Değerlendirmesi
+def = Titizlik ve dürüstlüğü sağlamak için uluslararası yapay zekâ konferanslarına gönderilen çalışmaların eleştirel ve nesnel değerlendirmesi.
+
+[term 17.8]
+name = İstatistiksel Anlamlılık
+def = Gözlenen performans farklarının rastgele gürültü değil, istatistiksel olarak anlamlı olduğunu doğrulayan hipotez testleri.
+
+[term 17.9]
+name = Teknik Yazım
+def = Karmaşık teorik, mimari ve deneysel bulguları hakem değerlendirmesine hazır, açık bir dille anlatmak.
+
+[pkg 18]
+name = Etik, Yönetişim ve Düzenleme
+desc = Küresel yasal çerçeveler, algoritmik adalet, fikrî mülkiyet hakları ve sorumlu yapay zekâ yönetişimi.
+simple = Yapay zekâ insanların hayatını etkileyen kararlar veriyor: işe alım, krediler, teşhisler. Bu paket, bu kararların adil olmasını, veri gizliliğine saygı gösterilmesini, eğitim verisinin ve üretilen içeriğin mülkiyetinin netleşmesini ve bunları düzenlemeye başlayan yasaları ele alır.
+analogy = Trafik kuralları gibi. Araba harika bir icattır, ama kurallar, ehliyetler ve işaretler olmadan yol tehlikeli bir kaosa döner.
+example = Çoğu erkek olan eski çalışanların özgeçmişleriyle eğitilen bir işe alım modeli, erkekleri tercih etmeyi öğrendi. Bu önyargı veriden miras kaldı ve onu yakalayan şey bir adalet denetimidir.
+
+[term 18.0]
+name = Önyargı ve Adalet
+def = Ayrımcı demografik farklılıkları önlemek ve adil sonuçlar sağlamak için modelleri denetlemek.
+
+[term 18.1]
+name = Yapay Zekâ Düzenlemesi
+def = Yapay zekâ kullanımı için bağlayıcı sınırlar, denetim standartları ve sorumluluklar getiren yeni küresel yasalar.
+
+[term 18.2]
+name = AB Yapay Zekâ Yasası
+def = Yapay zekâ uygulamalarını risk düzeylerine göre sınıflandıran ve zorunlu uyumluluk getiren dünyanın ilk kapsamlı yapay zekâ yasası.
+
+[term 18.3]
+name = Telif Hakkı ve Fikrî Mülkiyet
+def = Eğitim verisinin adil kullanımı, fikrî mülkiyetin korunması ve üretilen içeriğin sahipliğine ilişkin yasal çerçeveler.
+
+[term 18.4]
+name = Veri Gizliliği (GDPR)
+def = Kullanıcı onayını, veri saklamayı ve silinme haklarını düzenleyen gizlilik yasalarına (GDPR, CCPA) uyum.
+
+[term 18.5]
+name = Model Kartları
+def = Modelin mimarisini, eğitim verisini, performans sınırlarını ve güvenlik değerlendirmelerini anlatan standart belgeler.
+
+[term 18.6]
+name = Sorumlu Yapay Zekâ
+def = İnsan refahını, güvenliği, çevresel sürdürülebilirliği ve etik şeffaflığı önceleyen geliştirme anlayışı.
+
+[term 18.7]
+name = Yapay Zekâ Yönetişimi
+def = Kurum içinde yapay zekâ araçlarının nasıl denetleneceğini, satın alınacağını ve kullanılacağını belirleyen çerçeveler ve kurullar.
+
+[pkg 19]
+name = Yapay Zekâ Ürün Yönetimi ve İş
+desc = Ticari strateji, birim ekonomisi, model ve sağlayıcı seçimi, fiyatlandırma ve kurumsal pazara giriş.
+simple = Her yapay zekâ projesi kâr getirmez. Modele gönderilen her isteğin bir maliyeti vardır ve bir işletme için asıl soru, eklediği değerin bu maliyetten büyük olup olmadığıdır. Kendi modelimizi mi kurmalıyız, hazır bir hizmet mi kullanmalıyız? Kaliteye, fiyata ve verinin nerede saklandığına göre hangi sağlayıcıyı seçmeliyiz?
+analogy = Araba satın almak, kiralamak ya da taksi kullanmak arasında karar vermek gibi. Ne sıklıkla kullanacağına ve ne kadar kontrol istediğine bağlı.
+example = Bir destek asistanı konuşma başına 5 sente mal olur ve maliyeti iki dolar olan bir çalışan konuşmasının yerini alır. Yönetimi ikna eden şey bu birim ekonomisi hesabıdır.
+
+[term 19.0]
+name = Yapay Zekâ Ürün Yönetimi
+def = Teknik uygulanabilirlik, kullanıcı deneyimi ve iş değerinin kesiştiği yapay zekâ ürünleri için ekiplere liderlik etmek.
+
+[term 19.1]
+name = LLM Maliyet Modellemesi
+def = Sürdürülebilir kâr marjları için çıkarım giderlerini (token fiyatları, GPU saatleri, önbellekleme) öngörmek.
+
+[term 19.2]
+name = Birim Ekonomisi
+def = Kâra katkının pozitif olduğundan emin olmak için kârlılığı tek kullanıcı veya tek istek düzeyinde değerlendirmek.
+
+[term 19.3]
+name = Yatırım Getirisi Tahmini
+def = Yapay zekâ projelerinin sağladığı ölçülebilir verimlilik, gelir artışı veya maliyet düşüşünü geliştirme giderleriyle karşılaştırmak.
+
+[term 19.4]
+name = Kur ya da Satın Al
+def = Şirket içinde özel model eğitmeyi hazır API hizmetlerini lisanslamakla tartan stratejik çerçeve.
+
+[term 19.5]
+name = Model ve Sağlayıcı Seçimi
+def = Açık ağırlıklı ve kapalı API modellerini gecikme, kalite, lisans ve verinin nerede tutulduğu açısından değerlendirmek.
+
+[term 19.6]
+name = Fiyatlandırma Stratejisi
+def = Ticari fiyat yapıları tasarlamak: token bazlı kullanım katmanları, kullanıcı lisansları veya değere dayalı fiyatlandırma.
+
+[term 19.7]
+name = Yapay Zekâ Stratejisi
+def = Yapay zekânın kalıcı rekabet avantajı ve operasyonel kaldıraç yarattığı alanları belirleyen uzun vadeli kurumsal yol haritaları.
+
+[term 19.8]
+name = Pazara Giriş (GTM)
+def = İlk müşteri benimsemesini ve elde tutmayı sağlamak için kapsamlı lansman, pazarlama ve satış stratejileri.
+
+[term 19.9]
+name = Kurumsal Benimseme
+def = Geleneksel kurumların yapay zekâ araçlarını yerleşik iş akışlarına entegre etmesini sağlayan değişim yönetimi çerçeveleri.
+
+[term ai-consulting]
+name = Yapay Zekâ Danışmanlığı
+def = Kurumların yapay zekânın gerçekten nerede işe yaradığını belirlemesine, çözüm seçmesine, risk ve uygulamayı yönetmesine yardım etmek.
+
+[stage s6]
+title = İleri Uzmanlıklar
+lead = Derinlemesine alan uzmanlıkları: bilgisayarlı görü, ses yapay zekâsı ve pekiştirmeli öğrenme.
+simple = Temellerden ve dil modellerinden sonra odaklanabileceğin üç derin uzmanlık var: makinelerin görmesini sağlayan bilgisayarlı görü; dinleyip konuşmasını sağlayan ses yapay zekâsı; ve deneme ve ödülle öğrenmesini sağlayan pekiştirmeli öğrenme.
+analogy = Genel tıbbın ardından gelen uzmanlık gibi. Her doktor aynı temelleri okur, sonra derinleşmek için göz, kulak ya da başka bir alanı seçer.
+why = Bu uzmanlıklar güvenliğe doğrudan dokunan uygulamaların arkasında: akıllı güvenlik kameraları, dolandırıcılıkta ses klonlama ve kendi başına karar veren sistemler.
+example = Sürücüsüz arabalar üçünü birleştirir: yayaları ve işaretleri tespit eden görü, sürüş kararları için pekiştirmeli öğrenme ve sürücüden gelen sesli komutlar.
+
+[pkg 20]
+name = Bilgisayarlı Görü
+desc = Makinelerin piksellerden ve video akışlarından görmesini, nesneleri ayırmasını, tanımasını ve yorumlamasını sağlamak.
+simple = Bilgisayarlı görü, makinelere görüntü ve videoyu anlamayı öğretir: görüntüde ne var (sınıflandırma), tam olarak nerede (tespit), piksel düzeyinde kesin sınırı ne (bölütleme) ve içindeki yazıyı okumak (OCR).
+analogy = Sınıflandırma "resimde bir kedi var" der, tespit etrafına bir kutu çizer, bölütleme ise sanki makasla kesmişsin gibi yalnızca kediyi piksel piksel boyar.
+example = Kameradan bir çek numarasını ya da kimlik kartını okuyan bankacılık uygulamaları OCR kullanır.
+
+[term 20.0]
+name = Görüntü Sınıflandırma
+def = Derin görsel kalıp çıkarımına dayanarak bütün görüntüleri önceden tanımlı sınıflara ayırmak.
+
+[term 20.1]
+name = Nesne Tespiti
+def = Bir sahnedeki birden çok nesneyi aynı anda sınıflandırıp sınırlayıcı kutularla konumlarını belirlemek.
+
+[term 20.2]
+name = Görüntü Bölütleme
+def = Nesnelerin kesin geometrik sınırlarını belirleyen piksel düzeyinde sınıflandırma (Segment Anything gibi).
+
+[term 20.3]
+name = OCR
+def = Optik Karakter Tanıma: daktilo, el yazısı veya basılı metin görüntülerini düzenlenebilir metne dönüştürmek.
+
+[term 20.4]
+name = Görü Transformer'ları (ViT)
+def = Görüntüleri yamalara bölüp görsel token dizileri gibi işleyerek saf Transformer mimarisini görüntülere uygulamak.
+
+[term 20.5]
+name = CLIP
+def = OpenAI'nin görüntü-metin çiftleriyle eğitilmiş çok kipli modeli; önceden eğitim görmeden sınıflandırmayı ve anlamsal görsel aramayı mümkün kılar.
+
+[term 20.6]
+name = YOLO
+def = "Yalnızca Bir Kez Bak": yüksek kare hızlarıyla değerli, tek aşamalı gerçek zamanlı nesne tespit mimarileri.
+
+[term 20.7]
+name = Segment Anything (SAM)
+def = Meta'nın, herhangi bir görüntüdeki herhangi bir nesneyi piksel düzeyinde istem üzerine bölütleyen temel modeli.
+
+[pkg 21]
+name = Ses Yapay Zekâsı
+desc = Akustik modelleme: konuşmayı yazıya dökme, doğal ses sentezi ve kısa kayıttan ses klonlama.
+simple = Ses yapay zekâsı konuşmayı yazıya (otomatik toplantı dökümleri gibi), yazıyı doğal konuşmaya çevirir ve konuşanın kim olduğunu sesinden tanır. Ses klonlama ise kısa bir kayıttan birinin sesini taklit edebilir.
+analogy = Whisper, pek çok dil ve aksanda yüz binlerce saatlik konuşma dinlemiş bir tercüman gibidir; arka planda gürültü olsa bile duyduğunu doğru yazar.
+example = Sesli dolandırıcılık: bir şirket müdürünün klonlanmış sesiyle muhasebeciden acil havale isteyen bir arama. Bu yüzden şirketler artık bir sese güvenmek yerine önceden kararlaştırılmış doğrulama kelimelerine güveniyor.
+
+[term 21.0]
+name = Otomatik Konuşma Tanıma (ASR)
+def = Konuşulan ses dalgalarını yazılı metin dökümüne dönüştürmek.
+
+[term 21.1]
+name = Metinden Konuşmaya (TTS)
+def = Girdi metninden doğrudan doğal, etkileyici ve insana benzer konuşma sesi sentezlemek.
+
+[term 21.2]
+name = Konuşmacı Tanıma
+def = Sesin kendine özgü akustik özelliklerine dayanarak konuşmacıların biyometrik doğrulaması ve tanınması.
+
+[term 21.3]
+name = Ses Klonlama
+def = Kısa bir referans kaydından bir kişinin ses tınısı, aksanı ve tarzıyla istenen konuşmayı sentezlemek.
+
+[term 21.4]
+name = Whisper
+def = OpenAI'nin yüz binlerce saatlik çok dilli sesle eğitilmiş, açık ağırlıklı çok görevli konuşma tanıma modeli.
+
+[term 21.5]
+name = Ses Gömmeleri
+def = Ses arama ve duygu tespiti için perdeyi, tınıyı ve fonetiği yakalayan yoğun vektör temsilleri.
+
+[pkg 22]
+name = İleri Pekiştirmeli Öğrenme
+desc = Stratejik ardışık karar verme: politika optimizasyonu, derin Q-ağları, aktör-eleştirmen ve çok ajanlı koordinasyon.
+simple = Pekiştirmeli öğrenmede modele doğru cevapları vermeyiz. Onu bir ortama koyar, başarınca ödüllendirir, başaramayınca cezalandırırız; binlerce denemede en iyi stratejiyi kendisi keşfeder. Dil modellerini insan tercihleriyle hizalamak için kullanılan teknik de budur.
+analogy = Köpek eğitmek gibi. Kuralları anlatmazsın; doğru şeyi her yaptığında ödül verirsin ve zamanla neyin ödül getirdiğini öğrenir.
+example = AlphaGo, Go oyununu önce insan maçlarından, ardından kendine karşı oynadığı milyonlarca maçtan öğrendi ve 2016'da dünyanın en güçlü oyuncularından Lee Sedol'u yendi.
+
+[term 22.0]
+name = Markov Karar Süreci (MDP)
+def = Durumlar, eylemler, geçişler ve ödüllerle ayrık zamanlı rastgele kontrol süreçlerini biçimlendiren matematiksel çerçeve.
+
+[term 22.1]
+name = Politika Gradyanı
+def = Politika parametrelerini beklenen toplam ödül üzerinde doğrudan gradyan yükselişiyle optimize eden yöntemler.
+
+[term 22.2]
+name = PPO
+def = Yakınsal Politika Optimizasyonu: RLHF'de eğitim kararlılığıyla değer gören, kırpılmış hedefli politika gradyanı algoritması.
+
+[term 22.3]
+name = Derin Q-Ağı (DQN)
+def = Yüksek boyutlu ortamlarda en iyi eylem-değer fonksiyonlarını tahmin etmek için pekiştirmeli öğrenmeyi derin sinir ağlarıyla birleştirmek.
+
+[term 22.4]
+name = Aktör-Eleştirmen
+def = Gradyan varyansını azaltmak için politika optimizasyonunu (aktör) değer fonksiyonu tahminiyle (eleştirmen) birleştiren hibrit mimari.
+
+[term 22.5]
+name = Çok Ajanlı Pekiştirmeli Öğrenme
+def = Ortak işbirlikçi veya sıfır toplamlı ortamlarda en iyi ortak politikaları öğrenen birden çok özerk ajandan oluşan ekosistemler.
+
+[si]
+title = Süper Zekâ
+lead = Süper zekâ, yalnızca tek bir görevde değil, neredeyse her alanda en zeki insanları geride bırakan bir sistem fikridir. Henüz inşa edilmedi ve araştırmacılar bunun mümkün olup olmadığı ve ne zaman olacağı konusunda ayrışıyor. Burada onu olduğu gibi sunuyoruz: bir kehanet değil, açık bir bilimsel soru.
+simple = Bugün var olan her sistem, ne kadar zeki görünürse görünsün, dar yapay zekâ sayılır ya da yalnızca bazı görevlerde genel yeteneğe yaklaşır. Yapay genel zekâ (AGI), zihinsel görevlerin çoğunu insan düzeyinde öğrenip yapabilen bir sistem demektir. Yapay süper zekâ (ASI) bir adım öteye gider: bilimde, planlamada ve yaratıcılıkta en iyi insan akıllarının toplamını aşan bir sistem.
+analogy = Sadece çarpmada seni geçen bir hesap makinesi, her derste seni geçen bir sınıf arkadaşı ve üniversitedeki tüm profesörlerin toplamından iyi olan biri arasındaki fark. İlki var, ikincisi bir araştırma hedefi, üçüncüsü bir varsayım.
+why = Bizden daha yetenekli bir sistem inşa edilebilirse, asıl soru onun hedeflerinin bizim çıkarlarımızla uyumlu ve kontrolümüz altında kalmasını nasıl sağlayacağımız olur. Buna hizalama problemi denir ve büyük yapay zekâ laboratuvarlarının güvenlik araştırmasına tam ekipler ayırmasının nedeni budur.
+example = Hükümetler ve kuruluşlar bu konuyu pratikte ele almaya başladı. AB Yapay Zekâ Yasası en güçlü genel amaçlı modellere ek yükümlülükler getiriyor ve devletlerin yapay zekâ güvenliği enstitüleri modelleri yayımlanmadan önce test ediyor.
+ladder.ANI.title = Dar Yapay Zekâ
+ladder.ANI.def = Belirli bir görevde üstündür: çeviri, satranç, dolandırıcılık tespiti ya da yüz tanıma. Becerisini başka bir alana taşıyamaz.
+ladder.ANI.status = Bugün var
+ladder.AGI.title = Genel Yapay Zekâ
+ladder.AGI.def = Zihinsel görevlerin çoğunu insan düzeyinde öğrenir ve yapar, öğrendiğini alanlar arasında aktarır. Bazı güncel modeller belirli görevlerde buna yaklaşıyor ve tanımın kendisi tartışmalı.
+ladder.AGI.status = İlan edilmiş araştırma hedefi
+ladder.ASI.title = Süper Zekâ
+ladder.ASI.def = Neredeyse her alanda en iyi insan akıllarını aşar. Mümkün olduğu ya da mümkünse ne zaman olacağı konusunda bir uzlaşı yok.
+ladder.ASI.status = Varsayım
+insight.1 = Hizalama problemi: Bir sistem ne kadar yetenekliyse, gerçekten istediğimizi yaptığını ve yalnızca ona benzeyen bir şey yapmadığını doğrulamak o kadar zorlaşır. Bu bugün aktif bir araştırma alanı, geleceğe ertelenmiş bir soru değil.
+insight.2 = Tahminler çok farklı. Bazı araştırmacılar AGI'nin birkaç yıl içinde gelebileceğini düşünüyor, bazıları onlarca yıl uzakta ya da mevcut yöntemlerle ulaşılamaz olduğunu. Okuduğun herhangi kesin bir tarih bir görüştür, gerçek değil.
+insight.3 = Fiziksel sınırlar gerçek: daha büyük modelleri eğitmek dev veri merkezleri, muazzam miktarda elektrik ve yüksek kaliteli veri gerektiriyor. Bu kısıtlar ilerlemenin hızını belirliyor.
+insight.4 = Güvenlik açısından, daha yetenekli sistemler hem daha güçlü saldırı araçları hem de daha güçlü savunma araçları demek. Siber güvenlik, yetenekteki her sıçramanın ilk görüldüğü alanlardan biri.
