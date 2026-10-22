@@ -221,10 +221,10 @@ def card(p, S):
     cat = S['cats'][p['category']]; k = p['kind']
     if k == 'article':
         return ('<a class="post f-article" data-kind="article" href="%s">%s<div class="in"><div class="k"><span>%s</span><span class="rt">%d min</span></div>'
-                '<h3>%s</h3><p>%s</p></div></a>') % (p['url'], cover_html(p), esc(cat), p['minutes'], esc(p['title']), esc(p.get('excerpt', '')))
+                '<h3>%s</h3><p>%s</p></div></a>') % (esc(p['url']), cover_html(p), esc(cat), p['minutes'], esc(p['title']), esc(p.get('excerpt', '')))
     if k == 'head':
         return ('<a class="post f-head" data-kind="head" href="%s"><div class="in"><div class="k"><span>%s · %s</span><span class="rt">%d min</span></div>'
-                '<h3>%s</h3><p>%s</p><span class="more">%s</span></div></a>') % (p['url'], esc(S['head_prefix']), esc(cat), p['minutes'], esc(p['title']), esc(p.get('excerpt', '')), esc(S['read_more']))
+                '<h3>%s</h3><p>%s</p><span class="more">%s</span></div></a>') % (esc(p['url']), esc(S['head_prefix']), esc(cat), p['minutes'], esc(p['title']), esc(p.get('excerpt', '')), esc(S['read_more']))
     if k == 'tip':
         steps = p.get('steps') or []
         return ('<article class="post f-tip" data-kind="tip"><div class="in"><span class="chip">%s</span><h3>%s</h3><ol>%s</ol>'
@@ -362,16 +362,16 @@ def build():
 
     def lang_links(lang, urls):
         return ''.join('<li><a href="%s" hreflang="%s" lang="%s"%s>%s<span>%s</span></a></li>' % (
-            urls.get(l, STR[l]['prefix'] + '/'), STR[l]['html_lang'], STR[l]['html_lang'],
+            esc(urls.get(l, STR[l]['prefix'] + '/')), esc(STR[l]['html_lang']), esc(STR[l]['html_lang']),
             ' aria-current="true"' if l == lang else '', esc(STR[l]['lang_name']), esc(STR[l]['code'])) for l in LANGS)
     def hreflang(urls):
-        tags = ['<link rel="alternate" hreflang="%s" href="%s%s">' % (STR[l]['html_lang'], BASE_URL, u) for l, u in urls.items()]
+        tags = ['<link rel="alternate" hreflang="%s" href="%s%s">' % (esc(STR[l]['html_lang']), esc(BASE_URL), esc(u)) for l, u in urls.items()]
         if DEFAULT in urls: tags.append('<link rel="alternate" hreflang="x-default" href="%s%s">' % (BASE_URL, urls[DEFAULT]))
         return '\n'.join(tags)
 
     def page(lang, content, title, desc, url, alt_urls, og_type='website', body_class='', head_extra='', og_title=None):
         S = STR[lang]
-        return fill(base_tpl, S, page_title=esc(title), description=esc(desc), canonical=BASE_URL + url, og_type=og_type,
+        return fill(base_tpl, S, page_title=esc(title), description=esc(desc), canonical=esc(BASE_URL + url), og_type=og_type,
                     og_title=esc(og_title or title), og_image=BASE_URL + '/assets/og-cover.png', head_extra=head_extra,
                     version=version, body_class=body_class, sprite=sprite, content=content, newsletter_attrs=nl_attrs, year=year,
                     newsletter_fieldset='' if nl else ' disabled', newsletter_msg='' if nl else esc(S['nl_soon']),
@@ -392,7 +392,7 @@ def build():
         pages = [p for p in posts if p['kind'] in ('article', 'head')]
         terms = glossary_html(lang)
         ad = atlas_data(lang)
-        ai_chips = ''.join('<span>%s %s</span>' % (st['n'], esc(st['title'])) for st in ad['stages']) + '<span class="si-badge">SI %s</span>' % esc(ad['si']['title'])
+        ai_chips = ''.join('<span>%s %s</span>' % (esc(st['n']), esc(st['title'])) for st in ad['stages']) + '<span class="si-badge">SI %s</span>' % esc(ad['si']['title'])
         home = fill(read(P('templates', 'home.html')), S, sprite_lockup=read(P('templates', 'sprite-lockup.html')), ai_stage_chips=ai_chips,
                     count_posts=len(posts), count_topics=len(CAT_EN), count_terms=len(terms),
                     feed='\n'.join(card(p, S) for p in posts), glossary='\n'.join(terms), prefix=S['prefix'])
@@ -420,8 +420,8 @@ def build():
             toc_html = '<details class="toc"><summary>%s</summary><ol>%s</ol></details>' % (esc(S['toc_title']), ''.join('<li><a href="#%s">%s</a></li>' % (h, inline(t)) for h, t in toc)) if len(toc) >= 2 else ''
             newer = pages[idx - 1] if idx > 0 else None
             older = pages[idx + 1] if idx + 1 < len(pages) else None
-            pn = ('<a class="pv" href="%s"><span>← PREVIOUS</span><b>%s</b></a>' % (older['url'], esc(older['title'])) if older else '<span class="empty-slot"></span>') + \
-                 ('<a class="nx" href="%s"><span>NEXT →</span><b>%s</b></a>' % (newer['url'], esc(newer['title'])) if newer else '<span class="empty-slot"></span>')
+            pn = ('<a class="pv" href="%s"><span>← PREVIOUS</span><b>%s</b></a>' % (esc(older['url']), esc(older['title'])) if older else '<span class="empty-slot"></span>') + \
+                 ('<a class="nx" href="%s"><span>NEXT →</span><b>%s</b></a>' % (esc(newer['url']), esc(newer['title'])) if newer else '<span class="empty-slot"></span>')
             rel = [q for q in pages if q is not p and q['category'] == p['category']]
             rel += [q for q in pages if q is not p and q not in rel]
             related = '<div class="related"><h2>%s</h2><div class="grid">%s</div></div>' % (esc(S['related']), ''.join(card(q, S) for q in rel[:3])) if rel else ''
@@ -442,14 +442,14 @@ def build():
             sitemap.append((p['url'], pdate(p).isoformat()))
 
         items = ''.join('<item><title>%s</title><link>%s</link><guid>%s</guid><pubDate>%s</pubDate><description>%s</description></item>' % (
-            esc(p['title']), BASE_URL + p['url'], BASE_URL + p['url'],
+            esc(p['title']), esc(BASE_URL + p['url']), esc(BASE_URL + p['url']),
             datetime.datetime.combine(p['date'], datetime.time(9)).strftime('%a, %d %b %Y %H:%M:%S +0200'), esc(p.get('excerpt', ''))) for p in pages[:30])
         write(os.path.join(root, 'feed.xml'), '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>%s</title><link>%s%s/</link><description>%s</description><language>%s</language>%s</channel></rss>' % (
             esc(S['site_name']), BASE_URL, S['prefix'], esc(S['site_description']), S['html_lang'], items))
 
     # 404 (one file for the whole site, in the default language + links to every language)
     S = STR[DEFAULT]
-    nf_langs = ''.join('<li><a href="%s/" lang="%s">%s</a></li>' % (STR[l]['prefix'], STR[l]['html_lang'], esc(STR[l]['lang_name'])) for l in LANGS)
+    nf_langs = ''.join('<li><a href="%s/" lang="%s">%s</a></li>' % (esc(STR[l]['prefix']), esc(STR[l]['html_lang']), esc(STR[l]['lang_name'])) for l in LANGS)
     write(os.path.join(out, '404.html'), page(DEFAULT, fill(read(P('templates', '404.html')), S, prefix='', nf_langs=nf_langs),
           '%s | %s' % (S['nf_page_title'], S['site_name']), S['site_description'], '/404.html', home_urls))
     write(os.path.join(out, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>' % ''.join('<url><loc>%s%s</loc><lastmod>%s</lastmod></url>' % (BASE_URL, esc(u), m) for u, m in sitemap))

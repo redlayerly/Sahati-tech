@@ -36,7 +36,7 @@ function openPanel(si,pi,q){
       '<div class="ax-ladder">'+SI.ladder.map(function(r){return '<div class="ax-rung"><span class="k">'+esc(r.k)+'</span><b>'+esc(r.title)+'</b><span>'+esc(r.status)+'</span><p>'+esc(r.def)+'</p></div>'}).join('')+'</div>'+
       '<div class="ax-th"><h3>'+esc(U.insights)+'</h3></div><ol class="ax-ins">'+SI.insights.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>';
   }else if(pi==null){var s=S[si];panel.style.setProperty('--sc',sc(si));cr=U.stage+' '+s.n+' · '+s.label;
-    h='<div class="ax-num">'+esc(U.stage)+' '+s.n+'</div><h2 id="axPTitle">'+esc(s.title)+'</h2><div class="ax-en" dir="ltr">'+esc(s.label)+'</div><p class="ax-desc">'+esc(s.lead)+'</p>'+exHTML(s)+
+    h='<div class="ax-num">'+esc(U.stage)+' '+esc(s.n)+'</div><h2 id="axPTitle">'+esc(s.title)+'</h2><div class="ax-en" dir="ltr">'+esc(s.label)+'</div><p class="ax-desc">'+esc(s.lead)+'</p>'+exHTML(s)+
       '<div class="ax-th"><h3>'+esc(U.pkg)+'<small>'+s.pkgs.length+'</small></h3></div><div class="ax-plist">'+s.pkgs.map(function(p,j){return '<button type="button" data-go="'+si+','+j+'"><i>'+esc(p.id)+'</i><b>'+esc(p.name)+'</b></button>'}).join('')+'</div>';
   }else{var s2=S[si],p=s2.pkgs[pi];panel.style.setProperty('--sc',sc(si));cr=U.stage+' '+s2.n+' · '+s2.title+' / '+U.pkg+' '+p.id;
     h='<div class="ax-num">'+esc(U.pkg)+' '+esc(p.id)+'</div><h2 id="axPTitle">'+esc(p.name)+'</h2><div class="ax-en" dir="ltr">'+esc(p.label)+'</div><p class="ax-desc">'+esc(p.desc)+'</p>'+exHTML(p,U.idea)+
@@ -80,7 +80,7 @@ function buildOrbit(){
     var t=el('text',{fill:cv('--bg'),'text-anchor':'middle'},g),tp=el('textPath',{href:'#'+id,startOffset:'50%'},t);
     var lbl=s.title;if(lbl.length*9>(a1-a0-2)*Math.PI/180*352)lbl=s.n;tp.textContent=lbl;
     g.addEventListener('click',function(){pinned=si;focusO(si,null);side_(si)});
-    g.addEventListener('mouseenter',function(e){focusO(si,null);showTip(e,'<b>'+s.n+' · '+esc(s.title)+'</b><span>'+esc(short(s.lead,130))+'</span>')});
+    g.addEventListener('mouseenter',function(e){focusO(si,null);showTip(e,'<b>'+esc(s.n)+' · '+esc(s.title)+'</b><span>'+esc(short(s.lead,130))+'</span>')});
     g.addEventListener('mousemove',moveTip);g.addEventListener('mouseleave',function(){hideTip();focusO(null)});
     s.pkgs.forEach(function(p,pi){
       var a=ang+per/2,pt=P(a,R),k=nodes.length,nd={si:si,pi:pi,a:a,pt:pt,col:col,dots:[],src:P(a,90)};nodes.push(nd);
@@ -96,7 +96,7 @@ function buildOrbit(){
       el('text',{class:'num',x:pt[0],y:pt[1]+4,'text-anchor':'middle'},g2).textContent=p.id;
       var lp=P(a,R-28),flip=Math.cos(a*Math.PI/180)<0;
       el('text',{class:'lb',x:lp[0],y:lp[1]+5,'text-anchor':flip?'start':'end',transform:'rotate('+(flip?a+180:a)+' '+lp[0]+' '+lp[1]+')'},g2).textContent=short(p.name,21);
-      g2.addEventListener('mouseenter',function(e){ripple(pt[0],pt[1],col);focusO(si,k);showTip(e,'<b>'+p.id+' · '+esc(p.name)+'</b><span>'+p.terms.length+' '+esc(U.terms)+'</span>')});
+      g2.addEventListener('mouseenter',function(e){ripple(pt[0],pt[1],col);focusO(si,k);showTip(e,'<b>'+esc(p.id)+' · '+esc(p.name)+'</b><span>'+p.terms.length+' '+esc(U.terms)+'</span>')});
       g2.addEventListener('mousemove',moveTip);g2.addEventListener('mouseleave',function(){hideTip();focusO(null)});
       g2.addEventListener('click',function(){ripple(pt[0],pt[1],col,1);openPanel(si,pi,query)});
       g2.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openPanel(si,pi,query)}});
@@ -138,14 +138,14 @@ function paintMatches(){svg.classList.add('dim');$$('.sarc',svg).forEach(functio
   $$('.pk,.spoke',svg).forEach(function(x){x.classList.toggle('hl',!!matches[+x.dataset.p])});
   $$('.tdot',svg).forEach(function(x){var m=matches[+x.dataset.p];x.classList.toggle('hl',!!(m&&m.t.indexOf(+x.dataset.t)>=0))})}
 function side_(si){
-  if(matches){var list=[],tot=0;nodes.forEach(function(n,k){var m=matches[k];if(m){tot+=m.n;list.push('<button type="button" data-p="'+n.si+','+n.pi+'" style="--sc:'+sc(n.si)+'"><i>'+S[n.si].pkgs[n.pi].id+'</i>'+esc(S[n.si].pkgs[n.pi].name)+'<em>'+m.n+'</em></button>')}});
+  if(matches){var list=[],tot=0;nodes.forEach(function(n,k){var m=matches[k];if(m){tot+=m.n;list.push('<button type="button" data-p="'+n.si+','+n.pi+'" style="--sc:'+sc(n.si)+'"><i>'+esc(S[n.si].pkgs[n.pi].id)+'</i>'+esc(S[n.si].pkgs[n.pi].name)+'<em>'+m.n+'</em></button>')}});
     side.style.setProperty('--sc','var(--accent)');side.innerHTML='<div class="ax-mono">“'+esc(query)+'”</div><h3>'+(tot?tot+' '+esc(T.results):esc(T.none))+'</h3><div class="ax-list">'+list.join('')+'</div>';return}
   if(si==null){side.style.setProperty('--sc','var(--accent)');
     side.innerHTML='<div class="ax-mono">'+S.length+' '+esc(T.ws)+' · '+FLAT.length+' '+esc(T.wp)+' · '+NT+' '+esc(T.wt)+'</div><h3>'+esc(T.pick)+'</h3><p>'+esc(T.pickp)+'</p><div class="ax-list">'+
-      S.map(function(s,i){return '<button type="button" data-s="'+i+'" style="--sc:'+sc(i)+'"><i>'+s.n+'</i>'+esc(s.title)+'</button>'}).join('')+'<button type="button" data-si="1" style="--sc:var(--csi)"><i>SI</i>'+esc(SI.title)+'</button></div>';return}
+      S.map(function(s,i){return '<button type="button" data-s="'+i+'" style="--sc:'+sc(i)+'"><i>'+esc(s.n)+'</i>'+esc(s.title)+'</button>'}).join('')+'<button type="button" data-si="1" style="--sc:var(--csi)"><i>SI</i>'+esc(SI.title)+'</button></div>';return}
   var s=S[si];side.style.setProperty('--sc',sc(si));
-  side.innerHTML='<div class="ax-mono" style="color:'+sc(si)+'">'+esc(U.stage)+' '+s.n+' · <span dir="ltr">'+esc(s.label)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.simple)+'</p><div class="ax-list">'+
-    s.pkgs.map(function(p,j){return '<button type="button" data-p="'+si+','+j+'"><i>'+p.id+'</i>'+esc(p.name)+'</button>'}).join('')+'</div><button type="button" class="ax-cta" data-read="'+si+'">'+esc(T.read)+'</button>'+
+  side.innerHTML='<div class="ax-mono" style="color:'+sc(si)+'">'+esc(U.stage)+' '+esc(s.n)+' · <span dir="ltr">'+esc(s.label)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.simple)+'</p><div class="ax-list">'+
+    s.pkgs.map(function(p,j){return '<button type="button" data-p="'+si+','+j+'"><i>'+esc(p.id)+'</i>'+esc(p.name)+'</button>'}).join('')+'</div><button type="button" class="ax-cta" data-read="'+si+'">'+esc(T.read)+'</button>'+
     (pinned!=null?'<div class="ax-list"><button type="button" data-all="1">'+esc(T.all)+'</button></div>':'');
 }
 side.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
@@ -162,8 +162,8 @@ new MutationObserver(function(){buildOrbit();setActive(active)}).observe(root,{a
 
 /* ============ JOURNEY ============ */
 var box=$('#axText'),h='';
-S.forEach(function(s,si){h+='<article class="ax-stage" data-i="'+si+'" id="axS'+si+'" style="--sc:'+sc(si)+'"><span class="ax-eyebrow">'+esc(U.stage)+' '+s.n+' / 06 · <span dir="ltr">'+esc(s.label)+'</span></span><h3>'+esc(s.title)+'</h3><p class="ax-lead">'+esc(s.lead)+'</p>'+exHTML(s)+'<div class="ax-pk">'+
-  s.pkgs.map(function(p,j){return '<button type="button" data-go="'+si+','+j+'"><i>'+esc(U.pkg)+' '+p.id+' · '+p.terms.length+' '+esc(U.terms)+'</i><b>'+esc(p.name)+'</b><span>'+esc(p.desc)+'</span></button>'}).join('')+'</div></article>'});
+S.forEach(function(s,si){h+='<article class="ax-stage" data-i="'+si+'" id="axS'+si+'" style="--sc:'+sc(si)+'"><span class="ax-eyebrow">'+esc(U.stage)+' '+esc(s.n)+' / 06 · <span dir="ltr">'+esc(s.label)+'</span></span><h3>'+esc(s.title)+'</h3><p class="ax-lead">'+esc(s.lead)+'</p>'+exHTML(s)+'<div class="ax-pk">'+
+  s.pkgs.map(function(p,j){return '<button type="button" data-go="'+si+','+j+'"><i>'+esc(U.pkg)+' '+esc(p.id)+' · '+p.terms.length+' '+esc(U.terms)+'</i><b>'+esc(p.name)+'</b><span>'+esc(p.desc)+'</span></button>'}).join('')+'</div></article>'});
 h+='<article class="ax-stage" data-i="6" id="axS6" style="--sc:var(--csi)"><span class="ax-eyebrow">'+esc(U.summit)+'</span><h3>'+esc(SI.title)+'</h3><p class="ax-lead">'+esc(SI.lead)+'</p>'+exHTML(SI,U.idea)+
   '<div class="ax-pk"><button type="button" data-go="si"><i>ANI → AGI → ASI</i><b>'+esc(T.open)+'</b><span>'+esc(SI.insights[0])+'</span></button></div></article>';
 box.innerHTML=h;
@@ -178,7 +178,7 @@ box.addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(
   ax.addEventListener('pointermove',function(e){var c=e.target.closest&&e.target.closest('.ax-card,.ax-pk button,.ax-plist button,.ax-list button');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
   var jr=$('#axJourney'),bar=$('#axProg');function prog(){var r=jr.getBoundingClientRect(),h=r.height-innerHeight*.6,f=Math.max(0,Math.min(1,(-r.top+innerHeight*.3)/Math.max(1,h)));bar.style.setProperty('--p',f.toFixed(4));bar.classList.toggle('on',r.top<innerHeight*.5&&r.bottom>innerHeight*.4)}
   addEventListener('scroll',prog,{passive:true});addEventListener('resize',prog);prog()})();
-var rail=$('#axRail');rail.innerHTML=S.map(function(s,i){return '<button type="button" data-i="'+i+'" style="--sc:'+sc(i)+'" aria-label="'+esc(s.title)+'">'+s.n+'</button>'}).join('')+'<button type="button" data-i="6" style="--sc:var(--csi)" aria-label="'+esc(SI.title)+'">SI</button>';
+var rail=$('#axRail');rail.innerHTML=S.map(function(s,i){return '<button type="button" data-i="'+i+'" style="--sc:'+sc(i)+'" aria-label="'+esc(s.title)+'">'+esc(s.n)+'</button>'}).join('')+'<button type="button" data-i="6" style="--sc:var(--csi)" aria-label="'+esc(SI.title)+'">SI</button>';
 rail.onclick=function(e){var b=e.target.closest('button');if(b)document.getElementById('axS'+b.dataset.i).scrollIntoView({behavior:'smooth'})};
 
 var cvs=$('#axCanvas'),ctx=cvs.getContext('2d'),N=900,cur,tgt,SH;
