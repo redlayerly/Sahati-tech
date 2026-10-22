@@ -27,13 +27,15 @@ function short(s,n){return s.length>n?s.slice(0,n-1)+'…':s}
 var panel=$('#axPanel'),pb=$('#axPBody'),scrim=$('#axScrim'),lastF=null,lastKey=null,inerted=[];
 /* the panel is a real modal dialog: it lives at the end of <body> so everything else can be made inert */
 body.appendChild(scrim);body.appendChild(panel);
+/* WebKit does not focus a button on click, so remember the last pressed control as the dialog opener */
+var lastPressed=null;document.addEventListener('pointerdown',function(e){lastPressed=e.target.closest?e.target.closest('button,[role="button"],input'):null},true);
 function focusables(){return $$('button,input,summary,[href],[tabindex]:not([tabindex="-1"])',panel).filter(function(x){return !x.disabled&&x.getClientRects().length})}
 function exHTML(o,first){var h='<div class="ax-ex"><div class="ax-card main"><h4>'+esc(first||U.simple)+'</h4><p>'+esc(o.simple)+'</p></div>';
   ['analogy','why','example'].forEach(function(k){if(o[k])h+='<div class="ax-card"><h4>'+esc(U[k])+'</h4><p>'+esc(o[k])+'</p></div>'});return h+'</div>'}
 function mk(t,q){t=String(t==null?'':t);if(!q)return esc(t);var i=find(t,q);if(i<0)return esc(t);return esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length))}
 function termsHTML(ts,q){return ts.map(function(t){var m=q&&find(txt(t),q)>=0;return '<details class="ax-term"'+(m?' open':'')+'><summary>'+mk(t.name,q)+(t.badge?' <em dir="auto">'+mk(t.badge,q)+'</em>':'')+'</summary><p>'+mk(t.def,q)+'</p></details>'}).join('')}
 function openPanel(si,pi,q){
-  if(!panel.classList.contains('on')){lastF=document.activeElement;lastKey=lastF&&lastF.getAttribute&&(lastF.getAttribute('data-p')||lastF.getAttribute('data-go'))}
+  if(!panel.classList.contains('on')){var ae=document.activeElement;lastF=ae&&ae!==body&&ae!==root?ae:lastPressed;lastKey=lastF&&lastF.getAttribute&&(lastF.getAttribute('data-p')||lastF.getAttribute('data-go'))}
   hideTip();q=(q||'').toLowerCase();var h='',cr='';
   if(si==='si'){panel.style.setProperty('--sc',sc('si'));cr='SI · '+SI.label;
     h='<div class="ax-num">'+esc(U.summit)+'</div><h2 id="axPTitle">'+esc(SI.title)+'</h2><div class="ax-en" dir="ltr">'+esc(SI.label)+'</div><p class="ax-desc">'+esc(SI.lead)+'</p>'+exHTML(SI,U.idea)+
@@ -55,13 +57,15 @@ function openPanel(si,pi,q){
     inerted=Array.prototype.filter.call(body.children,function(x){return x!==panel&&x!==scrim&&x!==tip&&!x.inert});
     inerted.forEach(function(x){x.inert=true});
   }
-  panel.classList.add('on');scrim.classList.add('on');setTimeout(function(){$('#axClose').focus()},60);
+  panel.classList.add('on');scrim.classList.add('on');
+  /* visibility flips instantly on open (see atlas.css), so focus can move now; retry once if a slow frame delayed the style */
+  var x=$('#axClose');x.focus({preventScroll:true});if(document.activeElement!==x)requestAnimationFrame(function(){x.focus({preventScroll:true})});
 }
 function closePanel(){if(!panel.classList.contains('on'))return;panel.classList.remove('on');scrim.classList.remove('on');
   inerted.forEach(function(x){x.inert=false});inerted=[];
   /* the opener may have been re-rendered (side list, search results): fall back to its twin, then to the search box */
   var t=lastF&&lastF.isConnected?lastF:(lastKey&&document.querySelector('button[data-p="'+lastKey+'"],button[data-go="'+lastKey+'"]'))||$('#axQ');
-  if(t&&t.focus)t.focus()}
+  if(t&&t.focus)t.focus({preventScroll:true})}
 $('#axClose').onclick=closePanel;scrim.onclick=closePanel;
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()});
 /* keep Tab inside the dialog even where inert is unsupported */
