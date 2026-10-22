@@ -69,6 +69,7 @@ def js_json(o):
 def safe_url(u):
     """Only allow http(s), mailto, site-relative and #anchor links. Blocks javascript:, data:, vbscript: ..."""
     v = html.unescape(u).strip()
+    if re.match(r'^[/\\]{2}', v): return '#'   # protocol-relative: //x, \\x, /\x, \/x
     if re.match(r'^(https?://|mailto:|/(?!/)|#|\./|\.\./)', v, re.I) or not re.match(r'^[^/?#]*:', v): return u
     return '#'
 def read(path): return open(path, encoding='utf-8').read()

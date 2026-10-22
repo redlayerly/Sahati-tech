@@ -1,0 +1,6 @@
+# سَحاتِك | Sahati Tech — سياسة الإبلاغ عن الثغرات
+# Found a security issue on this site? Please report it privately before disclosing it.
+Contact: https://t.me/sahati_tech
+Expires: 2027-10-21T00:00:00.000Z
+Preferred-Languages: ar, en
+Canonical: https://sahati-tech.com.ly/.well-known/security.txt
