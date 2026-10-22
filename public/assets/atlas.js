@@ -107,6 +107,8 @@ function buildOrbit(){
         d.addEventListener('mousemove',moveTip);d.addEventListener('mouseleave',hideTip);
         d.addEventListener('click',function(){openPanel(si,pi,tm.name)})});
       var g2=el('g',{class:'pk','data-p':k,tabindex:0,role:'button','aria-label':p.id+' '+p.name,style:'--d:'+(.55+k*.035).toFixed(3)+'s'},gP);
+      /* invisible hit area: 68 of the 75 units between neighbours, so taps never overlap */
+      el('circle',{class:'hit',cx:pt[0],cy:pt[1],r:34,fill:'transparent'},g2);
       el('circle',{class:'b',cx:pt[0],cy:pt[1],r:15,fill:col,stroke:cv('--bg'),'stroke-width':3},g2);
       el('circle',{class:'ring',cx:pt[0],cy:pt[1],r:25},g2);
       el('text',{class:'num',x:pt[0],y:pt[1]+4,'text-anchor':'middle'},g2).textContent=p.id;

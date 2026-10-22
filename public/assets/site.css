@@ -228,6 +228,14 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 .chip-social.x:hover{border-color:var(--accent-text);color:var(--accent-text)}
 .chip-social.tg:hover{border-color:#229ed9;color:#229ed9}
 
+/* touch targets: transparent pseudo-elements grow the hit area towards 44px without changing what is drawn */
+.skins button,.langs summary,footer.foot .social-icons a,.drawer-social a,.pills button,footer.foot nav a{position:relative}
+.skins button::after{content:"";position:absolute;inset:-6px -2px}
+.langs summary::after{content:"";position:absolute;inset:-2px}
+footer.foot .social-icons a::after,.drawer-social a::after{content:"";position:absolute;inset:-.2rem}
+.pills button::after{content:"";position:absolute;inset:-.2rem 0}
+footer.foot nav a::after{content:"";position:absolute;inset:-.6rem 0}
+
 /* short landscape phones */
 @media (max-height:520px) and (orientation:landscape){:root{--hdr:3.5rem}.mast .wrap{padding-block:2rem}.filter{position:static}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
@@ -511,6 +519,7 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 .ax-rail button{border:0;background:none;cursor:pointer;display:flex;align-items:center;gap:.4rem;font-family:var(--f-mono);font-size:.75rem;color:var(--ax-ink-3);padding:.1rem}
 .ax-rail button::after{content:"";width:16px;height:3px;border-radius:2px;background:var(--ax-line2);transition:width .3s,background .3s}
 .ax-rail button.on{color:var(--ink)}
+.ax-rail button{position:relative}.ax-rail button::before{content:"";position:absolute;inset:-4px -8px}
 .ax-rail button.on::after{width:34px;background:var(--sc)}
 .ax-stage{padding:.5rem 0 3.2rem;margin-bottom:2.2rem;border-bottom:1px solid var(--line);scroll-margin-top:calc(var(--hdr) + 1rem)}
 .ax-stage:last-child{border:0;margin:0}
@@ -555,6 +564,7 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 .ax-crumb{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;color:var(--ax-ink-3);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ax-x{border:1px solid var(--line);background:var(--card);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:1rem;color:var(--ink)}
 .ax-x:hover{border-color:var(--accent-text)}
+.ax-x{position:relative}.ax-x::after{content:"";position:absolute;inset:-3px}
 .ax-p-body{overflow-y:auto;padding:1.4rem 1.3rem 3rem;flex:1;overscroll-behavior:contain}
 .ax-num{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--f-mono);font-size:.78rem;color:var(--sc);letter-spacing:.08em}
 .ax-num::before{content:"";width:22px;height:4px;border-radius:2px;background:var(--sc)}
@@ -600,6 +610,8 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
   .ax-panel.on{transform:none!important}
 }
 @media (prefers-reduced-motion:reduce){.is-atlas *{animation:none!important;transition:none!important}}
+/* touch: side-list rows reach ~44px through spacing plus a transparent hit strip, same look */
+@media (pointer:coarse){.ax-list{gap:.5rem}.ax-list button{position:relative}.ax-list button::after{content:"";position:absolute;inset:-.25rem 0}}
 
 /* ================= motion polish ================= */
 @keyframes axDraw{to{stroke-dashoffset:0}}
@@ -627,6 +639,7 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 .ax-orbit .pk circle.b{transition:r .3s cubic-bezier(.3,1.6,.5,1)}
 .ax-orbit .pk:focus-visible circle.b{stroke:var(--ink)}
 /* SVG has no reliable outline: a dedicated ring circle shows keyboard focus (3:1 via --focus) */
+.ax-orbit .hit{pointer-events:all}
 .ax-orbit .ring{fill:none;stroke:var(--focus);stroke-width:3;opacity:0;pointer-events:none}
 .ax-orbit .pk:focus-visible .ring,.ax-orbit .core:focus-visible .ring{opacity:1}
 .ax-search{transition:border-color .2s,box-shadow .2s}

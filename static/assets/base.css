@@ -228,6 +228,14 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 .chip-social.x:hover{border-color:var(--accent-text);color:var(--accent-text)}
 .chip-social.tg:hover{border-color:#229ed9;color:#229ed9}
 
+/* touch targets: transparent pseudo-elements grow the hit area towards 44px without changing what is drawn */
+.skins button,.langs summary,footer.foot .social-icons a,.drawer-social a,.pills button,footer.foot nav a{position:relative}
+.skins button::after{content:"";position:absolute;inset:-6px -2px}
+.langs summary::after{content:"";position:absolute;inset:-2px}
+footer.foot .social-icons a::after,.drawer-social a::after{content:"";position:absolute;inset:-.2rem}
+.pills button::after{content:"";position:absolute;inset:-.2rem 0}
+footer.foot nav a::after{content:"";position:absolute;inset:-.6rem 0}
+
 /* short landscape phones */
 @media (max-height:520px) and (orientation:landscape){:root{--hdr:3.5rem}.mast .wrap{padding-block:2rem}.filter{position:static}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
