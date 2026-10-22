@@ -329,7 +329,8 @@ def load_base_posts():
 def build():
     out = P('public')
     if os.path.isdir(out): shutil.rmtree(out)
-    shutil.copytree(P('static'), out)
+    # .htaccess is only for Apache hosts; on Vercel it would be served as a plain public file
+    shutil.copytree(P('static'), out, ignore=shutil.ignore_patterns('.htaccess') if os.environ.get('VERCEL') else None)
     css = ''.join(read(P('static', 'assets', f)) for f in ('base.css', 'article.css', 'atlas.css'))
     write(os.path.join(out, 'assets', 'site.css'), css)
     for f in ('base.css', 'article.css', 'atlas.css'): os.remove(os.path.join(out, 'assets', f))
