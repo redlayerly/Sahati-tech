@@ -63,6 +63,14 @@ def reading_time(text, lang):
     return n, label
 
 def esc(s): return html.escape(str(s), quote=True)
+def js_json(o):
+    """JSON safe to embed inside <script> (no </script> breakout, no HTML comment tricks)."""
+    return json.dumps(o, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
+def safe_url(u):
+    """Only allow http(s), mailto, site-relative and #anchor links. Blocks javascript:, data:, vbscript: ..."""
+    v = html.unescape(u).strip()
+    if re.match(r'^(https?://|mailto:|/(?!/)|#|\./|\.\./)', v, re.I) or not re.match(r'^[^/?#]*:', v): return u
+    return '#'
 def read(path): return open(path, encoding='utf-8').read()
 def write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -126,10 +134,10 @@ def inline(t):
     t = esc(t)
     codes = []
     t = re.sub(r'`([^`]+)`', lambda m: codes.append(m.group(1)) or '\x00%d\x00' % (len(codes) - 1), t)
-    t = re.sub(r'!\[([^\]]*)\]\(([^)\s]+)\)', r'<img src="\2" alt="\1" loading="lazy">', t)
+    t = re.sub(r'!\[([^\]]*)\]\(([^)\s]+)\)', lambda m: '<img src="%s" alt="%s" loading="lazy">' % (safe_url(m.group(2)), m.group(1)), t)
     def link(m):
-        href = m.group(2); ext = href.startswith('http')
-        return '<a href="%s"%s>%s</a>' % (href, ' target="_blank" rel="noopener"' if ext else '', m.group(1))
+        href = safe_url(m.group(2)); ext = href.startswith('http')
+        return '<a href="%s"%s>%s</a>' % (href, ' target="_blank" rel="noopener noreferrer"' if ext else '', m.group(1))
     t = re.sub(r'\[([^\]]+)\]\(([^)\s]+)\)', link, t)
     t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
     t = re.sub(r'(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', r'<em>\1</em>', t)
@@ -193,7 +201,7 @@ def md(text, S, toc=None):
             out.append('<%s>%s</%s>' % (tag, ''.join('<li>%s</li>' % inline(x) for x in items), tag)); continue
         m = re.match(r'^!\[([^\]]*)\]\(([^)\s]+)\)$', s)
         if m:
-            flush(); out.append('<figure><img src="%s" alt="%s" loading="lazy">%s</figure>' % (esc(m.group(2)), esc(m.group(1)), '<figcaption>%s</figcaption>' % inline(m.group(1)) if m.group(1) else '')); i += 1; continue
+            flush(); out.append('<figure><img src="%s" alt="%s" loading="lazy">%s</figure>' % (esc(safe_url(m.group(2))), esc(m.group(1)), '<figcaption>%s</figcaption>' % inline(m.group(1)) if m.group(1) else '')); i += 1; continue
         para.append(ln); i += 1
     flush()
     return '\n'.join(out)
@@ -324,12 +332,14 @@ def build():
     css = ''.join(read(P('static', 'assets', f)) for f in ('base.css', 'article.css', 'atlas.css'))
     write(os.path.join(out, 'assets', 'site.css'), css)
     for f in ('base.css', 'article.css', 'atlas.css'): os.remove(os.path.join(out, 'assets', f))
-    version = hashlib.md5((css + read(P('static', 'assets', 'site.js'))).encode()).hexdigest()[:8]
+    version = hashlib.md5((css + ''.join(read(P('static', 'assets', f)) for f in ('site.js', 'skin.js', 'atlas.js'))).encode()).hexdigest()[:8]
 
     base_posts = load_base_posts()
     base_tpl, sprite = read(P('templates', 'base.html')), read(P('templates', 'sprite.html'))
     year = datetime.date.today().year
-    nl_attrs = ' action="%s" method="post" target="_blank" data-endpoint="1"' % esc(SITE['newsletter_endpoint']) if SITE.get('newsletter_endpoint') else ''
+    nl = SITE.get('newsletter_endpoint', '')
+    if nl and not nl.startswith('https://'): raise SystemExit('site.json: newsletter_endpoint يجب أن يبدأ بـ https://')
+    nl_attrs = ' action="%s" method="post" target="_blank" rel="noopener noreferrer" data-endpoint="1"' % esc(nl) if nl else ''
 
     # every language version of every post
     versions = {}   # slug -> {lang: post}
@@ -359,7 +369,7 @@ def build():
                     og_title=esc(og_title or title), og_image=BASE_URL + '/assets/og-cover.png', head_extra=head_extra,
                     version=version, body_class=body_class, sprite=sprite, content=content, newsletter_attrs=nl_attrs, year=year,
                     prefix=S['prefix'], hreflang=hreflang(alt_urls), lang_links=lang_links(lang, alt_urls),
-                    js_strings=json.dumps({k: S[k] for k in ('nl_invalid', 'nl_soon', 'copied')}, ensure_ascii=False))
+                    js_strings=js_json({k: S[k] for k in ('nl_invalid', 'nl_soon', 'copied')}))
 
     home_urls = {l: STR[l]['prefix'] + '/' for l in LANGS}
     atlas_urls = {l: STR[l]['prefix'] + '/atlas/' for l in LANGS}
@@ -379,8 +389,8 @@ def build():
         # AI Atlas for this language
         atlas_tpl = read(P('templates', 'atlas.html'))
         adata = atlas_data(lang)
-        atlas_content = fill(atlas_tpl, S, prefix=S['prefix'],
-                             atlas_data='<script type="application/json" id="atlasData">%s</script>' % json.dumps(adata, ensure_ascii=False).replace('</', '<\\/'))
+        atlas_content = fill(atlas_tpl, S, prefix=S['prefix'], version=version,
+                             atlas_data='<script type="application/json" id="atlasData">%s</script>' % js_json(adata))
         atlas_page_html = page(lang, atlas_content, S['atlas_title'], S['atlas_lead'], S['prefix'] + '/atlas/', atlas_urls, body_class='is-atlas')
         write(os.path.join(root, 'atlas', 'index.html'), atlas_page_html)
         sitemap.append(S['prefix'] + '/atlas/')
@@ -409,7 +419,7 @@ def build():
             write(os.path.join(root, 'posts', p['slug'], 'index.html'),
                   page(lang, content, '%s | %s' % (p['title'], S['site_name']), p.get('excerpt') or S['site_description'], p['url'], alts,
                        og_type='article', og_title=p['title'], body_class='is-post',
-                       head_extra='<script type="application/ld+json">%s</script>' % json.dumps(ld, ensure_ascii=False)))
+                       head_extra='<script type="application/ld+json">%s</script>' % js_json(ld)))
             sitemap.append(p['url'])
 
         items = ''.join('<item><title>%s</title><link>%s</link><guid>%s</guid><pubDate>%s</pubDate><description>%s</description></item>' % (

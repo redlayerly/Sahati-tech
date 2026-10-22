@@ -1,7 +1,8 @@
 /* سَحاتِك — site behaviour (no dependencies) */
 (function () {
   var root = document.documentElement;
-  var T = window.SAHATI_T || {};
+  var T = {};
+  try { T = JSON.parse(document.getElementById('sahatiT').textContent); } catch (e) {}
 
   /* ---- skins: ivory / dark / purple ---- */
   var KEY = 'sahati-skin';

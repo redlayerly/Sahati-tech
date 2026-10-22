@@ -23,7 +23,8 @@
 {{hreflang}}
 <meta name="twitter:card" content="summary_large_image">
 {{head_extra}}
-<script>try{var s=localStorage.getItem('sahati-skin');if(s)document.documentElement.setAttribute('data-skin',s);}catch(e){}</script>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="/assets/skin.js?v={{version}}"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{s:fonts}}&display=swap">
@@ -99,7 +100,7 @@
     </div>
   </div>
 </footer>
-<script>window.SAHATI_T={{js_strings}};</script>
+<script type="application/json" id="sahatiT">{{js_strings}}</script>
 <script src="/assets/site.js?v={{version}}" defer></script>
 </body>
 </html>
