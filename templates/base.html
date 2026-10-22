@@ -32,13 +32,12 @@
 <link rel="stylesheet" href="/assets/site.css?v={{version}}">
 </head>
 <body class="{{body_class}}">
-{{sprite}}
 <a class="sr" href="#main">{{s:skip}}</a>
 <header class="hdr">
   <div class="wrap">
     <a class="home" href="{{prefix}}/" aria-label="{{s:home_aria}}">
-      <svg class="mk" viewBox="-60 -60 532 508" aria-hidden="true"><use href="#s-mark"/></svg>
-      <svg class="wm" viewBox="-60 -60 2198 534" aria-hidden="true"><use href="#s-word"/></svg>
+      <svg class="mk" viewBox="-60 -60 532 508" aria-hidden="true"><use href="{{sprite_url}}#s-mark"/></svg>
+      <svg class="wm" viewBox="-60 -60 2198 534" aria-hidden="true"><use href="{{sprite_url}}#s-word"/></svg>
     </a>
     <nav aria-label="{{s:nav_aria}}">
       <a href="{{prefix}}/#feed">{{s:nav_posts}}</a><a href="{{prefix}}/atlas/">{{s:nav_atlas}}</a><a href="{{prefix}}/#glossary">{{s:nav_glossary}}</a><a href="{{prefix}}/#about">{{s:nav_about}}</a>
@@ -88,7 +87,7 @@
 <footer class="foot">
   <div class="wrap">
     <div class="foot-brand">
-      <svg viewBox="-60 -60 2198 534" role="img" aria-label="{{s:site_name}}"><use href="#s-word"/></svg>
+      <svg viewBox="-60 -60 2198 534" role="img" aria-label="{{s:site_name}}"><use href="{{sprite_url}}#s-word"/></svg>
       <span>© {{year}} {{s:site_name}} · <span class="ltr">sahati-tech.com.ly</span></span>
     </div>
     <nav aria-label="{{s:footer_aria}}"><a href="{{prefix}}/#feed">{{s:nav_posts}}</a><a href="{{prefix}}/atlas/">{{s:nav_atlas}}</a><a href="{{prefix}}/#glossary">{{s:nav_glossary}}</a><a href="{{prefix}}/#about">{{s:nav_about}}</a><a href="{{prefix}}/feed.xml">RSS</a></nav>

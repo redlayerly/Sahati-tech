@@ -30,7 +30,7 @@ STR = json.load(open(P('content', 'i18n', 'strings.json'), encoding='utf-8'))
 LANGS = list(STR.keys())            # الأولى هي اللغة الأساسية (العربية)
 DEFAULT = LANGS[0]
 KINDS = ('article', 'head', 'tip', 'quote')
-MARK = '<svg viewBox="-60 -60 532 508" aria-hidden="true"><use href="#s-mark"/></svg>'
+MARK = ''   # set in build(): the mark from the external, versioned sprite
 
 MONTHS = {
     'ar': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
@@ -337,10 +337,19 @@ def build():
     css = ''.join(read(P('static', 'assets', f)) for f in ('base.css', 'article.css', 'atlas.css'))
     write(os.path.join(out, 'assets', 'site.css'), css)
     for f in ('base.css', 'article.css', 'atlas.css'): os.remove(os.path.join(out, 'assets', f))
-    version = hashlib.md5((css + ''.join(read(P('static', 'assets', f)) for f in ('site.js', 'skin.js', 'atlas.js'))).encode()).hexdigest()[:8]
+    sprites = {f: read(P('templates', f)) for f in ('sprite.html', 'sprite-lockup.html')}
+    version = hashlib.md5((css + ''.join(read(P('static', 'assets', f)) for f in ('site.js', 'skin.js', 'atlas.js')) + ''.join(sprites.values())).encode()).hexdigest()[:8]
+
+    # logo symbols live in cacheable, versioned SVG files instead of ~26KB (80KB on home) inlined in every page
+    def sprite_file(name, src):
+        write(os.path.join(out, 'assets', name), '<svg xmlns="http://www.w3.org/2000/svg"><defs>%s</defs></svg>' % ''.join(re.findall(r'<symbol\b.*?</symbol>', src, re.S)) + '\n')
+        return '/assets/%s?v=%s' % (name, version)
+    sprite_url, lockup_url = sprite_file('sprite.svg', sprites['sprite.html']), sprite_file('lockup.svg', sprites['sprite-lockup.html'])
+    global MARK
+    MARK = '<svg viewBox="-60 -60 532 508" aria-hidden="true"><use href="%s#s-mark"/></svg>' % sprite_url
 
     base_posts = load_base_posts()
-    base_tpl, sprite = read(P('templates', 'base.html')), read(P('templates', 'sprite.html'))
+    base_tpl = read(P('templates', 'base.html'))
     year = datetime.date.today().year
     nl = SITE.get('newsletter_endpoint', '')
     if nl and not nl.startswith('https://'): raise SystemExit('site.json: newsletter_endpoint يجب أن يبدأ بـ https://')
@@ -373,7 +382,7 @@ def build():
         S = STR[lang]
         return fill(base_tpl, S, page_title=esc(title), description=esc(desc), canonical=esc(BASE_URL + url), og_type=og_type,
                     og_title=esc(og_title or title), og_image=BASE_URL + '/assets/og-cover.png', head_extra=head_extra,
-                    version=version, body_class=body_class, sprite=sprite, content=content, newsletter_attrs=nl_attrs, year=year,
+                    version=version, body_class=body_class, sprite_url=sprite_url, content=content, newsletter_attrs=nl_attrs, year=year,
                     newsletter_fieldset='' if nl else ' disabled', newsletter_msg='' if nl else esc(S['nl_soon']),
                     prefix=S['prefix'], hreflang=hreflang(alt_urls), lang_links=lang_links(lang, alt_urls),
                     js_strings=js_json({k: S[k] for k in ('nl_invalid', 'nl_soon', 'copied')}))
@@ -393,7 +402,7 @@ def build():
         terms = glossary_html(lang)
         ad = atlas_data(lang)
         ai_chips = ''.join('<span>%s %s</span>' % (esc(st['n']), esc(st['title'])) for st in ad['stages']) + '<span class="si-badge">SI %s</span>' % esc(ad['si']['title'])
-        home = fill(read(P('templates', 'home.html')), S, sprite_lockup=read(P('templates', 'sprite-lockup.html')), ai_stage_chips=ai_chips,
+        home = fill(read(P('templates', 'home.html')), S, sprite_url=sprite_url, lockup_url=lockup_url, ai_stage_chips=ai_chips,
                     count_posts=len(posts), count_topics=len(CAT_EN), count_terms=len(terms),
                     feed='\n'.join(card(p, S) for p in posts), glossary='\n'.join(terms), prefix=S['prefix'])
         home_ld = {"@context": "https://schema.org", "@graph": [
@@ -432,7 +441,7 @@ def build():
             ld = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p['title'], "description": p.get('excerpt', ''),
                   "datePublished": p['date'].isoformat(), "dateModified": pdate(p).isoformat(), "image": BASE_URL + '/assets/og-cover.png', "inLanguage": S['html_lang'], "mainEntityOfPage": url,
                   "author": {"@type": "Organization", "name": S['site_name']}, "publisher": {"@type": "Organization", "@id": BASE_URL + '/#org', "name": S['site_name'], "logo": {"@type": "ImageObject", "url": BASE_URL + '/assets/icon-192.png'}}}
-            content = fill(read(P('templates', 'post.html')), S, prefix=S['prefix'],
+            content = fill(read(P('templates', 'post.html')), S, prefix=S['prefix'], sprite_url=sprite_url,
                 hero_class=' is-head' if p['kind'] == 'head' else '', kind_label=esc(S['pill_' + p['kind']]), kind_label_single=esc(S['kind_' + p['kind']]),
                 category_ar=esc(cat), title=esc(p['title']), excerpt=esc(p.get('excerpt', '')), date_iso=p['date'].isoformat(), date_ar=fmt_date(p['date'], lang),
                 read_time=esc(p['read_label']), cover_block='<div class="wrap post-cover">%s</div>' % cover_html(p) if p['kind'] == 'article' else '',
@@ -452,7 +461,7 @@ def build():
     # 404 (one file for the whole site, in the default language + links to every language)
     S = STR[DEFAULT]
     nf_langs = ''.join('<li><a href="%s/" lang="%s">%s</a></li>' % (esc(STR[l]['prefix']), esc(STR[l]['html_lang']), esc(STR[l]['lang_name'])) for l in LANGS)
-    write(os.path.join(out, '404.html'), page(DEFAULT, fill(read(P('templates', '404.html')), S, prefix='', nf_langs=nf_langs),
+    write(os.path.join(out, '404.html'), page(DEFAULT, fill(read(P('templates', '404.html')), S, prefix='', nf_langs=nf_langs, sprite_url=sprite_url),
           '%s | %s' % (S['nf_page_title'], S['site_name']), S['site_description'], '/404.html', home_urls))
     write(os.path.join(out, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>' % ''.join('<url><loc>%s%s</loc><lastmod>%s</lastmod></url>' % (BASE_URL, esc(u), m) for u, m in sitemap))
     write(os.path.join(out, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n' % BASE_URL)
