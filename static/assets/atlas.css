@@ -3,7 +3,7 @@
    ========================================================================== */
 .is-atlas{
   --ax-ink-3:#68645C; --ax-bg2:#E7E2D6; --ax-line2:#BDB3A0; --ax-shadow:0 18px 50px -24px rgba(38,40,43,.35);
-  --c1:#7A5C3F; --c2:#2F6A6E; --c3:#8C3F3A; --c4:#3F5E8C; --c5:#6A6A24; --c6:#6B4C8F; --csi:#26282B;
+  --c1:#7A5C3F; --c2:#2F6A6E; --c3:#8C3F3A; --c4:#3F5E8C; --c5:#626220; --c6:#6B4C8F; --csi:#26282B;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]):not([data-skin]) .is-atlas{
   --ax-ink-3:#9E988D; --ax-bg2:#25282C; --ax-line2:#555A61; --ax-shadow:0 18px 50px -20px rgba(0,0,0,.7);
