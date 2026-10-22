@@ -242,10 +242,10 @@ ICONS = {
 def share_buttons(url, title, S):
     u, t = quote(url, safe=''), quote(title, safe='')
     return ''.join([
-        '<a href="https://www.facebook.com/sharer/sharer.php?u=%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (u, esc(S['share_fb']), ICONS['fb']),
-        '<a href="https://wa.me/?text=%s%%20%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (t, u, esc(S['share_wa']), ICONS['wa']),
-        '<a href="https://t.me/share/url?url=%s&amp;text=%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (u, t, esc(S['share_tg']), ICONS['tg']),
-        '<a href="https://twitter.com/intent/tweet?url=%s&amp;text=%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (u, t, esc(S['share_x']), ICONS['x']),
+        '<a href="https://www.facebook.com/sharer/sharer.php?u=%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>' % (u, esc(S['share_fb']), ICONS['fb']),
+        '<a href="https://wa.me/?text=%s%%20%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>' % (t, u, esc(S['share_wa']), ICONS['wa']),
+        '<a href="https://t.me/share/url?url=%s&amp;text=%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>' % (u, t, esc(S['share_tg']), ICONS['tg']),
+        '<a href="https://twitter.com/intent/tweet?url=%s&amp;text=%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>' % (u, t, esc(S['share_x']), ICONS['x']),
         '<button type="button" data-copy="%s" aria-label="%s">%s</button>' % (esc(url), esc(S['share_copy']), ICONS['cp'])])
 
 def glossary_html(lang):
