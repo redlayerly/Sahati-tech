@@ -28,8 +28,11 @@
   /* ---- mobile drawer ---- */
   var mb = document.getElementById('menuBtn'), dr = document.getElementById('drawer');
   if (mb && dr) {
+    var closeDrawer = function (refocus) { if (dr.hidden) return; dr.hidden = true; mb.setAttribute('aria-expanded', 'false'); if (refocus) mb.focus(); };
     mb.addEventListener('click', function () { var open = dr.hidden; dr.hidden = !open; mb.setAttribute('aria-expanded', open ? 'true' : 'false'); });
-    dr.addEventListener('click', function (e) { if (e.target.closest('a')) { dr.hidden = true; mb.setAttribute('aria-expanded', 'false'); } });
+    dr.addEventListener('click', function (e) { if (e.target.closest('a')) closeDrawer(false); });
+    /* disclosure pattern: Escape closes and returns focus to the toggle (no focus trap, the drawer is not modal) */
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !dr.hidden) closeDrawer(dr.contains(document.activeElement) || document.activeElement === mb); });
   }
 
   /* ---- home feed filter ---- */

@@ -24,13 +24,17 @@ function hideTip(){tip.classList.remove('on')}
 function short(s,n){return s.length>n?s.slice(0,n-1)+'…':s}
 
 /* panel */
-var panel=$('#axPanel'),pb=$('#axPBody'),scrim=$('#axScrim'),lastF=null;
+var panel=$('#axPanel'),pb=$('#axPBody'),scrim=$('#axScrim'),lastF=null,lastKey=null,inerted=[];
+/* the panel is a real modal dialog: it lives at the end of <body> so everything else can be made inert */
+body.appendChild(scrim);body.appendChild(panel);
+function focusables(){return $$('button,input,summary,[href],[tabindex]:not([tabindex="-1"])',panel).filter(function(x){return !x.disabled&&x.getClientRects().length})}
 function exHTML(o,first){var h='<div class="ax-ex"><div class="ax-card main"><h4>'+esc(first||U.simple)+'</h4><p>'+esc(o.simple)+'</p></div>';
   ['analogy','why','example'].forEach(function(k){if(o[k])h+='<div class="ax-card"><h4>'+esc(U[k])+'</h4><p>'+esc(o[k])+'</p></div>'});return h+'</div>'}
 function mk(t,q){t=String(t==null?'':t);if(!q)return esc(t);var i=find(t,q);if(i<0)return esc(t);return esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length))}
 function termsHTML(ts,q){return ts.map(function(t){var m=q&&find(txt(t),q)>=0;return '<details class="ax-term"'+(m?' open':'')+'><summary>'+mk(t.name,q)+(t.badge?' <em dir="auto">'+mk(t.badge,q)+'</em>':'')+'</summary><p>'+mk(t.def,q)+'</p></details>'}).join('')}
 function openPanel(si,pi,q){
-  lastF=document.activeElement;hideTip();q=(q||'').toLowerCase();var h='',cr='';
+  if(!panel.classList.contains('on')){lastF=document.activeElement;lastKey=lastF&&lastF.getAttribute&&(lastF.getAttribute('data-p')||lastF.getAttribute('data-go'))}
+  hideTip();q=(q||'').toLowerCase();var h='',cr='';
   if(si==='si'){panel.style.setProperty('--sc',sc('si'));cr='SI · '+SI.label;
     h='<div class="ax-num">'+esc(U.summit)+'</div><h2 id="axPTitle">'+esc(SI.title)+'</h2><div class="ax-en" dir="ltr">'+esc(SI.label)+'</div><p class="ax-desc">'+esc(SI.lead)+'</p>'+exHTML(SI,U.idea)+
       '<div class="ax-ladder">'+SI.ladder.map(function(r){return '<div class="ax-rung"><span class="k">'+esc(r.k)+'</span><b>'+esc(r.title)+'</b><span>'+esc(r.status)+'</span><p>'+esc(r.def)+'</p></div>'}).join('')+'</div>'+
@@ -47,11 +51,22 @@ function openPanel(si,pi,q){
   }
   $('#axCrumb').textContent=cr;pb.innerHTML=h;pb.scrollTop=0;
   var f=$('.ax-filter',pb);if(f)f.addEventListener('input',function(){var v=f.value.trim().toLowerCase(),ts=S[si].pkgs[pi].terms;$('.ax-terms',pb).innerHTML=termsHTML(ts.filter(function(t){return !v||find(txt(t),v)>=0}),v)||'<p>'+esc(T.none)+'</p>'});
-  panel.classList.add('on');scrim.classList.add('on');panel.setAttribute('aria-hidden','false');setTimeout(function(){$('#axClose').focus()},60);
+  if(!panel.classList.contains('on')){
+    inerted=Array.prototype.filter.call(body.children,function(x){return x!==panel&&x!==scrim&&x!==tip&&!x.inert});
+    inerted.forEach(function(x){x.inert=true});
+  }
+  panel.classList.add('on');scrim.classList.add('on');setTimeout(function(){$('#axClose').focus()},60);
 }
-function closePanel(){if(!panel.classList.contains('on'))return;panel.classList.remove('on');scrim.classList.remove('on');panel.setAttribute('aria-hidden','true');if(lastF&&lastF.focus)lastF.focus()}
+function closePanel(){if(!panel.classList.contains('on'))return;panel.classList.remove('on');scrim.classList.remove('on');
+  inerted.forEach(function(x){x.inert=false});inerted=[];
+  /* the opener may have been re-rendered (side list, search results): fall back to its twin, then to the search box */
+  var t=lastF&&lastF.isConnected?lastF:(lastKey&&document.querySelector('button[data-p="'+lastKey+'"],button[data-go="'+lastKey+'"]'))||$('#axQ');
+  if(t&&t.focus)t.focus()}
 $('#axClose').onclick=closePanel;scrim.onclick=closePanel;
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()});
+/* keep Tab inside the dialog even where inert is unsupported */
+panel.addEventListener('keydown',function(e){if(e.key!=='Tab')return;var f=focusables();if(!f.length)return;var a=f[0],z=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
 function go(g,q){if(g==='si')openPanel('si');else{var a=g.split(',');a.length>1?openPanel(+a[0],+a[1],q):openPanel(+a[0])}}
 pb.addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 
@@ -110,7 +125,7 @@ function buildOrbit(){
   el('circle',{cx:C,cy:C,r:82,fill:cv('--csi')},core);
   el('text',{x:C,y:C-4,'text-anchor':'middle','font-size':40},core).textContent='SI';
   var st=el('text',{x:C,y:C+26,'text-anchor':'middle','font-size':SI.title.length>18?12:15,'font-weight':600},core);st.textContent=short(SI.title,24);
-  core.addEventListener('click',function(){openPanel('si')});core.addEventListener('keydown',function(e){if(e.key==='Enter')openPanel('si')});
+  core.addEventListener('click',function(){openPanel('si')});core.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openPanel('si')}});
   applySearch();
 }
 function ripple(x,y,col,big){if(still||!gFx)return;var c=el('circle',{class:'ax-ripple'+(big?' big':''),cx:x,cy:y,r:16,fill:'none',stroke:col,'stroke-width':2},gFx);setTimeout(function(){c.remove()},900)}

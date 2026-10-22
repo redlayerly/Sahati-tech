@@ -29,8 +29,8 @@
         <output id="axCount"></output>
       </label>
       <div class="ax-frame ax-orbit">
-        <svg id="axOrb" viewBox="0 0 1000 1000" direction="ltr" role="img" aria-label="{{s:atlas_h1}}"></svg>
-        <aside class="ax-side" id="axSide" aria-live="polite"></aside>
+        <svg id="axOrb" viewBox="0 0 1000 1000" direction="ltr" role="group" aria-label="{{s:atlas_h1}}"></svg>
+        <aside class="ax-side" id="axSide" aria-labelledby="axMapH"></aside>
       </div>
     </div>
   </section>
@@ -58,8 +58,8 @@
   </section>
 
   <div class="ax-tip" id="axTip" role="tooltip"></div>
-  <div class="ax-scrim" id="axScrim"></div>
-  <aside class="ax-panel" id="axPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="axPTitle">
+  <div class="ax-scrim" id="axScrim" aria-hidden="true"></div>
+  <aside class="ax-panel" id="axPanel" role="dialog" aria-modal="true" aria-labelledby="axPTitle">
     <div class="ax-p-top"><button type="button" class="ax-x" id="axClose" aria-label="{{s:ax_close}}">✕</button><div class="ax-crumb" id="axCrumb"></div></div>
     <div class="ax-p-body" id="axPBody"></div>
   </aside>
