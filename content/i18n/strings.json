@@ -83,7 +83,7 @@
     "nf_text": "ربما تغيّر الرابط أو حُذف المنشور. ارجع إلى الرئيسية وتصفّح آخر ما نُشر.",
     "nf_btn": "العودة إلى الرئيسية",
     "qm": "”",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@600;700",
+    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@600;700",
     "cats": {
       "acc": "حماية الحسابات",
       "scam": "الاحتيال والهندسة الاجتماعية",
@@ -215,7 +215,7 @@
     "nf_text": "The link may have changed or the post was removed. Head back home and browse the latest posts.",
     "nf_btn": "Back to home",
     "qm": "“",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "Account security",
       "scam": "Scams & social engineering",
@@ -347,7 +347,7 @@
     "nf_text": "Bağlantı değişmiş ya da yazı kaldırılmış olabilir. Ana sayfaya dön ve son yazılara göz at.",
     "nf_btn": "Ana sayfaya dön",
     "qm": "“",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "Hesap güvenliği",
       "scam": "Dolandırıcılık ve sosyal mühendislik",
@@ -479,7 +479,7 @@
     "nf_text": "Возможно, ссылка изменилась или материал удалён. Вернитесь на главную и посмотрите последние публикации.",
     "nf_btn": "На главную",
     "qm": "«",
-    "fonts": "family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "Защита аккаунтов",
       "scam": "Мошенничество и социальная инженерия",
@@ -611,7 +611,7 @@
     "nf_text": "Puede que el enlace haya cambiado o que la publicación se haya eliminado. Vuelve al inicio y explora lo más reciente.",
     "nf_btn": "Volver al inicio",
     "qm": "«",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "Seguridad de cuentas",
       "scam": "Estafas e ingeniería social",
@@ -743,7 +743,7 @@
     "nf_text": "Maaaring nagbago ang link o natanggal na ang post. Bumalik sa home at tingnan ang mga pinakabagong post.",
     "nf_btn": "Bumalik sa home",
     "qm": "“",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "Seguridad ng account",
       "scam": "Scam at social engineering",
@@ -875,7 +875,7 @@
     "nf_text": "链接可能已更改，或文章已被删除。返回首页看看最新内容吧。",
     "nf_btn": "返回首页",
     "qm": "“",
-    "fonts": "family=Readex+Pro:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700&family=IBM+Plex+Mono:wght@400;500",
+    "fonts": "family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@700&family=IBM+Plex+Mono:wght@400;500",
     "cats": {
       "acc": "账户安全",
       "scam": "诈骗与社会工程学",
