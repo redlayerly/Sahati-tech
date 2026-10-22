@@ -46,6 +46,7 @@
 .ax-search:focus-within{border-color:var(--accent-text);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
 .ax-search svg{width:18px;height:18px;flex:none;color:var(--ax-ink-3)}
 .ax-search input{flex:1;border:0;background:none;font:inherit;color:var(--ink);padding:.6rem 0;outline:none;min-width:0}
+.ax-search:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
 .ax-search output{font-family:var(--f-mono);font-size:.78rem;color:var(--accent-text);white-space:nowrap}
 
 /* orbit */
@@ -60,7 +61,7 @@
 .ax-list button{border:0;background:none;text-align:start;padding:.45rem .55rem;border-radius:9px;cursor:pointer;font:inherit;font-size:.92rem;color:var(--ink);display:flex;gap:.55rem;align-items:baseline;line-height:1.45}
 .ax-list button i{font-style:normal;font-family:var(--f-mono);font-size:.74rem;color:var(--sc);flex:none}
 .ax-list button em{font-style:normal;margin-inline-start:auto;font-family:var(--f-mono);font-size:.72rem;color:var(--bg);background:var(--sc);border-radius:999px;padding:0 .45rem}
-.ax-list button:hover,.ax-list button:focus-visible{background:color-mix(in srgb,var(--sc) 15%,transparent);outline:none}
+.ax-list button:hover,.ax-list button:focus-visible{background:color-mix(in srgb,var(--sc) 15%,transparent)}
 .ax-cta{border:1px solid var(--sc);background:none;color:var(--ink);border-radius:10px;padding:.55rem .8rem;cursor:pointer;font:inherit;font-weight:600;font-size:.9rem}
 .ax-cta:hover{background:color-mix(in srgb,var(--sc) 15%,transparent)}
 .ax-orbit .pk{cursor:pointer;outline:none}
@@ -115,7 +116,7 @@
 .ax-card.main p{font-size:1.05rem}
 .ax-pk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
 .ax-pk button{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:.85rem .95rem;cursor:pointer;text-align:start;display:flex;flex-direction:column;gap:.2rem;transition:border-color .2s,transform .2s;font:inherit;color:var(--ink)}
-.ax-pk button:hover,.ax-pk button:focus-visible{border-color:var(--sc);transform:translateY(-2px);outline:none}
+.ax-pk button:hover,.ax-pk button:focus-visible{border-color:var(--sc);transform:translateY(-2px)}
 .ax-pk i{font-style:normal;font-family:var(--f-mono);font-size:.74rem;color:var(--sc)}
 .ax-pk b{font-family:var(--f-display);font-size:1.02rem;line-height:1.4}
 .ax-pk span{font-size:.88rem;color:var(--ax-ink2);line-height:1.65}
@@ -215,6 +216,9 @@
 .ax-orbit .tdot.hl{animation:axFade .3s}
 .ax-orbit .pk circle.b{transition:r .3s cubic-bezier(.3,1.6,.5,1)}
 .ax-orbit .pk:focus-visible circle.b{stroke:var(--ink)}
+/* SVG has no reliable outline: a dedicated ring circle shows keyboard focus (3:1 via --focus) */
+.ax-orbit .ring{fill:none;stroke:var(--focus);stroke-width:3;opacity:0;pointer-events:none}
+.ax-orbit .pk:focus-visible .ring,.ax-orbit .core:focus-visible .ring{opacity:1}
 .ax-search{transition:border-color .2s,box-shadow .2s}
 .ax-list button{transition:background .2s,transform .2s}
 .ax-list button:hover{transform:translateX(-3px)}

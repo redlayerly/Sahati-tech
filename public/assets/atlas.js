@@ -108,6 +108,7 @@ function buildOrbit(){
         d.addEventListener('click',function(){openPanel(si,pi,tm.name)})});
       var g2=el('g',{class:'pk','data-p':k,tabindex:0,role:'button','aria-label':p.id+' '+p.name,style:'--d:'+(.55+k*.035).toFixed(3)+'s'},gP);
       el('circle',{class:'b',cx:pt[0],cy:pt[1],r:15,fill:col,stroke:cv('--bg'),'stroke-width':3},g2);
+      el('circle',{class:'ring',cx:pt[0],cy:pt[1],r:25},g2);
       el('text',{class:'num',x:pt[0],y:pt[1]+4,'text-anchor':'middle'},g2).textContent=p.id;
       var lp=P(a,R-28),flip=Math.cos(a*Math.PI/180)<0;
       el('text',{class:'lb',x:lp[0],y:lp[1]+5,'text-anchor':flip?'start':'end',transform:'rotate('+(flip?a+180:a)+' '+lp[0]+' '+lp[1]+')'},g2).textContent=short(p.name,21);
@@ -119,6 +120,7 @@ function buildOrbit(){
       ang+=per});
     ang+=GAP});
   var core=el('g',{class:'core',role:'button',tabindex:0,'aria-label':SI.title},svg);
+  el('circle',{class:'ring',cx:C,cy:C,r:136},core);
   [118,100].forEach(function(r,i){var c=el('circle',{cx:C,cy:C,r:r,fill:'none',stroke:cv('--accent'),'stroke-width':i?1.5:1,opacity:i?.8:.4},core);el('animate',{attributeName:'r',values:r+';'+(r+10)+';'+r,dur:(4+i)+'s',repeatCount:'indefinite'},c)});
   [[132,26,0,1],[148,38,120,3],[122,18,240,5]].forEach(function(o,i){var g=el('g',{},core);el('circle',{cx:C+o[0],cy:C,r:i?3:4,fill:cv('--c'+o[3])},g);
     if(!still)el('animateTransform',{attributeName:'transform',type:'rotate',from:o[2]+' '+C+' '+C,to:(o[2]+(i%2?-360:360))+' '+C+' '+C,dur:o[1]+'s',repeatCount:'indefinite'},g)});

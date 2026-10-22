@@ -232,7 +232,7 @@ footer.foot .social-icons svg, .drawer-social svg{width:1.15rem;height:1.15rem}
 @media (max-height:520px) and (orientation:landscape){:root{--hdr:3.5rem}.mast .wrap{padding-block:2rem}.filter{position:static}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 
-.sr:focus{position:fixed;top:.75rem;right:.75rem;width:auto;height:auto;clip:auto;z-index:100;background:var(--ink);color:var(--bg);padding:.6rem 1rem;border-radius:.5rem}
+.sr:focus{position:fixed;top:.75rem;inset-inline-start:.75rem;width:auto;height:auto;clip:auto;z-index:100;background:var(--ink);color:var(--bg);padding:.6rem 1rem;border-radius:.5rem}
 
 /* ---------- language switcher ---------- */
 .langs{position:relative;flex-shrink:0}
