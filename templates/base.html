@@ -74,10 +74,12 @@
     <div class="wrap">
       <div><h2>{{s:nl_title}}</h2><p>{{s:nl_text}}</p></div>
       <form id="nlForm" novalidate{{newsletter_attrs}}>
-        <label class="sr" for="nlEmail">{{s:nl_email_label}}</label>
-        <input id="nlEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
-        <button type="submit">{{s:nl_submit}}</button>
-        <small id="nlMsg" role="status"></small>
+        <fieldset{{newsletter_fieldset}}>
+          <label class="sr" for="nlEmail">{{s:nl_email_label}}</label>
+          <input id="nlEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+          <button type="submit">{{s:nl_submit}}</button>
+        </fieldset>
+        <small id="nlMsg" role="status">{{newsletter_msg}}</small>
       </form>
     </div>
   </section>

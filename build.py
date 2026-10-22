@@ -344,7 +344,8 @@ def build():
     year = datetime.date.today().year
     nl = SITE.get('newsletter_endpoint', '')
     if nl and not nl.startswith('https://'): raise SystemExit('site.json: newsletter_endpoint يجب أن يبدأ بـ https://')
-    nl_attrs = ' action="%s" method="post" target="_blank" rel="noopener noreferrer" data-endpoint="1"' % esc(nl) if nl else ''
+    # without an endpoint the form is rendered disabled: a bare <form> would GET the e-mail into the page URL when JS is off
+    nl_attrs = ' action="%s" method="post" target="_blank" rel="noopener noreferrer" data-endpoint="1"' % esc(nl) if nl else ' method="post"'
 
     # every language version of every post
     versions = {}   # slug -> {lang: post}
@@ -373,6 +374,7 @@ def build():
         return fill(base_tpl, S, page_title=esc(title), description=esc(desc), canonical=BASE_URL + url, og_type=og_type,
                     og_title=esc(og_title or title), og_image=BASE_URL + '/assets/og-cover.png', head_extra=head_extra,
                     version=version, body_class=body_class, sprite=sprite, content=content, newsletter_attrs=nl_attrs, year=year,
+                    newsletter_fieldset='' if nl else ' disabled', newsletter_msg='' if nl else esc(S['nl_soon']),
                     prefix=S['prefix'], hreflang=hreflang(alt_urls), lang_links=lang_links(lang, alt_urls),
                     js_strings=js_json({k: S[k] for k in ('nl_invalid', 'nl_soon', 'copied')}))
 
