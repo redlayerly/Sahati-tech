@@ -77,12 +77,15 @@ def write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     open(path, 'w', encoding='utf-8', newline='\n').write(text)
 def fill(tpl, S=None, **kw):
-    if S is not None:
-        tpl = re.sub(r'\{\{s:(\w+)\}\}', lambda m: esc(S[m.group(1)]) if m.group(1) != 'fonts' else S['fonts'], tpl)
-    for k, v in kw.items(): tpl = tpl.replace('{{%s}}' % k, str(v))
-    left = re.findall(r'\{\{(s:)?(\w+)\}\}', tpl)
-    if left: raise SystemExit('قالب ناقص، لم تُعبّأ الحقول: %s' % ', '.join(sorted(set(''.join(x) for x in left))))
-    return tpl
+    """Fill {{key}} / {{s:key}} placeholders in ONE pass over the template only.
+    Inserted values are never re-scanned, so a post that contains "{{content}}" stays literal text."""
+    def missing(s, k): return (S is None or k not in S) if s else k not in kw
+    left = sorted({s + k for s, k in re.findall(r'\{\{(s:)?(\w+)\}\}', tpl) if missing(s, k)})
+    if left: raise SystemExit('قالب ناقص، لم تُعبّأ الحقول: %s' % ', '.join(left))
+    def sub(m):
+        if m.group(1): return S['fonts'] if m.group(2) == 'fonts' else esc(S[m.group(2)])
+        return str(kw[m.group(2)])
+    return re.sub(r'\{\{(s:)?(\w+)\}\}', sub, tpl)
 
 # ------------------------------------------------------------------ front matter
 def front(path):
