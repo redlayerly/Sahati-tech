@@ -38,14 +38,14 @@
 .toc ol{list-style:none;margin-top:.8rem;display:flex;flex-direction:column;border-inline-start:1px solid var(--line)}
 .toc a{display:block;padding:.35rem .9rem;font-size:.88rem;color:var(--ink-2);line-height:1.6;border-inline-start:2px solid transparent;margin-inline-start:-1px;transition:color .2s,border-color .2s}
 .toc a:hover{color:var(--ink)}
-.toc a.on{color:var(--accent-text);border-inline-start-color:var(--accent-text);font-weight:600}
+.toc a.on{color:var(--accent-text);border-inline-start-color:var(--accent);font-weight:600}
 @media (min-width:1080px){.toc summary{pointer-events:none}.toc summary::after{display:none}}
 
 .share{display:flex;flex-direction:column;gap:.6rem}
 .share .lbl{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.16em;color:var(--accent-text);direction:ltr;text-align:right}
 .share .btns{display:flex;gap:.5rem;flex-wrap:wrap}
 .share a,.share button{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border:1px solid var(--line);border-radius:.7rem;background:var(--card);cursor:pointer;color:var(--ink);transition:border-color .2s,color .2s}
-.share a:hover,.share button:hover{border-color:var(--accent-text);color:var(--accent-text)}
+.share a:hover,.share button:hover{border-color:var(--accent);color:var(--accent-text)}
 .share svg{width:1.15rem;height:1.15rem}
 .share .msg{font-size:.8rem;color:var(--accent-text);min-height:1.2em}
 @media (max-width:1079px){.post-layout aside .share{display:none}}
@@ -100,7 +100,7 @@
 .post-end{border-top:1px solid var(--line-strong);padding-block:clamp(2.5rem,5vw,4rem)}
 .pn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem}
 .pn a{border:1px solid var(--line);border-radius:.75rem;padding:1.1rem 1.25rem;background:var(--card);display:flex;flex-direction:column;gap:.3rem;transition:border-color .2s}
-.pn a:hover{border-color:var(--accent-text)}
+.pn a:hover{border-color:var(--accent)}
 .pn span{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;color:var(--accent-text);direction:ltr}
 .pn .nx span{text-align:left}
 .pn .pv span{text-align:right}

@@ -43,7 +43,7 @@
 
 /* search */
 .ax-search{display:flex;align-items:center;gap:.55rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.2rem .85rem;margin-bottom:1rem;max-width:44rem}
-.ax-search:focus-within{border-color:var(--accent-text);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.ax-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
 .ax-search svg{width:18px;height:18px;flex:none;color:var(--ax-ink-3)}
 .ax-search input{flex:1;border:0;background:none;font:inherit;color:var(--ink);padding:.6rem 0;outline:none;min-width:0}
 .ax-search:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
@@ -145,7 +145,7 @@
 .ax-p-top{display:flex;align-items:center;gap:.5rem;padding:.8rem 1.1rem;border-bottom:1px solid var(--line);background:var(--ax-bg2)}
 .ax-crumb{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;color:var(--ax-ink-3);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ax-x{border:1px solid var(--line);background:var(--card);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:1rem;color:var(--ink)}
-.ax-x:hover{border-color:var(--accent-text)}
+.ax-x:hover{border-color:var(--accent)}
 .ax-x{position:relative}.ax-x::after{content:"";position:absolute;inset:-3px}
 .ax-p-body{overflow-y:auto;padding:1.4rem 1.3rem 3rem;flex:1;overscroll-behavior:contain}
 .ax-num{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--f-mono);font-size:.78rem;color:var(--sc);letter-spacing:.08em}
