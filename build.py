@@ -420,8 +420,10 @@ def build():
             toc_html = '<details class="toc"><summary>%s</summary><ol>%s</ol></details>' % (esc(S['toc_title']), ''.join('<li><a href="#%s">%s</a></li>' % (h, inline(t)) for h, t in toc)) if len(toc) >= 2 else ''
             newer = pages[idx - 1] if idx > 0 else None
             older = pages[idx + 1] if idx + 1 < len(pages) else None
-            pn = ('<a class="pv" href="%s"><span>← PREVIOUS</span><b>%s</b></a>' % (esc(older['url']), esc(older['title'])) if older else '<span class="empty-slot"></span>') + \
-                 ('<a class="nx" href="%s"><span>NEXT →</span><b>%s</b></a>' % (esc(newer['url']), esc(newer['title'])) if newer else '<span class="empty-slot"></span>')
+            # arrows point outwards: previous sits at the inline start, next at the inline end
+            a_start, a_end = ['<span aria-hidden="true">%s</span>' % x for x in (('→', '←') if S['dir'] == 'rtl' else ('←', '→'))]
+            pn = ('<a class="pv" href="%s"><span>%s %s</span><b>%s</b></a>' % (esc(older['url']), a_start, esc(S['pn_prev']), esc(older['title'])) if older else '<span class="empty-slot"></span>') + \
+                 ('<a class="nx" href="%s"><span>%s %s</span><b>%s</b></a>' % (esc(newer['url']), esc(S['pn_next']), a_end, esc(newer['title'])) if newer else '<span class="empty-slot"></span>')
             rel = [q for q in pages if q is not p and q['category'] == p['category']]
             rel += [q for q in pages if q is not p and q not in rel]
             related = '<div class="related"><h2>%s</h2><div class="grid">%s</div></div>' % (esc(S['related']), ''.join(card(q, S) for q in rel[:3])) if rel else ''

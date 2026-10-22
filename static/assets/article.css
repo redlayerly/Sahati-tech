@@ -42,7 +42,7 @@
 @media (min-width:1080px){.toc summary{pointer-events:none}.toc summary::after{display:none}}
 
 .share{display:flex;flex-direction:column;gap:.6rem}
-.share .lbl{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.16em;color:var(--accent-text);direction:ltr;text-align:right}
+.share .lbl{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.16em;color:var(--accent-text);text-align:start}
 .share .btns{display:flex;gap:.5rem;flex-wrap:wrap}
 .share a,.share button{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border:1px solid var(--line);border-radius:.7rem;background:var(--card);cursor:pointer;color:var(--ink);transition:border-color .2s,color .2s}
 .share a:hover,.share button:hover{border-color:var(--accent);color:var(--accent-text)}
@@ -101,7 +101,9 @@
 .pn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem}
 .pn a{border:1px solid var(--line);border-radius:.75rem;padding:1.1rem 1.25rem;background:var(--card);display:flex;flex-direction:column;gap:.3rem;transition:border-color .2s}
 .pn a:hover{border-color:var(--accent)}
-.pn span{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;color:var(--accent-text);direction:ltr}
+.pn span{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;color:var(--accent-text)}
+/* localized labels: Arabic must not be letter-spaced (it breaks the joins) and the mono font has no Arabic or CJK glyphs */
+[dir="rtl"] .pn span,[dir="rtl"] .share .lbl,[lang="zh-Hans"] .pn span,[lang="zh-Hans"] .share .lbl{font-family:var(--f-display);letter-spacing:0;font-size:.8rem}
 .pn .nx span{text-align:left}
 .pn .pv span{text-align:right}
 .pn b{font-family:var(--f-display);font-weight:600;font-size:1rem;line-height:1.5}
