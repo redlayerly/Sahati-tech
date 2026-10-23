@@ -35,6 +35,34 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !dr.hidden) closeDrawer(dr.contains(document.activeElement) || document.activeElement === mb); });
   }
 
+  /* ---- header fit: the CSS breakpoints suit the site's own fonts; if the links still don't fit (a fallback
+     font, a larger text size, a machine-translated page) step down to the compact header, then to the menu
+     button, rather than overflowing the screen ---- */
+  var hw = document.querySelector('.hdr .wrap'), hn = hw && hw.querySelector('nav');
+  if (hw && hn) {
+    var hd = hw.parentNode;
+    var over = function () { return hw.scrollWidth > hw.clientWidth + 1; };
+    var fit = function () {
+      hd.classList.remove('fit-1', 'fit-2');
+      if (getComputedStyle(hn).display !== 'none' && over()) {
+        hd.classList.add('fit-1');
+        if (over()) { hd.classList.remove('fit-1'); hd.classList.add('fit-2'); }
+      }
+      /* the menu button went away while the drawer was open: close it so it doesn't reappear later by surprise */
+      if (mb && dr && !dr.hidden && getComputedStyle(mb).display === 'none') { dr.hidden = true; mb.setAttribute('aria-expanded', 'false'); }
+    };
+    var queued = 0;
+    var refit = function () { if (!queued) queued = requestAnimationFrame(function () { queued = 0; fit(); }); };
+    fit();
+    window.addEventListener('resize', refit);
+    /* a page translated in the browser swaps the link texts without any resize */
+    if (window.MutationObserver) new MutationObserver(refit).observe(hn, { childList: true, characterData: true, subtree: true });
+    if (document.fonts) {
+      if (document.fonts.ready) document.fonts.ready.then(refit);
+      if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', refit);
+    }
+  }
+
   /* ---- home feed filter ---- */
   var pills = document.getElementById('pills'), feed = document.getElementById('feedList');
   if (pills && feed) {

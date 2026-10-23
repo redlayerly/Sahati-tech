@@ -79,7 +79,7 @@ button,input{font:inherit;color:inherit}
 .hdr .mk{height:2.4rem;width:auto;display:block}
 .hdr .wm{height:1.7rem;width:auto;display:none}
 .hdr nav{display:flex;gap:.25rem;margin-inline-start:auto}
-.hdr nav a{font-size:.95rem;color:var(--ink-2);padding:.4rem .8rem;border-radius:.5rem;transition:color .2s}
+.hdr nav a{font-size:.95rem;color:var(--ink-2);padding:.4rem .7rem;border-radius:.5rem;white-space:nowrap;transition:color .2s}
 .hdr nav a:hover{color:var(--ink)}
 .skins{display:flex;gap:.25rem;padding:.25rem;border:1px solid var(--line);border-radius:999px;flex-shrink:0}
 .skins button{width:2rem;height:2rem;border-radius:50%;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;padding:0}
@@ -93,8 +93,16 @@ button,input{font:inherit;color:inherit}
 .drawer a{padding:.85rem 0;border-bottom:1px dashed var(--line);font-family:var(--f-display);font-weight:600}
 .drawer a:last-child{border-bottom:0}
 @media (min-width:600px){.hdr .wm{display:block}}
-@media (max-width:959px){.hdr nav{display:none}.menu-btn{display:grid}.hdr .sub-btn{display:none}.skins{margin-inline-start:auto}}
-@media (min-width:960px){.drawer{display:none!important}}
+/* the header steps down as room runs out: everything from 78em; from 60em tighter links and no subscribe
+   button (the newsletter box sits above the footer on every page); below 60em the menu button.
+   Measured with the site's fonts and a desktop scrollbar, the longest labels (Russian, Filipino) keep about
+   30px to spare at either step. em breakpoints follow the reader's default text size. When the links still
+   don't fit (a fallback font, a machine-translated page) site.js adds .fit-1 (compact) or .fit-2 (menu button) */
+@media (max-width:59.99em){.hdr nav{display:none}.menu-btn{display:grid}.hdr .sub-btn{display:none}.skins{margin-inline-start:auto}}
+@media (min-width:60em) and (max-width:77.99em){.hdr .wrap{gap:.85rem}.hdr nav{gap:0}.hdr nav a{padding:.4rem .5rem;font-size:.9rem}.hdr .sub-btn{display:none}}
+@media (min-width:60em){.hdr:not(.fit-2) .drawer{display:none!important}}
+.hdr.fit-1 .wrap{gap:.85rem} .hdr.fit-1 nav{gap:0} .hdr.fit-1 nav a{padding:.4rem .5rem;font-size:.9rem} .hdr.fit-1 .sub-btn{display:none}
+.hdr.fit-2 nav,.hdr.fit-2 .sub-btn{display:none} .hdr.fit-2 .menu-btn{display:grid} .hdr.fit-2 .skins{margin-inline-start:auto}
 
 /* ---------- masthead ---------- */
 .mast{border-bottom:1px solid var(--line-strong);background-image:linear-gradient(var(--bg-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bg-grid) 1px,transparent 1px);background-size:2.25rem 2.25rem}

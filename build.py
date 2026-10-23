@@ -338,7 +338,7 @@ def build():
     write(os.path.join(out, 'assets', 'site.css'), css)
     for f in ('base.css', 'article.css', 'atlas.css'): os.remove(os.path.join(out, 'assets', f))
     sprites = {f: read(P('templates', f)) for f in ('sprite.html', 'sprite-lockup.html')}
-    version = hashlib.md5((css + ''.join(read(P('static', 'assets', f)) for f in ('site.js', 'skin.js', 'atlas.js')) + ''.join(sprites.values())).encode()).hexdigest()[:8]
+    version = hashlib.md5((css + ''.join(read(P('static', 'assets', f)) for f in ('site.js', 'skin.js', 'atlas.js', 'cv.js', 'cv.css')) + ''.join(sprites.values())).encode()).hexdigest()[:8]
 
     # logo symbols live in cacheable, versioned SVG files instead of ~26KB (80KB on home) inlined in every page
     def sprite_file(name, src):
@@ -395,6 +395,10 @@ def build():
         try: return datetime.date.fromisoformat(str(u)) if u else p['date']
         except ValueError: return p['date']
     atlas_mod = SITE.get('atlas_updated') or datetime.date.today().isoformat()
+    # CV builder: the tool UI exists only in the languages that define cv_* strings (Arabic and English for now)
+    cv_urls = {l: STR[l]['prefix'] + '/tools/cv/' for l in LANGS if 'cv_title' in STR[l]}
+    cv_mod = SITE.get('cv_updated') or datetime.date.today().isoformat()
+    cv_fonts = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">'
     social = [u.split('?')[0] for u in SITE.get('social', {}).values() if u]
     for lang in LANGS:
         S = STR[lang]; posts = by_lang[lang]; root = os.path.join(out, S['prefix'].strip('/'))
@@ -422,6 +426,19 @@ def build():
         atlas_page_html = page(lang, atlas_content, S['atlas_title'], S['atlas_lead'], S['prefix'] + '/atlas/', atlas_urls, body_class='is-atlas')
         write(os.path.join(root, 'atlas', 'index.html'), atlas_page_html)
         sitemap.append((S['prefix'] + '/atlas/', atlas_mod))
+
+        # CV builder (runs entirely in the browser; nothing is sent or stored on the server)
+        if lang in cv_urls:
+            cv_content = fill(read(P('templates', 'cv.html')), S, version=version,
+                              cv_i18n=js_json({k: S[k] for k in S if k.startswith('cv_')}))
+            cv_ld = {"@context": "https://schema.org", "@type": "WebApplication", "name": S['cv_h1'], "description": S['cv_desc'],
+                     "url": BASE_URL + cv_urls[lang], "applicationCategory": "BusinessApplication", "operatingSystem": "Any",
+                     "isAccessibleForFree": True, "inLanguage": S['html_lang'], "publisher": {"@id": BASE_URL + '/#org'}}
+            write(os.path.join(root, 'tools', 'cv', 'index.html'),
+                  page(lang, cv_content, S['cv_title'], S['cv_desc'], cv_urls[lang], cv_urls, body_class='is-cv',
+                       # page-level policy on top of the site CSP: this page may not open any network connection at all
+                       head_extra='<meta http-equiv="Content-Security-Policy" content="connect-src \'none\'">\n<link rel="stylesheet" href="/assets/cv.css?v=%s">\n%s\n<script type="application/ld+json">%s</script>' % (version, cv_fonts, js_json(cv_ld))))
+            sitemap.append((cv_urls[lang], cv_mod))
 
         for idx, p in enumerate(pages):
             toc = []; body = md(p['body_md'], S, toc)

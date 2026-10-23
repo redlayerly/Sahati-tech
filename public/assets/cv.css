@@ -1,0 +1,218 @@
+/* سَحاتِك — CV builder (loaded only on /tools/cv/). The CV "paper" is always a white A4 document;
+   the builder UI around it follows the site skins. */
+
+/* ---------- page head ---------- */
+.cvx-hero{border-bottom:1px solid var(--line);padding-block:clamp(2rem,5vw,3.5rem) clamp(1.25rem,3vw,2rem);
+  background-image:linear-gradient(var(--bg-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bg-grid) 1px,transparent 1px);background-size:2.25rem 2.25rem}
+.cvx-kicker{font-family:var(--f-mono);font-size:.76rem;letter-spacing:.12em;color:var(--accent-text)}
+.cvx-hero h1{font-family:var(--f-display);font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.2;margin:.4rem 0 .5rem;color:var(--ink)}
+.cvx-hero p{margin:0;max-width:46rem;font-size:1.05rem;line-height:1.85;color:var(--ink)}
+
+/* ---------- privacy notice ---------- */
+.cvx-privacy{display:flex;gap:1rem;align-items:flex-start;margin:1.5rem 0 1.25rem;padding:1.1rem 1.25rem;border:1px solid var(--line);
+  border-inline-start:4px solid var(--accent);border-radius:16px;background:var(--card)}
+.cvx-lock{width:2rem;height:2rem;flex:none;color:var(--accent-text);margin-top:.15rem}
+.cvx-privacy h2{margin:0 0 .45rem;font-family:var(--f-display);font-size:1.15rem;color:var(--ink)}
+.cvx-privacy ul{margin:0;padding-inline-start:1.1rem;display:grid;gap:.35rem;color:var(--ink);font-size:.95rem;line-height:1.75;list-style:disc}
+.cvx-privacy li::marker{color:var(--accent-text)}
+/* phones: the lock sits beside the heading, so the list gets the full width */
+@media (max-width:600px){
+  .cvx-privacy{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.6rem;align-items:center;padding:1rem}
+  .cvx-privacy > div{display:contents}
+  .cvx-lock{width:1.6rem;height:1.6rem;margin:0}
+  .cvx-privacy h2{margin:0}
+  .cvx-privacy ul{grid-column:1/-1;margin-top:.6rem}
+}
+
+/* ---------- layout ---------- */
+.cvx-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem;align-items:start;padding-bottom:3rem}
+.cvx-side{position:sticky;top:calc(var(--hdr) + 1rem)}
+.cvx-tabs{display:none}
+@media (max-width:959px){
+  /* phones/tablets: the action buttons sit on top and stay visible on both tabs */
+  .cvx-grid{display:flex;flex-direction:column;align-items:stretch;gap:0}
+  .cvx-side{position:static;order:-1;min-width:0}
+  .cvx-form{min-width:0}
+  .cvx-tabs{display:flex;gap:.5rem;position:sticky;top:var(--hdr);z-index:20;background:var(--bg);padding:.6rem 0;margin-bottom:.75rem;border-bottom:1px solid var(--line)}
+  .cvx-tabs button{flex:1;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+  .cvx-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .cvx[data-tab="edit"] .cvx-stage{display:none}
+  .cvx[data-tab="preview"] .cvx-form{display:none}
+  .cvx-actions{margin-bottom:1rem}
+}
+
+/* ---------- form ---------- */
+.cvx-box{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:.9rem 1.1rem 1.15rem;margin:0 0 1rem;min-width:0}
+.cvx-box legend{font-family:var(--f-display);font-weight:700;font-size:1.05rem;padding:0 .4rem;color:var(--ink)}
+.cvx-fields{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.cvx-f{display:flex;flex-direction:column;gap:.3rem;font-size:.88rem;color:var(--ink-2);min-width:0}
+.cvx-f.wide{grid-column:1/-1}
+.cvx-f input,.cvx-f textarea,.cvx-f select{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:10px;
+  padding:.6rem .7rem;min-height:2.75rem;width:100%;box-sizing:border-box}
+.cvx-f textarea{resize:vertical;line-height:1.65}
+.cvx-f input:focus,.cvx-f textarea:focus,.cvx-f select:focus{border-color:var(--accent);outline:2px solid var(--focus);outline-offset:1px}
+.cvx-f input:disabled{opacity:.55}
+.cvx-f input::placeholder,.cvx-f textarea::placeholder{color:var(--ink-2)}
+@media (max-width:560px){.cvx-fields{grid-template-columns:1fr}}
+.cvx-row2{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:flex-end;margin-top:.9rem}
+.cvx-row2 > .cvx-f:first-child{flex:1;min-width:10rem}
+.cvx-hint{font-size:.86rem;color:var(--ink-2);margin:.6rem 0 0;line-height:1.75}
+.cvx-note{color:var(--accent-text);font-weight:600}
+.cvx-err{font-size:.9rem;color:var(--ink);margin:.6rem 0 0;padding-inline-start:.6rem;border-inline-start:3px solid #C0392B}
+.cvx-status{min-height:1.5em;font-size:.9rem;color:var(--accent-text);margin:.5rem 0 0}
+
+/* template cards */
+.cvx-tpls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+.cvx-tpl{position:relative;display:flex;flex-direction:column;align-items:center;gap:.45rem;border:1.5px solid var(--line);border-radius:12px;
+  padding:.7rem .4rem .6rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink);text-align:center;transition:border-color .2s,box-shadow .2s}
+.cvx-tpl input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.cvx-tpl:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.cvx-tpl:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.cvx-thumb{display:flex;flex-direction:column;gap:4px;width:56px;height:72px;padding:7px 6px;background:#fff;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.cvx-thumb i{display:block;height:8px;border-radius:2px;background:#7A5C3F}
+.cvx-thumb b{display:block;height:4px;border-radius:2px;background:#D9D4CA}
+.cvx-thumb.t-modern{padding-inline-start:24px;background:linear-gradient(to right,#7A5C3F 0 18px,#fff 18px)}
+[dir="rtl"] .cvx-thumb.t-modern{background:linear-gradient(to left,#7A5C3F 0 18px,#fff 18px)}
+.cvx-thumb.t-ats i{background:#26282B}
+
+/* colour swatches */
+.cvx-swatches{display:flex;gap:.25rem}
+.cvx-swatches label{position:relative;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
+.cvx-swatches input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.cvx-swatches span{width:28px;height:28px;border-radius:50%;box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--line-strong)}
+.cvx-swatches input:checked + span{box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--ink)}
+.cvx-swatches input:focus-visible + span{outline:2px solid var(--focus);outline-offset:5px}
+.sw-bronze{background:#7A5C3F}.sw-charcoal{background:#26282B}.sw-teal{background:#2F6A6E}.sw-navy{background:#2F4B7C}
+
+/* photo */
+.cvx-photo{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+#cvPhotoPrev{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--line)}
+.cvx-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+
+/* repeatable items */
+.cvx-item{border:1px solid var(--line);border-radius:12px;padding:.7rem .8rem .85rem;margin-bottom:.75rem;background:var(--bg)}
+.cvx-item-h{display:flex;align-items:center;gap:.35rem;margin-bottom:.55rem}
+.cvx-item-h strong{flex:1;min-width:0;font-size:.92rem;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvx-ibtn{width:44px;height:44px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center;font-size:1rem;line-height:1}
+.cvx-ibtn:hover{border-color:var(--accent)}
+.cvx-ibtn:disabled{opacity:.35;cursor:default}
+.cvx-ibtn svg{width:18px;height:18px}
+.cvx-add{width:100%;min-height:44px;border:1.5px dashed var(--line-strong);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.cvx-add:hover{border-color:var(--accent);color:var(--accent-text)}
+.cvx-add:disabled{opacity:.45;cursor:default}
+.cvx-check{display:flex;align-items:center;gap:.55rem;min-height:44px;font-size:.92rem;color:var(--ink);cursor:pointer;align-self:end}
+.cvx-check input{width:20px;height:20px;accent-color:var(--accent);margin:0}
+
+/* buttons */
+.cvx-btns{display:flex;flex-wrap:wrap;gap:.5rem}
+.cvx-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:44px;padding:.55rem 1.05rem;border-radius:999px;
+  border:1px solid var(--line-strong);background:transparent;color:var(--ink);font:inherit;font-weight:600;font-size:.95rem;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.cvx-btn:hover{border-color:var(--accent)}
+.cvx-btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cvx-btn.primary:hover{background:var(--accent-text);border-color:var(--accent-text);color:#fff}
+.cvx-btn.ghost{border-color:var(--line)}
+.cvx-btn.danger.arm{background:#B3261E;border-color:#B3261E;color:#fff}
+label.cvx-btn:has(.cvx-file:focus-visible){outline:2px solid var(--focus);outline-offset:3px}
+
+/* ---------- preview stage ---------- */
+.cvx-actions{margin-bottom:.85rem}
+.cvx-stage{background:color-mix(in srgb,var(--ink) 7%,var(--bg));border:1px solid var(--line);border-radius:16px;padding:1rem;
+  overflow-x:hidden;overflow-y:auto;max-height:calc(100vh - var(--hdr) - 11rem);max-height:calc(100svh - var(--hdr) - 11rem)}
+.cvx-fit{position:relative}
+.cvx-scale{width:210mm;transform-origin:0 0}
+[dir="rtl"] .cvx-scale{transform-origin:100% 0}
+@media (max-width:959px){.cvx-stage{max-height:none}}
+
+/* =====================================================================
+   CV paper (white A4). Colours are fixed so the PDF looks the same in every skin.
+   ===================================================================== */
+.cv-paper{--cv-acc:#7A5C3F;--cv-ink:#1F2124;--cv-mute:#55524D;--cv-line:#D9D4CA;
+  width:210mm;min-height:297mm;box-sizing:border-box;background:#fff;color:var(--cv-ink);
+  font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif;font-size:10pt;line-height:1.55;text-align:start;overflow-wrap:anywhere;
+  box-shadow:0 12px 32px -14px rgba(0,0,0,.45);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cv-paper[dir="rtl"]{font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;line-height:1.7}
+.cv-paper[data-accent="charcoal"]{--cv-acc:#26282B}
+.cv-paper[data-accent="teal"]{--cv-acc:#2F6A6E}
+.cv-paper[data-accent="navy"]{--cv-acc:#2F4B7C}
+.cv-paper *{box-sizing:border-box}
+.cv-paper h1{margin:0;font-size:22pt;line-height:1.2;font-weight:700;color:var(--cv-ink)}
+.cv-paper a{color:inherit;text-decoration:none}
+.cv-title{margin:1.2mm 0 0;font-size:12pt;font-weight:600;color:var(--cv-acc)}
+.cv-contact{display:flex;flex-wrap:wrap;gap:1mm 5mm;margin-top:2.5mm;font-size:9pt;color:var(--cv-mute)}
+.cv-contact span{unicode-bidi:plaintext}
+.cv-photo{display:block;width:30mm;height:30mm;border-radius:50%;object-fit:cover;flex:none}
+.cv-sec{margin-top:6mm}
+.cv-sec h2{margin:0 0 2.6mm;padding-bottom:1.3mm;border-bottom:.35mm solid var(--cv-line);font-size:11.5pt;font-weight:700;color:var(--cv-acc);break-after:avoid}
+.cv-paper[dir="ltr"] .cv-sec h2{font-size:10pt;letter-spacing:.09em;text-transform:uppercase}
+.cv-sec > p{margin:0;white-space:pre-line}
+.cv-item{margin-bottom:3.6mm;break-inside:avoid}
+.cv-item:last-child{margin-bottom:0}
+.cv-item-h{display:flex;justify-content:space-between;align-items:baseline;gap:4mm}
+.cv-item-h b{font-size:10.5pt;font-weight:700}
+.cv-dates{flex:none;font-size:9pt;color:var(--cv-mute);white-space:nowrap}
+.cv-sub{font-size:9.5pt;color:var(--cv-mute)}
+.cv-item ul{margin:1.2mm 0 0;padding-inline-start:4.5mm}
+.cv-item li{margin:.5mm 0}
+.cv-skills{display:flex;flex-wrap:wrap;gap:1.6mm;margin:0;padding:0;list-style:none}
+.cv-skills li{border:.3mm solid var(--cv-line);border-radius:1.4mm;padding:.5mm 2.2mm;font-size:9pt}
+.cv-langs{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:1mm 6mm}
+.cv-langs b{font-weight:600}
+.cv-empty{margin:0;padding:30mm 10mm;text-align:center;color:#77736B;font-size:11pt}
+
+/* classic */
+.cv-classic{padding:16mm 17mm}
+.cv-classic .cv-head{display:flex;align-items:center;gap:6mm;padding-bottom:5mm;border-bottom:.8mm solid var(--cv-acc)}
+
+/* modern: coloured sidebar at the inline start */
+.cv-modern{display:grid;grid-template-columns:64mm minmax(0,1fr);padding:0}
+.cv-aside{background:var(--cv-acc);color:#fff;padding:14mm 8mm 12mm}
+.cv-aside .cv-photo{width:38mm;height:38mm;border-radius:4mm;margin:0 auto 7mm;border:.8mm solid rgba(255,255,255,.9)}
+.cv-aside .cv-sec{margin-top:7mm}
+.cv-aside .cv-sec:first-of-type{margin-top:0}
+.cv-aside .cv-sec h2{color:#fff;border-bottom-color:rgba(255,255,255,.55);font-size:10.5pt}
+.cv-aside ul{margin:0;padding:0;list-style:none;display:grid;gap:1.8mm;font-size:9.3pt}
+.cv-aside li{unicode-bidi:plaintext}
+.cv-aside .cv-skills li{border-color:rgba(255,255,255,.6)}
+.cv-aside .cv-skills{display:flex}
+.cv-main{padding:14mm 12mm 12mm}
+.cv-main .cv-head{padding-bottom:4mm;border-bottom:.8mm solid var(--cv-acc)}
+
+/* simple / ATS: one column, black text, no photo, no colour */
+.cv-ats{--cv-acc:#1F2124;padding:18mm 20mm;font-family:Arial,"Segoe UI",sans-serif}
+.cv-ats[dir="rtl"]{font-family:Arial,Tahoma,"Segoe UI",sans-serif}
+.cv-ats .cv-head{padding-bottom:3mm;border-bottom:.4mm solid #1F2124}
+.cv-ats .cv-title{color:#1F2124;font-weight:400}
+.cv-ats .cv-contact{color:#1F2124}
+.cv-ats .cv-sec h2{border-bottom:0;padding-bottom:0}
+.cv-ats .cv-skills li{border:0;padding:0}
+.cv-ats .cv-skills li:not(:last-child)::after{content:"،"}
+.cv-ats[dir="ltr"] .cv-skills li:not(:last-child)::after{content:","}
+.cv-ats .cv-skills{gap:1mm 2mm}
+
+/* =====================================================================
+   Print = the PDF. Only the paper is printed, at its real A4 size.
+   ===================================================================== */
+@media print{
+  /* no page margin: Chrome then has no room for its own date/URL headers and footers. The paper's padding
+     gives the white margin instead, and box-decoration-break repeats it at the top and bottom of every page */
+  @page{size:A4;margin:0}
+  html,body,body.is-cv{background:#fff!important}
+  body.is-cv .hdr,body.is-cv .foot,body.is-cv .nl,body.is-cv .sr,body.is-cv .cvx-hero,body.is-cv .cvx-privacy,
+  body.is-cv .cvx-tabs,body.is-cv .cvx-form,body.is-cv .cvx-actions{display:none!important}
+  body.is-cv .wrap{padding:0!important;max-width:none!important;margin:0!important}
+  body.is-cv .cvx-grid{display:block!important;padding:0}
+  body.is-cv .cvx-side{display:block!important;position:static!important}
+  /* an A4 page is narrower than the tablet breakpoint, so undo the tab hiding here */
+  body.is-cv .cvx-stage{display:block!important;padding:0;border:0;border-radius:0;background:none;max-height:none!important;overflow:visible!important}
+  body.is-cv .cvx-fit{height:auto!important}
+  body.is-cv .cvx-scale{transform:none!important;width:auto}
+  body.is-cv .cv-paper{box-shadow:none;margin:0 auto;min-height:0}
+  body.is-cv .cv-classic,body.is-cv .cv-ats{padding-top:14mm;padding-bottom:14mm;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  body.is-cv .cv-modern{min-height:297mm;isolation:isolate}
+  body.is-cv .cv-aside,body.is-cv .cv-main{padding-top:14mm;padding-bottom:12mm;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  /* the sidebar colour becomes a fixed band: fixed boxes repeat on every printed page, so a second page keeps a
+     full-height sidebar instead of one that stops where the text stops */
+  body.is-cv .cv-modern .cv-aside{background:none}
+  body.is-cv .cv-modern::before{content:"";position:fixed;top:0;bottom:0;left:0;width:64mm;z-index:-1;background:var(--cv-acc)}
+  body.is-cv .cv-modern[dir="rtl"]::before{left:auto;right:0}
+}

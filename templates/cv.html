@@ -1,0 +1,136 @@
+<div class="cvx" id="cvx">
+
+  <header class="cvx-hero">
+    <div class="wrap">
+      <span class="cvx-kicker">{{s:cv_kicker}}</span>
+      <h1>{{s:cv_h1}}</h1>
+      <p>{{s:cv_lead}}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="cvx-privacy" aria-labelledby="cvPrivH">
+      <svg class="cvx-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v3"/></svg>
+      <div>
+        <h2 id="cvPrivH">{{s:cv_priv_h}}</h2>
+        <ul>
+          <li>{{s:cv_priv_1}}</li>
+          <li>{{s:cv_priv_2}}</li>
+          <li>{{s:cv_priv_3}}</li>
+          <li>{{s:cv_priv_4}}</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="cvx-tabs" role="tablist" aria-label="{{s:cv_h1}}">
+      <button type="button" role="tab" id="cvTabEdit" aria-selected="true" aria-controls="cvForm">{{s:cv_tab_edit}}</button>
+      <button type="button" role="tab" id="cvTabPrev" aria-selected="false" aria-controls="cvStage">{{s:cv_tab_preview}}</button>
+    </div>
+
+    <div class="cvx-grid">
+      <form class="cvx-form" id="cvForm" role="tabpanel" aria-labelledby="cvTabEdit" novalidate>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_design}}</legend>
+          <div class="cvx-tpls" role="radiogroup" aria-label="{{s:cv_tpl_label}}">
+            <label class="cvx-tpl"><input type="radio" name="tpl" value="classic" checked><span class="cvx-thumb t-classic" aria-hidden="true"><i></i><b></b><b></b><b></b></span><span>{{s:cv_tpl_classic}}</span></label>
+            <label class="cvx-tpl"><input type="radio" name="tpl" value="modern"><span class="cvx-thumb t-modern" aria-hidden="true"><i></i><b></b><b></b><b></b></span><span>{{s:cv_tpl_modern}}</span></label>
+            <label class="cvx-tpl"><input type="radio" name="tpl" value="ats"><span class="cvx-thumb t-ats" aria-hidden="true"><i></i><b></b><b></b><b></b></span><span>{{s:cv_tpl_ats}}</span></label>
+          </div>
+          <p class="cvx-hint" id="cvAtsHint" hidden>{{s:cv_tpl_ats_hint}}</p>
+          <div class="cvx-row2">
+            <label class="cvx-f"><span>{{s:cv_lang_label}}</span>
+              <select id="cvLang"><option value="ar">{{s:cv_lang_ar}}</option><option value="en">{{s:cv_lang_en}}</option></select>
+            </label>
+            <div class="cvx-f" role="radiogroup" aria-labelledby="cvAccentL"><span id="cvAccentL">{{s:cv_accent}}</span>
+              <div class="cvx-swatches">
+                <label title="{{s:cv_c_bronze}}"><input type="radio" name="accent" value="bronze" checked aria-label="{{s:cv_c_bronze}}"><span class="sw-bronze"></span></label>
+                <label title="{{s:cv_c_charcoal}}"><input type="radio" name="accent" value="charcoal" aria-label="{{s:cv_c_charcoal}}"><span class="sw-charcoal"></span></label>
+                <label title="{{s:cv_c_teal}}"><input type="radio" name="accent" value="teal" aria-label="{{s:cv_c_teal}}"><span class="sw-teal"></span></label>
+                <label title="{{s:cv_c_navy}}"><input type="radio" name="accent" value="navy" aria-label="{{s:cv_c_navy}}"><span class="sw-navy"></span></label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_personal}}</legend>
+          <div class="cvx-fields">
+            <label class="cvx-f wide"><span>{{s:cv_f_name}}</span><input type="text" data-k="name" maxlength="80" autocomplete="name"></label>
+            <label class="cvx-f wide"><span>{{s:cv_f_title}}</span><input type="text" data-k="title" maxlength="100" autocomplete="organization-title"></label>
+            <label class="cvx-f"><span>{{s:cv_f_email}}</span><input type="email" data-k="email" maxlength="120" autocomplete="email" dir="ltr"></label>
+            <label class="cvx-f"><span>{{s:cv_f_phone}}</span><input type="tel" data-k="phone" maxlength="40" autocomplete="tel" dir="ltr"></label>
+            <label class="cvx-f wide"><span>{{s:cv_f_location}}</span><input type="text" data-k="location" maxlength="100" autocomplete="address-level2"></label>
+            <label class="cvx-f"><span>{{s:cv_f_link1}}</span><input type="url" data-k="link1" maxlength="200" autocomplete="url" dir="ltr" inputmode="url"></label>
+            <label class="cvx-f"><span>{{s:cv_f_link2}}</span><input type="url" data-k="link2" maxlength="200" dir="ltr" inputmode="url"></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_photo}}</legend>
+          <div class="cvx-photo">
+            <img id="cvPhotoPrev" alt="" width="72" height="72" hidden>
+            <label class="cvx-btn"><input type="file" id="cvPhoto" accept="image/*" class="cvx-file">{{s:cv_photo_btn}}</label>
+            <button type="button" class="cvx-btn ghost" id="cvPhotoDel" hidden>{{s:cv_photo_remove}}</button>
+          </div>
+          <p class="cvx-hint">{{s:cv_photo_hint}}</p>
+          <p class="cvx-hint cvx-note" id="cvPhotoAts" hidden>{{s:cv_photo_ats}}</p>
+          <p class="cvx-err" id="cvPhotoErr" role="alert" hidden></p>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_summary}}</legend>
+          <label class="cvx-f wide"><span class="sr">{{s:cv_s_summary}}</span><textarea data-k="summary" rows="4" maxlength="1200" placeholder="{{s:cv_summary_ph}}"></textarea></label>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_exp}}</legend>
+          <div class="cvx-list" data-list="exp"></div>
+          <button type="button" class="cvx-add" data-add="exp"><span aria-hidden="true">+</span> {{s:cv_add_exp}}</button>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_edu}}</legend>
+          <div class="cvx-list" data-list="edu"></div>
+          <button type="button" class="cvx-add" data-add="edu"><span aria-hidden="true">+</span> {{s:cv_add_edu}}</button>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_skills}}</legend>
+          <label class="cvx-f wide"><span class="sr">{{s:cv_s_skills}}</span><textarea data-k="skills" rows="3" maxlength="1500" placeholder="{{s:cv_skills_ph}}"></textarea></label>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_langs}}</legend>
+          <div class="cvx-list" data-list="langs"></div>
+          <button type="button" class="cvx-add" data-add="langs"><span aria-hidden="true">+</span> {{s:cv_add_lang}}</button>
+        </fieldset>
+
+        <fieldset class="cvx-box">
+          <legend>{{s:cv_s_certs}}</legend>
+          <div class="cvx-list" data-list="certs"></div>
+          <button type="button" class="cvx-add" data-add="certs"><span aria-hidden="true">+</span> {{s:cv_add_cert}}</button>
+        </fieldset>
+      </form>
+
+      <div class="cvx-side" id="cvSide">
+        <div class="cvx-actions">
+          <div class="cvx-btns">
+            <button type="button" class="cvx-btn primary" id="cvPdf">{{s:cv_pdf}}</button>
+            <button type="button" class="cvx-btn" id="cvDocx">{{s:cv_docx}}</button>
+            <button type="button" class="cvx-btn ghost" id="cvSample">{{s:cv_sample}}</button>
+            <button type="button" class="cvx-btn danger" id="cvClear">{{s:cv_clear}}</button>
+          </div>
+          <p class="cvx-hint">{{s:cv_pdf_hint}} {{s:cv_docx_hint}}</p>
+          <p class="cvx-status" id="cvStatus" role="status" aria-live="polite"></p>
+        </div>
+        <div class="cvx-stage" id="cvStage" role="tabpanel" aria-labelledby="cvTabPrev">
+          <div class="cvx-scale" id="cvScale"><article class="cv-paper" id="cvPaper" aria-label="{{s:cv_tab_preview}}"></article></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="cvT">{{cv_i18n}}</script>
+<script src="/assets/cv.js?v={{version}}" defer></script>
