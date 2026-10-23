@@ -1,8 +1,8 @@
 /* سَحاتِك — CV builder.
    Everything runs in this browser tab: nothing is uploaded or sent anywhere (the site CSP also blocks
    connections to other origins). The draft is kept only in this browser's localStorage under KEY,
-   until the visitor presses "Clear everything". The PDF is made by the browser's own print engine
-   (perfect Arabic shaping, selectable text); the .docx is assembled here by hand (OOXML + a tiny zip). */
+   until the visitor presses "Clear everything". The PDF is drawn here on canvases (the browser shapes the
+   Arabic text) and written by hand, like the .docx (OOXML + a tiny zip): both download directly. */
 (function () {
   "use strict";
   var T = {};
@@ -464,7 +464,7 @@
     fillForm(); changed();
   });
 
-  /* ---------------- PDF: the browser's own print engine ---------------- */
+  /* ---------------- file names ---------------- */
   function baseName() { var n = S.name.trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60); return n || 'CV'; }
   function needName() {
     if (S.name.trim()) return false;
@@ -472,15 +472,248 @@
     var n = form.querySelector('[data-k="name"]'); if (n) n.focus();
     return true;
   }
+  /* ---------------- PDF: drawn here and downloaded directly ----------------
+     A full-size copy of the preview is laid out off screen; every line of text, box, border and the photo
+     is painted onto A4 canvases (the browser shapes Arabic itself, with the site's own fonts), the pages
+     are split between lines, never through one, and the canvases are packed into a PDF written here.
+     Latin text also goes in as an invisible text layer, so English CVs stay searchable and copyable. */
+  var MM = 96 / 25.4, PAGE_W = 210 * MM, PAGE_H = 297 * MM, TOP = 14 * MM, BOTTOM = 12 * MM, K = 2.5;
+  var COMPLEX = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
+  function colorOk(c) { return c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c); }
+  function px(v) { return parseFloat(v) || 0; }
+  function radius(v, w) { return /%$/.test(v) ? px(v) / 100 * w : px(v); }
+  function rrect(x, c, l, tp, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
+    x.beginPath(); x.moveTo(l + r, tp); x.arcTo(l + w, tp, l + w, tp + h, r); x.arcTo(l + w, tp + h, l, tp + h, r);
+    x.arcTo(l, tp + h, l, tp, r); x.arcTo(l, tp, l + w, tp, r); x.closePath();
+  }
+  /* turn ::before/::after text (e.g. the commas between ATS skills) into real text so it can be measured */
+  function materialise(node) {
+    $$('*', node).concat([node]).forEach(function (e) {
+      ['::before', '::after'].forEach(function (p) {
+        var c = getComputedStyle(e, p).content;
+        if (!c || c === 'none' || c === 'normal' || !/^".*"$/.test(c)) return;
+        var s = el('span', null, c.slice(1, -1).replace(/\\"/g, '"'));
+        if (p === '::before') e.insertBefore(s, e.firstChild); else e.appendChild(s);
+        e.classList.add('cv-np');
+      });
+    });
+  }
+  /* collect everything to paint, in document order, in px relative to the paper's top-left */
+  function collect(paperCopy) {
+    var o = paperCopy.getBoundingClientRect(), ops = [], lines = [], keep = [], heads = [], links = [];
+    var rg = document.createRange();
+    function rel(r) { return { l: r.left - o.left, t: r.top - o.top, w: r.width, h: r.height }; }
+    function textNode(n, cs) {
+      var s = n.nodeValue; if (!s || !s.trim()) return;
+      var font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      var up = cs.textTransform === 'uppercase', spaced = cs.letterSpacing !== 'normal' && px(cs.letterSpacing) !== 0;
+      var iso = n.parentNode.nodeName === 'BDI' || cs.unicodeBidi === 'plaintext';
+      var groups = [], g = null;
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (/\s/.test(ch)) { if (g) g.str += ch; continue; }
+        rg.setStart(n, i); rg.setEnd(n, i + 1);
+        var r = rg.getBoundingClientRect();
+        var mid = r.top + r.height / 2;
+        if (!g || (r.height && Math.abs(mid - g.mid) > g.h * 0.5)) {
+          if (g) groups.push(g);
+          g = { str: '', mid: mid, h: r.height || 10, l: Infinity, r: -Infinity, t: Infinity, b: -Infinity, chars: [] };
+        }
+        g.str += ch;
+        if (r.width || r.height) {
+          g.l = Math.min(g.l, r.left); g.r = Math.max(g.r, r.right); g.t = Math.min(g.t, r.top); g.b = Math.max(g.b, r.bottom);
+          g.chars.push({ c: up ? ch.toUpperCase() : ch, l: r.left - o.left });
+        }
+      }
+      if (g) groups.push(g);
+      groups.forEach(function (q) {
+        if (q.l === Infinity) return;
+        var str = q.str.replace(/\s+/g, ' ').trim(); if (up) str = str.toUpperCase();
+        var dir = cs.direction;
+        if (iso) { var m = str.match(/[A-Za-zÀ-ɏ]|[֐-ࣿיִ-﷿ﹰ-﻿]/); if (m) dir = /[A-Za-zÀ-ɏ]/.test(m[0]) ? 'ltr' : 'rtl'; }
+        var box = { l: q.l - o.left, t: q.t - o.top, w: q.r - q.l, h: q.b - q.t };
+        var op = { k: 'text', s: str, font: font, color: cs.color, dir: dir, box: box, size: px(cs.fontSize),
+                   chars: spaced && !COMPLEX.test(str) ? q.chars : null };
+        ops.push(op); lines.push(box);
+      });
+    }
+    function walk(e) {
+      var cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      var b = rel(e.getBoundingClientRect());
+      if (e !== paperCopy) {
+        if (colorOk(cs.backgroundColor)) ops.push({ k: 'bg', box: b, color: cs.backgroundColor, r: radius(cs.borderTopLeftRadius, b.w), band: e.classList.contains('cv-aside') });
+        var bw = [px(cs.borderTopWidth), px(cs.borderRightWidth), px(cs.borderBottomWidth), px(cs.borderLeftWidth)];
+        var bc = [cs.borderTopColor, cs.borderRightColor, cs.borderBottomColor, cs.borderLeftColor];
+        var bs = [cs.borderTopStyle, cs.borderRightStyle, cs.borderBottomStyle, cs.borderLeftStyle];
+        if (bw.some(function (w, i) { return w > 0 && bs[i] !== 'none' && colorOk(bc[i]); })) ops.push({ k: 'border', box: b, w: bw, c: bc, s: bs, r: radius(cs.borderTopLeftRadius, b.w) });
+      }
+      if (e.nodeName === 'IMG') {
+        ops.push({ k: 'img', box: b, img: e, r: radius(cs.borderTopLeftRadius, b.w), bw: px(cs.borderTopWidth) });
+        lines.push(b); return;
+      }
+      if (e.classList.contains('cv-item')) keep.push(b);
+      if (e.nodeName === 'H2') heads.push(b);
+      if (e.nodeName === 'A' && e.href && /^(https?:|mailto:|tel:)/.test(e.getAttribute('href') || '')) links.push({ box: b, href: e.getAttribute('href') });
+      for (var c = e.firstChild; c; c = c.nextSibling) {
+        if (c.nodeType === 3) textNode(c, cs); else if (c.nodeType === 1) walk(c);
+      }
+    }
+    walk(paperCopy);
+    return { ops: ops, lines: lines, keep: keep, heads: heads, links: links, height: paperCopy.offsetHeight };
+  }
+  /* page breaks: never through a line or the photo; prefer between items and keep a heading with what follows */
+  function breaks(d) {
+    var cuts = [0], s = 0, first = true, guard = 0;
+    function free(y) { return d.lines.every(function (b) { return !(b.t + 0.5 < y && y < b.t + b.h - 0.5); }); }
+    while (guard++ < 40) {
+      var cap = first ? PAGE_H - BOTTOM : PAGE_H - TOP - BOTTOM, limit = s + cap;
+      if (d.height - s <= (first ? PAGE_H : PAGE_H - TOP) + 0.5 || d.height <= limit) break;
+      var min = s + cap * 0.3, best = -1, cand = [limit];
+      d.lines.forEach(function (b) { cand.push(b.t - 1); });
+      d.keep.forEach(function (b) { cand.push(b.t - 1); });
+      var items = d.keep.map(function (b) { return b.t - 1; }).filter(function (y) { return y > s + cap * 0.6 && y <= limit && free(y); });
+      if (items.length) best = Math.max.apply(null, items);
+      else cand.forEach(function (y) { if (y > min && y <= limit && y > best && free(y)) best = y; });
+      if (best < 0) best = limit;
+      d.heads.forEach(function (h) { if (h.t > s + cap * 0.3 && h.t < best && h.t + h.h + 6 * MM > best && free(h.t - 1)) best = h.t - 1; });
+      cuts.push(best); s = best; first = false;
+    }
+    cuts.push(d.height);
+    return cuts;
+  }
+  function paint(d, from, to, page) {
+    var c = document.createElement('canvas'); c.width = Math.round(PAGE_W * K); c.height = Math.round(PAGE_H * K);
+    var x = c.getContext('2d'), dy = (page ? TOP : 0) - from;
+    x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.scale(K, K);
+    /* the modern sidebar colour runs the full height of every page */
+    d.ops.forEach(function (op) { if (op.k === 'bg' && op.band) { x.fillStyle = op.color; x.fillRect(op.box.l, 0, op.box.w, PAGE_H); } });
+    x.save(); x.beginPath(); x.rect(0, page ? TOP : 0, PAGE_W, to - from + (page ? 0 : 0)); x.clip();
+    d.ops.forEach(function (op) {
+      var b = op.box, t = b.t + dy;
+      if (t > PAGE_H || t + b.h < 0) return;
+      if (op.k === 'bg') { if (op.band) return; x.fillStyle = op.color; rrect(x, 0, b.l, t, b.w, b.h, op.r); x.fill(); }
+      else if (op.k === 'border') {
+        var w = op.w, same = w.every(function (v) { return v === w[0]; }) && op.c.every(function (v) { return v === op.c[0]; });
+        if (same && op.r > 0) { x.strokeStyle = op.c[0]; x.lineWidth = w[0]; rrect(x, 0, b.l + w[0] / 2, t + w[0] / 2, b.w - w[0], b.h - w[0], op.r - w[0] / 2); x.stroke(); }
+        else {
+          if (w[0] && op.s[0] !== 'none') { x.fillStyle = op.c[0]; x.fillRect(b.l, t, b.w, w[0]); }
+          if (w[1] && op.s[1] !== 'none') { x.fillStyle = op.c[1]; x.fillRect(b.l + b.w - w[1], t, w[1], b.h); }
+          if (w[2] && op.s[2] !== 'none') { x.fillStyle = op.c[2]; x.fillRect(b.l, t + b.h - w[2], b.w, w[2]); }
+          if (w[3] && op.s[3] !== 'none') { x.fillStyle = op.c[3]; x.fillRect(b.l, t, w[3], b.h); }
+        }
+      } else if (op.k === 'img') {
+        x.save(); rrect(x, 0, b.l + op.bw, t + op.bw, b.w - 2 * op.bw, b.h - 2 * op.bw, op.r - op.bw); x.clip();
+        var im = op.img, iw = im.naturalWidth, ih = im.naturalHeight, side = Math.min(iw, ih);
+        x.drawImage(im, (iw - side) / 2, (ih - side) / 2, side, side, b.l + op.bw, t + op.bw, b.w - 2 * op.bw, b.h - 2 * op.bw);
+        x.restore();
+      } else if (op.k === 'text') {
+        x.font = op.font; x.fillStyle = op.color; x.textBaseline = 'alphabetic';
+        var m = x.measureText('Hgجـ'), a = m.fontBoundingBoxAscent, de = m.fontBoundingBoxDescent;
+        if (!(a > 0)) { a = op.size * 0.92; de = op.size * 0.28; }
+        var base = t + (b.h - (a + de)) / 2 + a;
+        if (op.chars) { x.direction = 'ltr'; x.textAlign = 'left'; op.chars.forEach(function (ch) { x.fillText(ch.c, ch.l, base); }); }
+        else { x.direction = op.dir; x.textAlign = op.dir === 'rtl' ? 'right' : 'left'; x.fillText(op.s, op.dir === 'rtl' ? b.l + b.w : b.l, base); }
+        op.base = base - dy;
+      }
+    });
+    x.restore();
+    return c;
+  }
+  /* Helvetica widths (32–126) for the invisible text layer */
+  var HW = '278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584'.split(',').map(Number);
+  function pdfStr(s) { return '(' + s.replace(/[\\()]/g, '\\$&') + ')'; }
+  function utf16(s) { var h = 'FEFF'; for (var i = 0; i < s.length; i++) h += ('000' + s.charCodeAt(i).toString(16)).slice(-4); return '<' + h.toUpperCase() + '>'; }
+  function f2(n) { return (Math.round(n * 100) / 100).toString(); }
+  function buildPdf(pages, title) {
+    var parts = [], off = 0, xref = [], P = 0.75, W = f2(PAGE_W * P), Hh = f2(PAGE_H * P);
+    function put(v) { if (typeof v === 'string') { var u = new Uint8Array(v.length); for (var i = 0; i < v.length; i++) u[i] = v.charCodeAt(i) & 255; v = u; } parts.push(v); off += v.length; }
+    function obj(n, body) { xref[n] = off; put(n + ' 0 obj\n'); body(); put('\nendobj\n'); }
+    var n = pages.length, kids = [];
+    for (var i = 0; i < n; i++) kids.push((5 + i * 3) + ' 0 R');
+    put('%PDF-1.4\n%âãÏÓ\n');
+    obj(1, function () { put('<</Type/Catalog/Pages 2 0 R>>'); });
+    obj(2, function () { put('<</Type/Pages/Kids[' + kids.join(' ') + ']/Count ' + n + '>>'); });
+    obj(3, function () { put('<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>'); });
+    obj(4, function () { put('<</Title' + utf16(title) + '/Creator(sahati-tech.com.ly CV builder)/Producer(sahati-tech.com.ly)>>'); });
+    pages.forEach(function (pg, i) {
+      var po = 5 + i * 3, annots = pg.links.map(function (l) {
+        return '<</Type/Annot/Subtype/Link/Border[0 0 0]/Rect[' + [l.l, l.b, l.r, l.t].map(f2).join(' ') + ']/A<</S/URI/URI' + pdfStr(l.href.replace(/[^\x21-\x7E]/g, function (c) { return encodeURIComponent(c); })) + '>>>>';
+      });
+      obj(po, function () { put('<</Type/Page/Parent 2 0 R/MediaBox[0 0 ' + W + ' ' + Hh + ']/Resources<</XObject<</Im0 ' + (po + 2) + ' 0 R>>/Font<</F1 3 0 R>>>>/Contents ' + (po + 1) + ' 0 R' + (annots.length ? '/Annots[' + annots.join('') + ']' : '') + '>>'); });
+      var cs = 'q ' + W + ' 0 0 ' + Hh + ' 0 0 cm /Im0 Do Q\n' + pg.text;
+      obj(po + 1, function () { put('<</Length ' + cs.length + '>>\nstream\n' + cs + '\nendstream'); });
+      obj(po + 2, function () { put('<</Type/XObject/Subtype/Image/Width ' + pg.w + '/Height ' + pg.h + '/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ' + pg.jpg.length + '>>\nstream\n'); put(pg.jpg); put('\nendstream'); });
+    });
+    var xo = off, total = 5 + n * 3, xs = 'xref\n0 ' + total + '\n0000000000 65535 f \n';
+    for (var j = 1; j < total; j++) xs += ('000000000' + xref[j]).slice(-10) + ' 00000 n \n';
+    put(xs + 'trailer\n<</Size ' + total + '/Root 1 0 R/Info 4 0 R>>\nstartxref\n' + xo + '\n%%EOF\n');
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+  function textLayer(d, from, to, page) {
+    var P = 0.75, dy = (page ? TOP : 0) - from, out = '';
+    d.ops.forEach(function (op) {
+      if (op.k !== 'text' || op.base === undefined || !/^[\x20-\x7E]+$/.test(op.s)) return;
+      var b = op.box; if (b.t < from - 0.5 || b.t + b.h > to + 0.5) return;
+      var size = op.size * P, w = 0;
+      for (var i = 0; i < op.s.length; i++) w += HW[op.s.charCodeAt(i) - 32] || 556;
+      var tz = w ? (b.w * P) / (w / 1000 * size) * 100 : 100;
+      out += 'BT /F1 ' + f2(size) + ' Tf 3 Tr ' + f2(tz) + ' Tz 1 0 0 1 ' + f2(b.l * P) + ' ' + f2((PAGE_H - (op.base + dy)) * P) + ' Tm ' + pdfStr(op.s) + ' Tj ET\n';
+    });
+    return out;
+  }
+  function makePdf() {
+    var host = el('div', 'cv-pdfhost'), copy = paper.cloneNode(true);
+    copy.removeAttribute('id'); host.appendChild(copy); document.body.appendChild(host);
+    var fonts = {};
+    var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    return ready.then(function () {
+      return Promise.all($$('img', copy).map(function (i) { return i.decode ? i.decode().catch(function () {}) : null; }));
+    }).then(function () {
+      materialise(copy);
+      var d = collect(copy);
+      d.ops.forEach(function (op) { if (op.k === 'text') fonts[op.font] = (fonts[op.font] || '') + op.s.slice(0, 40); });
+      return Promise.all(Object.keys(fonts).map(function (f) { return document.fonts && document.fonts.load ? document.fonts.load(f, fonts[f]).catch(function () {}) : null; }))
+        .then(function () { return d; });
+    }).then(function (d) {
+      var cuts = breaks(d), jobs = [];
+      for (var i = 0; i < cuts.length - 1; i++) (function (i) {
+        var from = cuts[i], to = cuts[i + 1], c = paint(d, from, to, i), dy = (i ? TOP : 0) - from;
+        var links = d.links.filter(function (l) { return l.box.t >= from - 1 && l.box.t + l.box.h <= to + 1; }).map(function (l) {
+          var P = 0.75; return { href: l.href, l: l.box.l * P, r: (l.box.l + l.box.w) * P, t: (PAGE_H - (l.box.t + dy)) * P, b: (PAGE_H - (l.box.t + l.box.h + dy)) * P };
+        });
+        var text = textLayer(d, from, to, i);
+        jobs.push(new Promise(function (res, rej) {
+          c.toBlob(function (bl) {
+            if (!bl) { rej(new Error('canvas')); return; }
+            var fr = new FileReader();
+            fr.onload = function () { res({ jpg: new Uint8Array(fr.result), w: c.width, h: c.height, text: text, links: links }); c.width = c.height = 0; };
+            fr.onerror = rej; fr.readAsArrayBuffer(bl);
+          }, 'image/jpeg', 0.92);
+        }));
+      })(i);
+      return Promise.all(jobs);
+    }).then(function (pages) {
+      host.remove();
+      return buildPdf(pages, S.name.trim() + ' - CV');
+    }, function (e) { host.remove(); throw e; });
+  }
+  var pdfBusy = false;
   $('#cvPdf').addEventListener('click', function () {
-    if (needName()) return;
-    var old = document.title, done = false;
-    function restore() { if (done) return; done = true; document.title = old; window.removeEventListener('afterprint', restore); }
-    document.title = baseName() + ' - CV';      /* most browsers use the title as the PDF file name */
-    window.addEventListener('afterprint', restore);
-    window.print();
-    setTimeout(restore, 3000);
+    if (needName() || pdfBusy) return;
+    var btn = this; pdfBusy = true; btn.setAttribute('aria-busy', 'true'); status(t('cv_pdf_busy'));
+    makePdf().then(function (blob) {
+      download(blob, baseName() + ' - CV.pdf'); status(t('cv_pdf_done'));
+    }).catch(function () { status(t('cv_pdf_fail')); })
+      .then(function () { pdfBusy = false; btn.removeAttribute('aria-busy'); });
   });
+
+  /* Ctrl+P still works: the modern sidebar is stretched to whole pages so its colour reaches the bottom */
+  window.addEventListener('beforeprint', function () {
+    if (S.tpl !== 'modern' || !S.name.trim()) return;
+    var n = Math.max(1, Math.ceil((paper.offsetHeight - 2) / PAGE_H)); paper.style.minHeight = (n * 297) + 'mm';
+  });
+  window.addEventListener('afterprint', function () { paper.style.minHeight = ''; });
 
   /* ---------------- Word (.docx): OOXML written here, packed in a stored zip ---------------- */
   function xesc(s) {

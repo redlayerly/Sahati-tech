@@ -157,6 +157,10 @@ label.cvx-btn:has(.cvx-file:focus-visible){outline:2px solid var(--focus);outlin
 .cv-skills li{border:.3mm solid var(--cv-line);border-radius:1.4mm;padding:.5mm 2.2mm;font-size:9pt}
 .cv-langs{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:1mm 6mm}
 .cv-langs b{font-weight:600}
+/* PDF: the full-size copy that gets drawn (invisible, outside the page flow) */
+.cv-pdfhost{position:fixed;top:0;left:0;width:210mm;opacity:0;pointer-events:none;z-index:-1}
+.cv-pdfhost .cv-paper{box-shadow:none}
+.cv-np::before,.cv-np::after{content:none!important}
 .cv-empty{margin:0;padding:30mm 10mm;text-align:center;color:#77736B;font-size:11pt}
 
 /* classic */
@@ -208,11 +212,6 @@ label.cvx-btn:has(.cvx-file:focus-visible){outline:2px solid var(--focus);outlin
   body.is-cv .cvx-scale{transform:none!important;width:auto}
   body.is-cv .cv-paper{box-shadow:none;margin:0 auto;min-height:0}
   body.is-cv .cv-classic,body.is-cv .cv-ats{padding-top:14mm;padding-bottom:14mm;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-  body.is-cv .cv-modern{min-height:297mm;isolation:isolate}
   body.is-cv .cv-aside,body.is-cv .cv-main{padding-top:14mm;padding-bottom:12mm;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-  /* the sidebar colour becomes a fixed band: fixed boxes repeat on every printed page, so a second page keeps a
-     full-height sidebar instead of one that stops where the text stops */
-  body.is-cv .cv-modern .cv-aside{background:none}
-  body.is-cv .cv-modern::before{content:"";position:fixed;top:0;bottom:0;left:0;width:64mm;z-index:-1;background:var(--cv-acc)}
-  body.is-cv .cv-modern[dir="rtl"]::before{left:auto;right:0}
+}
 }

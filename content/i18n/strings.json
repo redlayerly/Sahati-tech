@@ -205,7 +205,7 @@
     "cv_sample": "املأ بمثال",
     "cv_clear": "امسح كل شيء",
     "cv_clear_confirm": "اضغط مرة أخرى للتأكيد",
-    "cv_pdf_hint": "عند «تحميل PDF» تُفتح نافذة الطباعة: اختر «حفظ بصيغة PDF» كوجهة.",
+    "cv_pdf_hint": "يُنشأ ملف PDF داخل متصفحك ويُنزَّل مباشرة.",
     "cv_docx_hint": "ملف Word يأتي بتنسيق بسيط قابل للتعديل.",
     "cv_restored": "استعدنا مسودتك المحفوظة في متصفحك.",
     "cv_saved": "حُفظت المسودة في متصفحك فقط.",
@@ -216,7 +216,10 @@
     "cv_need_name": "اكتب اسمك أولاً.",
     "nav_cv": "السيرة الذاتية",
     "nav_cv_href": "/tools/cv/",
-    "cv_photo_ats": "القالب «بسيط (ATS)» لا يعرض الصورة. اختر «كلاسيكي» أو «عصري» لتظهر في السيرة."
+    "cv_photo_ats": "القالب «بسيط (ATS)» لا يعرض الصورة. اختر «كلاسيكي» أو «عصري» لتظهر في السيرة.",
+    "cv_pdf_busy": "جارٍ إنشاء ملف PDF…",
+    "cv_pdf_done": "تم إنشاء ملف PDF وتنزيله.",
+    "cv_pdf_fail": "تعذّر إنشاء ملف PDF على هذا الجهاز. جرّب متصفحاً آخر، أو نزّل ملف Word."
   },
   "en": {
     "lang_name": "English",
@@ -424,7 +427,7 @@
     "cv_sample": "Fill with an example",
     "cv_clear": "Clear everything",
     "cv_clear_confirm": "Click again to confirm",
-    "cv_pdf_hint": "\"Download PDF\" opens the print dialog: choose \"Save as PDF\" as the destination.",
+    "cv_pdf_hint": "The PDF is created in your browser and downloads straight away.",
     "cv_docx_hint": "The Word file uses a simple, editable layout.",
     "cv_restored": "We restored the draft saved in your browser.",
     "cv_saved": "Draft saved in your browser only.",
@@ -435,7 +438,10 @@
     "cv_need_name": "Enter your name first.",
     "nav_cv": "CV Builder",
     "nav_cv_href": "/en/tools/cv/",
-    "cv_photo_ats": "The Simple (ATS) template leaves the photo out. Choose Classic or Modern to show it."
+    "cv_photo_ats": "The Simple (ATS) template leaves the photo out. Choose Classic or Modern to show it.",
+    "cv_pdf_busy": "Creating your PDF…",
+    "cv_pdf_done": "Your PDF was created and downloaded.",
+    "cv_pdf_fail": "The PDF couldn't be created on this device. Try another browser, or download the Word file."
   },
   "tr": {
     "lang_name": "Türkçe",
